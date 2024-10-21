@@ -1,0 +1,24 @@
+### List all brands
+GET  http://localhost:3000/api/brands
+
+### Get a brand by id
+GET  http://localhost:3000/api/brands/12
+
+### Create a brand
+POST http://localhost:3000/api/brands
+Content-Type: application/json
+
+{
+    "hello": "big bdi"
+}
+
+### Update a brand
+PUT http://localhost:3000/api/brands/12
+Content-Type: application/json
+
+{
+    "hello": "big bdi"
+}
+
+### Delete a brand
+DELETE http://localhost:3000/api/brands/12

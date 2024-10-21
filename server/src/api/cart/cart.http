@@ -1,0 +1,16 @@
+### Get user's cart
+GET http://localhost:3000/api/carts
+
+### Add item to cart
+POST http://localhost:3000/api/carts
+Content-Type: application/json
+
+{
+    "newItem": "laptop123"
+}
+
+### Update cart items quantity
+PUT http://localhost:3000/api/carts/items/12
+
+### Delete cart item
+DELETE http://localhost:3000/api/carts/items/12

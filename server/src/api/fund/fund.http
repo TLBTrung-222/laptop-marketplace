@@ -1,0 +1,5 @@
+# GET /api/seller/fund - Get seller's fund balance
+
+# GET /api/seller/fund/transactions - List fund transactions
+
+# POST /api/seller/fund/withdraw - Create a withdraw request
