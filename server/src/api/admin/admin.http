@@ -1,0 +1,7 @@
+# GET /api/admin/withdraw-requests - List all withdraw requests
+
+# PUT /api/admin/withdraw-requests/:id - Process a withdraw request
+
+# GET /api/admin/orders - List all orders (with filtering options)
+
+# GET /api/admin/users - List all users (with filtering options)
