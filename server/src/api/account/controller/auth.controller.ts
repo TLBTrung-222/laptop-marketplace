@@ -1,16 +1,26 @@
 import { Body, Controller, Post } from '@nestjs/common'
-import { LoginUserDto } from '../dto/login-user.dto'
+import { LoginUserDto, ViewUserDto } from '../dto/user.dto'
+import { AuthService } from '../service/auth.service'
+import { SignUpUserDto } from '../dto/user.dto'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
+// auth controller handle signin/signup route, auth service validate logic, account service handle the CRUD of account
+@Serialize(ViewUserDto)
 @Controller('auth')
 export class AuthController {
+    constructor(private authService: AuthService) {}
+
     @Post('signin')
     signInUser(@Body() body: LoginUserDto) {
-        return `user logged in with: ${body.email} - ${body.password}`
+        return this.authService.signIn(body)
     }
 
-    //! todo: add 'confirmPassword' to this Dto
     @Post('signup')
-    signUpUser(@Body() body: LoginUserDto) {
-        return `user signed up with: ${body.email} - ${body.password}`
+    async signUpUser(@Body() body: SignUpUserDto) {
+        //    return this.authService.
+        return this.authService.signUp(body)
     }
+
+    //! TODO: Signup/Signin seller
+    //! TODO: serialize response
 }

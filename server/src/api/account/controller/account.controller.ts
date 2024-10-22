@@ -2,7 +2,6 @@ import { Controller, Get, Param, Put } from '@nestjs/common'
 
 @Controller('accounts')
 export class AccountController {
-    // admin only
     @Get()
     getAllUser() {
         return 'return all users'
