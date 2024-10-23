@@ -49,7 +49,6 @@ export class AuthService {
             existUser.passwordHash
         )
         if (!isPasswordValid) throw new UnauthorizedException('Wrong password')
-
         return existUser
     }
 
