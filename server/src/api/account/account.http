@@ -1,5 +1,5 @@
 ### Sign in user
-POST http://localhost:3000/api/auth/signin
+POST http://localhost:3001/api/auth/signin
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### Sign up user
-POST http://localhost:3000/api/auth/signup
+POST http://localhost:3001/api/auth/signup
 Content-Type: application/json
 
 {
@@ -19,13 +19,13 @@ Content-Type: application/json
 }
 
 ### Get all user (admin)
-GET http://localhost:3000/api/accounts
+GET http://localhost:3001/api/accounts
 
 ### Get account detail (admin)
-GET http://localhost:3000/api/accounts/12
+GET http://localhost:3001/api/accounts/12
 
 ### Get profile
-GET http://localhost:3000/api/accounts/profile
+GET http://localhost:3001/api/accounts/profile
 
 ### Update profile
-PUT http://localhost:3000/api/accounts/profile
+PUT http://localhost:3001/api/accounts/profile

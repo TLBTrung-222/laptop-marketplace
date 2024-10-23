@@ -1,11 +1,11 @@
 ### List all categories
-GET  http://localhost:3000/api/categories
+GET  http://localhost:3001/api/categories
 
 ### Get a category by id
-GET  http://localhost:3000/api/categories/12
+GET  http://localhost:3001/api/categories/12
 
 ### Create a category
-POST http://localhost:3000/api/categories
+POST http://localhost:3001/api/categories
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### Update a category
-PUT http://localhost:3000/api/categories/12
+PUT http://localhost:3001/api/categories/12
 Content-Type: application/json
 
 {
@@ -21,4 +21,4 @@ Content-Type: application/json
 }
 
 ### Delete a category
-DELETE http://localhost:3000/api/categories/12
+DELETE http://localhost:3001/api/categories/12

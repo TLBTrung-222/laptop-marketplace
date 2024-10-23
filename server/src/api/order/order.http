@@ -1,14 +1,14 @@
 ### List all orders
-GET  http://localhost:3000/api/orders
+GET  http://localhost:3001/api/orders
 
 ### Get an order by id
-GET  http://localhost:3000/api/orders/12
+GET  http://localhost:3001/api/orders/12
 
 ### Get order items
-GET  http://localhost:3000/api/orders/12/items
+GET  http://localhost:3001/api/orders/12/items
 
 ### Update order status
-PUT http://localhost:3000/api/orders/12/status
+PUT http://localhost:3001/api/orders/12/status
 Content-Type: application/json
 
 {
@@ -16,10 +16,10 @@ Content-Type: application/json
 }
 
 ### Process order payment
-POST http://localhost:3000/api/orders/12/payment
+POST http://localhost:3001/api/orders/12/payment
 
 ### Create an order
-POST http://localhost:3000/api/orders
+POST http://localhost:3001/api/orders
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Update an order
-PUT http://localhost:3000/api/orders/12
+PUT http://localhost:3001/api/orders/12
 Content-Type: application/json
 
 {
@@ -35,4 +35,4 @@ Content-Type: application/json
 }
 
 ### Delete an order
-DELETE http://localhost:3000/api/orders/12
+DELETE http://localhost:3001/api/orders/12
