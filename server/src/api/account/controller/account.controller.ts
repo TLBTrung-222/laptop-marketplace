@@ -12,11 +12,6 @@ export class AccountController {
         return 'profile of this user'
     }
 
-    @Get(':id')
-    getUserWithId(@Param('id') id: string) {
-        return 'find user with id: ' + id
-    }
-
     @Put(':id')
     updateCurrentUserProfile() {
         return `update user's profile`

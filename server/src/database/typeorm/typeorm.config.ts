@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
-import { UserEntity } from '../entities/user.entity'
+import { AccountEntity } from '../entities/account.entity'
+import { RoleEntity } from '../entities/role.entity'
+import { SessionEntity } from '../entities/session.entity'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -8,7 +10,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         return {
             type: 'sqlite',
             database: 'dev.sqlite',
-            entities: [UserEntity],
+            entities: [AccountEntity, RoleEntity, SessionEntity],
             synchronize: true,
             migrationsRun: false
         }

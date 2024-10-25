@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserEntity, UserType } from 'src/database/entities/user.entity'
+import { RoleId } from 'src/api/role/enum/role.enum'
+import { AccountEntity } from 'src/database/entities/account.entity'
 import { Repository } from 'typeorm'
 
 @Injectable()
 export class AccountService {
     constructor(
-        @InjectRepository(UserEntity) private repo: Repository<UserEntity>
+        @InjectRepository(AccountEntity) private repo: Repository<AccountEntity>
     ) {}
 
     async create(
@@ -15,7 +16,7 @@ export class AccountService {
         phoneNumber: string,
         name: string,
         avatar: Buffer,
-        type: UserType
+        roleId: RoleId
     ) {
         const newUser = this.repo.create({
             email,
@@ -23,7 +24,7 @@ export class AccountService {
             phoneNumber,
             name,
             avatar,
-            type
+            roleId
         })
 
         return this.repo.save(newUser)

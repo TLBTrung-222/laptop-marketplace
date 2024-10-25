@@ -9,10 +9,12 @@ import { RatingModule } from './rating/rating.module'
 import { FundModule } from './fund/fund.module'
 import { AdminModule } from './admin/admin.module'
 import { ShippingModule } from './shipping/shipping.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
     imports: [
         AccountModule,
+        AuthModule,
         BrandModule,
         CategoryModule,
         ProductModule,
