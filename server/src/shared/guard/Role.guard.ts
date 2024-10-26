@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Observable } from 'rxjs'
-import { RoleId } from 'src/api/role/enum/role.enum'
+import { RoleId } from 'src/shared/enum/role.enum'
 
+// compare required and provided role
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
@@ -10,12 +11,12 @@ export class RoleGuard implements CanActivate {
     canActivate(
         context: ExecutionContext
     ): boolean | Promise<boolean> | Observable<boolean> {
-        const requiredRole = this.reflector.get<RoleId>(
-            'roleId',
+        const requiredRoles = this.reflector.get<RoleId[]>(
+            'roleIds',
             context.getHandler()
         )
 
-        console.log('required role from Role decorator: ' + requiredRole)
-        return false
+        console.log('required roles from Role decorator: ' + requiredRoles)
+        return true
     }
 }

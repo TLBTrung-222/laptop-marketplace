@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { RoleId } from 'src/api/role/enum/role.enum'
+import { RoleId } from 'src/shared/enum/role.enum'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Repository } from 'typeorm'
 

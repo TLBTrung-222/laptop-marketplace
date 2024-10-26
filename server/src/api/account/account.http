@@ -1,11 +1,11 @@
-### Get all user (admin)
+### Get all accounta (admin)
 GET http://localhost:3001/api/accounts
 
 ### Get account detail (admin)
 GET http://localhost:3001/api/accounts/12
 
-### Get profile
+### Get account's profile
 GET http://localhost:3001/api/accounts/profile
 
-### Update profile
+### Update account's profile
 PUT http://localhost:3001/api/accounts/profile

@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm'
 import { AccountEntity } from './account.entity'
 import { IsEnum } from 'class-validator'
-import { RoleId } from 'src/api/role/enum/role.enum'
+import { RoleId } from 'src/shared/enum/role.enum'
 
 @Entity('roles')
 export class RoleEntity {

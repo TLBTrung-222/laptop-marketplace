@@ -12,4 +12,7 @@ export class SessionEntity implements ISession {
 
     @Column('text')
     public json = ''
+
+    @DeleteDateColumn()
+    public destroyedAt?: Date
 }

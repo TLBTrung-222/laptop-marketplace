@@ -1,4 +1,4 @@
-### Get user's cart
+### Get account's cart
 GET http://localhost:3001/api/carts
 
 ### Add item to cart

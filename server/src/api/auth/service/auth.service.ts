@@ -9,7 +9,7 @@ import { promisify } from 'util'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { AccountService } from 'src/api/account/service/account.service'
-import { RoleId } from 'src/api/role/enum/role.enum'
+import { RoleId } from 'src/shared/enum/role.enum'
 import {
     LoginAccountDto,
     SignUpAccountDto
@@ -43,38 +43,38 @@ export class AuthService {
         return checkHashBuffer.toString('hex') === hash
     }
 
-    async signIn(user: LoginAccountDto) {
-        const existUser = await this.accountService.findByEmail(user.email)
+    async signIn(account: LoginAccountDto) {
+        const existUser = await this.accountService.findByEmail(account.email)
         if (!existUser) throw new NotFoundException('Email not founded')
         const isPasswordValid = await this.comparePassword(
-            user.password,
+            account.password,
             existUser.passwordHash
         )
         if (!isPasswordValid) throw new UnauthorizedException('Wrong password')
         return existUser
     }
 
-    async signUp(user: SignUpAccountDto, roleId: RoleId) {
-        const existUser = await this.accountService.findByEmail(user.email)
+    async signUp(account: SignUpAccountDto, roleId: RoleId) {
+        const existUser = await this.accountService.findByEmail(account.email)
         if (existUser) throw new BadRequestException('Email already in used')
 
         // hash password
-        const passwordHash = await this.hashPassword(user.password)
+        const passwordHash = await this.hashPassword(account.password)
 
         // attach defaut avatar
-        user.avatar = Boolean(user.avatar)
-            ? user.avatar
+        account.avatar = Boolean(account.avatar)
+            ? account.avatar
             : readFileSync(
                   join(process.cwd(), 'src', 'public', 'default_user.jpg')
               )
 
         // register to db
         const newUser = await this.accountService.create(
-            user.email,
+            account.email,
             passwordHash,
-            user.phoneNumber,
-            user.name,
-            user.avatar,
+            account.phoneNumber,
+            account.name,
+            account.avatar,
             roleId
         )
 

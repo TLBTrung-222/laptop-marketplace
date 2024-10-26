@@ -1,4 +1,4 @@
-// define user entity here
+// define account entity here
 
 import {
     Column,
@@ -8,7 +8,7 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { RoleEntity } from './role.entity'
-import { RoleId } from 'src/api/role/enum/role.enum'
+import { RoleId } from 'src/shared/enum/role.enum'
 
 @Entity('users')
 export class AccountEntity {

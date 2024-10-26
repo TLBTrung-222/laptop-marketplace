@@ -1,4 +1,4 @@
-### Sign in user
+### Sign in account
 POST http://localhost:3001/api/auth/signin
 Content-Type: application/json
 
@@ -28,3 +28,6 @@ Content-Type: application/json
     "phoneNumber": "0327734064",
     "name": "trungdz"
 }
+
+### Sign out account
+POST http://localhost:3001/api/auth/signout

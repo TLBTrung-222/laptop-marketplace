@@ -16,7 +16,7 @@ async function bootstrap() {
             secret: 'aRandomSecret',
             resave: false,
             saveUninitialized: false,
-            cookie: { maxAge: 3600 * 1000 },
+            cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
             store: new TypeormStore({
                 cleanupLimit: 2
             }).connect(sessionRepository)
