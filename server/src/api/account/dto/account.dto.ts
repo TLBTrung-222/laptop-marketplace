@@ -8,7 +8,7 @@ import {
     IsPhoneNumber
 } from 'class-validator'
 
-export class LoginUserDto {
+export class LoginAccountDto {
     @IsEmail()
     email: string
 
@@ -18,7 +18,7 @@ export class LoginUserDto {
     password: string
 }
 
-export class SignUpUserDto {
+export class SignUpAccountDto {
     @IsEmail()
     email: string
 
@@ -37,7 +37,7 @@ export class SignUpUserDto {
     avatar?: Buffer
 }
 
-export class ViewUserDto {
+export class ViewAccountDto {
     @Expose()
     id: string
 

@@ -1,0 +1,33 @@
+### Sign in account
+POST http://localhost:3001/api/auth/signin
+Content-Type: application/json
+
+{
+    "email": "buyer@gmail.com",
+    "password": "password"
+}
+
+### Sign up buyer
+POST http://localhost:3001/api/auth/buyer/signup
+Content-Type: application/json
+
+{
+    "email": "buyer@gmail.com",
+    "password": "password",
+    "phoneNumber": "0327734064",
+    "name": "trungdz"
+}
+
+### Sign up seller
+POST http://localhost:3001/api/auth/seller/signup
+Content-Type: application/json
+
+{
+    "email": "seller@gmail.com",
+    "password": "password",
+    "phoneNumber": "0327734064",
+    "name": "trungdz"
+}
+
+### Sign out account
+POST http://localhost:3001/api/auth/signout

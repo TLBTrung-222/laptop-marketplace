@@ -4,7 +4,7 @@ import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 export class CartController {
     @Get()
     getCart() {
-        return 'return user cart'
+        return 'return account cart'
     }
 
     @Post('/items')

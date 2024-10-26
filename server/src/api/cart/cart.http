@@ -1,8 +1,8 @@
-### Get user's cart
-GET http://localhost:3000/api/carts
+### Get account's cart
+GET http://localhost:3001/api/carts
 
 ### Add item to cart
-POST http://localhost:3000/api/carts
+POST http://localhost:3001/api/carts
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ### Update cart items quantity
-PUT http://localhost:3000/api/carts/items/12
+PUT http://localhost:3001/api/carts/items/12
 
 ### Delete cart item
-DELETE http://localhost:3000/api/carts/items/12
+DELETE http://localhost:3001/api/carts/items/12

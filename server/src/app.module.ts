@@ -3,6 +3,9 @@ import { AppController } from './app.controller'
 import { ApiModule } from './api/api.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { TypeOrmConfigService } from './database/typeorm/typeorm.config'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { SuccessResponseInterceptor } from './shared/interceptor/success-response.interceptor'
+import { ErrorResponse } from './shared/exception/error-response.exception'
 
 @Module({
     imports: [
@@ -11,6 +14,10 @@ import { TypeOrmConfigService } from './database/typeorm/typeorm.config'
         }),
         ApiModule
     ],
-    controllers: [AppController]
+    controllers: [AppController],
+    providers: [
+        { provide: APP_INTERCEPTOR, useClass: SuccessResponseInterceptor },
+        { provide: APP_FILTER, useClass: ErrorResponse }
+    ]
 })
 export class AppModule {}

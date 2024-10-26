@@ -6,9 +6,11 @@
 
 1. Response format:
 
-```javascript
+```typescript
 {
-  isSuccess:
+  isSuccess: boolean,
+  data: any,
+  errors: string | string[]
 }
 ```
 

@@ -4,14 +4,16 @@ import {
     NotFoundException,
     UnauthorizedException
 } from '@nestjs/common'
-import { AccountService } from './account.service'
-import { SignUpUserDto } from '../dto/user.dto'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
-import { UserType } from 'src/database/entities/user.entity'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import { LoginUserDto } from '../dto/user.dto'
+import { AccountService } from 'src/api/account/service/account.service'
+import { RoleId } from 'src/shared/enum/role.enum'
+import {
+    LoginAccountDto,
+    SignUpAccountDto
+} from 'src/api/account/dto/account.dto'
 
 const SALT_SIZE = 8 // 8 bytes or 16 hex character string
 const HASH_SIZE = 32 // 32 bytes
@@ -22,7 +24,7 @@ const scrypt = promisify(_scrypt)
 export class AuthService {
     constructor(private accountService: AccountService) {}
 
-    async #hashPassword(password: string) {
+    async hashPassword(password: string) {
         // create hash password
         const salt = randomBytes(SALT_SIZE).toString('hex')
         const hashBuffer = (await scrypt(password, salt, HASH_SIZE)) as Buffer
@@ -30,7 +32,7 @@ export class AuthService {
         return salt + '.' + passwordHash
     }
 
-    async #comparePassword(rawPassword: string, hashPassword: string) {
+    async comparePassword(rawPassword: string, hashPassword: string) {
         const [salt, hash] = hashPassword.split('.')
         const checkHashBuffer = (await scrypt(
             rawPassword,
@@ -41,43 +43,39 @@ export class AuthService {
         return checkHashBuffer.toString('hex') === hash
     }
 
-    async signIn(user: LoginUserDto) {
-        const existUser = await this.accountService.findByEmail(user.email)
+    async signIn(account: LoginAccountDto) {
+        const existUser = await this.accountService.findByEmail(account.email)
         if (!existUser) throw new NotFoundException('Email not founded')
-        const isPasswordValid = await this.#comparePassword(
-            user.password,
+        const isPasswordValid = await this.comparePassword(
+            account.password,
             existUser.passwordHash
         )
         if (!isPasswordValid) throw new UnauthorizedException('Wrong password')
-
         return existUser
     }
 
-    async signUp(user: SignUpUserDto) {
-        const existUser = await this.accountService.findByEmail(user.email)
+    async signUp(account: SignUpAccountDto, roleId: RoleId) {
+        const existUser = await this.accountService.findByEmail(account.email)
         if (existUser) throw new BadRequestException('Email already in used')
 
         // hash password
-        const passwordHash = await this.#hashPassword(user.password)
-
-        // attach role (default is buyer)
-        const role = UserType.BUYER
+        const passwordHash = await this.hashPassword(account.password)
 
         // attach defaut avatar
-        user.avatar = Boolean(user.avatar)
-            ? user.avatar
+        account.avatar = Boolean(account.avatar)
+            ? account.avatar
             : readFileSync(
                   join(process.cwd(), 'src', 'public', 'default_user.jpg')
               )
 
         // register to db
         const newUser = await this.accountService.create(
-            user.email,
+            account.email,
             passwordHash,
-            user.phoneNumber,
-            user.name,
-            user.avatar,
-            role
+            account.phoneNumber,
+            account.name,
+            account.avatar,
+            roleId
         )
 
         return newUser

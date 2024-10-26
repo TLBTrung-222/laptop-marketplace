@@ -1,24 +1,24 @@
-import { Controller, Get, Param, Put } from '@nestjs/common'
+import { Controller, Get, Put } from '@nestjs/common'
+import { AccountEntity } from 'src/database/entities/account.entity'
+import { Auth } from 'src/shared/decorator/auth.decorator'
+import { CurrentAccount } from 'src/shared/decorator/current-account.decorator'
+import { RoleId } from 'src/shared/enum/role.enum'
 
 @Controller('accounts')
 export class AccountController {
     @Get()
-    getAllUser() {
+    getAllAccount() {
         return 'return all users'
     }
 
+    @Auth([RoleId.Buyer])
     @Get('profile')
-    getCurrentUserProfile() {
-        return 'profile of this user'
-    }
-
-    @Get(':id')
-    getUserWithId(@Param('id') id: string) {
-        return 'find user with id: ' + id
+    getCurrentAccountProfile(@CurrentAccount() account: AccountEntity) {
+        return 'profile of account: ' + account.id
     }
 
     @Put(':id')
-    updateCurrentUserProfile() {
-        return `update user's profile`
+    updateCurrentAccountProfile() {
+        return `update account's profile`
     }
 }
