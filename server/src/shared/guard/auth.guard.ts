@@ -9,7 +9,6 @@ export class AuthGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext) {
         const request = context.switchToHttp().getRequest<Request>()
-        console.log(request.session)
         // kick account if no accountId founded (i.e user not logged in)
         if (!request.session.accountId) return false
 

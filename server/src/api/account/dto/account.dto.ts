@@ -31,6 +31,8 @@ export class SignUpAccountDto {
     phoneNumber: string
 
     @IsString()
+    @MinLength(3)
+    @MaxLength(12)
     name: string
 
     @IsOptional()
@@ -51,5 +53,20 @@ export class ViewAccountDto {
     name: string
 
     @Expose()
+    avatar: Buffer
+}
+
+export class UpdateAccountDto {
+    @IsOptional()
+    @IsPhoneNumber('VN')
+    phoneNumber: string
+
+    @IsOptional()
+    @IsString()
+    @MinLength(3)
+    @MaxLength(12)
+    name: string
+
+    @IsOptional()
     avatar: Buffer
 }

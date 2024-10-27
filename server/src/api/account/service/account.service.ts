@@ -1,40 +1,41 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Repository } from 'typeorm'
+import { SignUpAccountDto, UpdateAccountDto } from '../dto/account.dto'
 
 @Injectable()
 export class AccountService {
     constructor(
-        @InjectRepository(AccountEntity) private repo: Repository<AccountEntity>
+        @InjectRepository(AccountEntity)
+        private accountRepository: Repository<AccountEntity>
     ) {}
 
-    async create(
-        email: string,
-        passwordHash: string,
-        phoneNumber: string,
-        name: string,
-        avatar: Buffer,
-        roleId: RoleId
-    ) {
-        const newUser = this.repo.create({
-            email,
-            passwordHash,
-            phoneNumber,
-            name,
-            avatar,
+    async create(body: SignUpAccountDto, roleId: number) {
+        const newUser = this.accountRepository.create({
+            ...body,
             roleId
         })
 
-        return this.repo.save(newUser)
+        return this.accountRepository.save(newUser)
     }
 
     findById(id: number) {
-        return this.repo.findOne({ where: { id } })
+        return this.accountRepository.findOne({ where: { id } })
     }
 
     findByEmail(email: string) {
-        return this.repo.findOne({ where: { email } })
+        return this.accountRepository.findOne({ where: { email } })
+    }
+
+    async update(id: number, body: UpdateAccountDto) {
+        const user = await this.findById(id)
+
+        if (!user)
+            throw new NotFoundException(`Can not find user with id: ${id}`)
+
+        Object.assign(user, body)
+        return await this.accountRepository.save(user)
     }
 }
