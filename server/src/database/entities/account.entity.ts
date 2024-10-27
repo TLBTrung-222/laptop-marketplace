@@ -28,8 +28,11 @@ export class AccountEntity {
     name: string
 
     @ManyToOne(() => RoleEntity, (role) => role.accounts)
-    @JoinColumn({ name: 'roleId' }) // prevent TypeOrm to created column 'roleIdId'
-    roleId: RoleId
+    @JoinColumn({ name: 'roleId' }) // Specifies the column that will be used as the foreign key in the AccountEntity table.
+    role: RoleEntity
+
+    @Column({ nullable: false })
+    roleId: RoleId // Explicitly define the foreign key column
 
     // avatar
     @Column({ type: 'blob', nullable: true })

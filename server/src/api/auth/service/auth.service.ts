@@ -70,11 +70,10 @@ export class AuthService {
 
         // register to db
         const newUser = await this.accountService.create(
-            account.email,
-            passwordHash,
-            account.phoneNumber,
-            account.name,
-            account.avatar,
+            {
+                ...account,
+                password: passwordHash
+            },
             roleId
         )
 

@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { Request } from 'express'
 import { Observable } from 'rxjs'
 import { RoleId } from 'src/shared/enum/role.enum'
 
@@ -16,7 +17,9 @@ export class RoleGuard implements CanActivate {
             context.getHandler()
         )
 
-        console.log('required roles from Role decorator: ' + requiredRoles)
-        return true
+        const request = context.switchToHttp().getRequest<Request>()
+        const userRole = request.account.roleId
+
+        return requiredRoles.includes(userRole)
     }
 }
