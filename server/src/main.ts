@@ -5,11 +5,13 @@ import * as session from 'express-session'
 import { TypeormStore } from 'connect-typeorm'
 import { SessionEntity } from './database/entities/session.entity'
 import { DataSource } from 'typeorm'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
+    // set up express-session
     const sessionRepository = app.get(DataSource).getRepository(SessionEntity)
     app.use(
         session({
@@ -23,6 +25,16 @@ async function bootstrap() {
         })
     )
     app.setGlobalPrefix('api')
+
+    // set up swagger
+    const config = new DocumentBuilder()
+        .setTitle('Laptop ecommerce website')
+        .setDescription('The website REST API documentation')
+        .setVersion('1.0')
+        .addCookieAuth('connect.sid')
+        .build()
+    const documentFactory = () => SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('docs', app, documentFactory)
 
     await app.listen(3001)
 }

@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 import { RoleEntity } from './role.entity'
 import { RoleId } from 'src/shared/enum/role.enum'
+import { ApiProperty } from '@nestjs/swagger'
 
 @Entity('users')
 export class AccountEntity {
