@@ -31,6 +31,7 @@ async function bootstrap() {
         .setTitle('Laptop ecommerce website')
         .setDescription('The website REST API documentation')
         .setVersion('1.0')
+        .addCookieAuth('connect.sid')
         .build()
     const documentFactory = () => SwaggerModule.createDocument(app, config)
     SwaggerModule.setup('docs', app, documentFactory)

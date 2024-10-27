@@ -16,7 +16,7 @@ import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import { UpdateAccountDto, ViewAccountDto } from '../dto/account.dto'
 import { Session as ExpressSession } from 'express-session'
 import {
-    ApiBadRequestResponse,
+    ApiCookieAuth,
     ApiForbiddenResponse,
     ApiOkResponse,
     ApiOperation,
@@ -25,9 +25,10 @@ import {
 } from '@nestjs/swagger'
 
 @ApiTags('accounts')
+@ApiCookieAuth()
 @ApiUnauthorizedResponse({ description: 'Account is not logged in' })
 @ApiForbiddenResponse({
-    description: 'Access to the requested account is forbidden'
+    description: 'Access to the requested endpoint is forbidden'
 })
 @Serialize(ViewAccountDto)
 @Controller('accounts')
