@@ -14,8 +14,10 @@ import {
 import { AuthService } from '../service/auth.service'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { Session as ExpressSession } from 'express-session'
+import { ApiTags } from '@nestjs/swagger'
 
 // auth controller handle signin/signup route, auth service validate logic, account service handle the CRUD of account
+@ApiTags('auth')
 @Serialize(ViewAccountDto)
 @Controller('auth')
 export class AuthController {

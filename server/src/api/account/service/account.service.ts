@@ -15,10 +15,15 @@ export class AccountService {
     async create(body: SignUpAccountDto, roleId: number) {
         const newUser = this.accountRepository.create({
             ...body,
+            passwordHash: body.password,
             roleId
         })
 
         return this.accountRepository.save(newUser)
+    }
+
+    findAll() {
+        return this.accountRepository.find()
     }
 
     findById(id: number) {
