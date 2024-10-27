@@ -1,4 +1,10 @@
-import { Body, Controller, Post, Session } from '@nestjs/common'
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Post,
+    Session
+} from '@nestjs/common'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import {
     LoginAccountDto,
@@ -22,7 +28,6 @@ export class AuthController {
     ) {
         const account = await this.authService.signIn(body)
         session.accountId = account.id
-        console.log(session)
         return account
     }
 
@@ -53,9 +58,11 @@ export class AuthController {
                 if (err) {
                     reject(err)
                 } else {
-                    resolve({ message: 'Logout successful' })
+                    resolve('Logout successful')
                 }
             })
+        }).catch(() => {
+            throw new BadRequestException('signout unsuccesfully')
         })
     }
 }

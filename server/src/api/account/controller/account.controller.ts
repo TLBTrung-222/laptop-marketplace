@@ -11,12 +11,13 @@ export class AccountController {
         return 'return all users'
     }
 
-    @Auth([RoleId.Buyer])
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
     @Get('profile')
     getCurrentAccountProfile(@CurrentAccount() account: AccountEntity) {
         return 'profile of account: ' + account.id
     }
 
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
     @Put(':id')
     updateCurrentAccountProfile() {
         return `update account's profile`
