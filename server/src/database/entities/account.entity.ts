@@ -8,8 +8,6 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { RoleEntity } from './role.entity'
-import { RoleId } from 'src/shared/enum/role.enum'
-import { ApiProperty } from '@nestjs/swagger'
 
 @Entity('users')
 export class AccountEntity {
@@ -31,9 +29,6 @@ export class AccountEntity {
     @ManyToOne(() => RoleEntity, (role) => role.accounts)
     @JoinColumn({ name: 'roleId' }) // Specifies the column that will be used as the foreign key in the AccountEntity table.
     role: RoleEntity
-
-    @Column({ nullable: false })
-    roleId: RoleId // Explicitly define the foreign key column
 
     // avatar
     @Column({ type: 'blob', nullable: true })

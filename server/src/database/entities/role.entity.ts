@@ -12,6 +12,6 @@ export class RoleEntity {
     @Column()
     role_name: string
 
-    @OneToMany(() => AccountEntity, (account) => account.roleId)
+    @OneToMany(() => AccountEntity, (account) => account.role)
     accounts: AccountEntity[]
 }
