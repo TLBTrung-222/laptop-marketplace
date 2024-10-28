@@ -4,19 +4,26 @@ import { RoleId } from 'src/shared/enum/role.enum'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Repository } from 'typeorm'
 import { SignUpAccountDto, UpdateAccountDto } from '../dto/account.dto'
+import { RoleEntity } from 'src/database/entities/role.entity'
 
 @Injectable()
 export class AccountService {
     constructor(
         @InjectRepository(AccountEntity)
-        private accountRepository: Repository<AccountEntity>
+        private accountRepository: Repository<AccountEntity>,
+        @InjectRepository(RoleEntity)
+        private roleRepository: Repository<RoleEntity>
     ) {}
 
     async create(body: SignUpAccountDto, roleId: number) {
+        const role = await this.roleRepository.findOne({
+            where: { id: roleId }
+        })
+
         const newUser = this.accountRepository.create({
             ...body,
             passwordHash: body.password,
-            roleId
+            role
         })
 
         return this.accountRepository.save(newUser)
@@ -27,7 +34,12 @@ export class AccountService {
     }
 
     findById(id: number) {
-        return this.accountRepository.findOne({ where: { id } })
+        return this.accountRepository.findOne({
+            where: { id },
+            relations: {
+                role: true
+            }
+        })
     }
 
     findByEmail(email: string) {
