@@ -3,8 +3,10 @@
 import {
     Column,
     Entity,
+    OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
+import { ProductEntity } from './product.entity';
 
 @Entity('brands')
 export class BrandEntity {
@@ -13,4 +15,7 @@ export class BrandEntity {
 
     @Column()
     name: string;
+
+    @OneToOne(()=>ProductEntity, (product)=> product.brand)
+    product: ProductEntity;
 }
