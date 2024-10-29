@@ -11,6 +11,12 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
+    // Enable CORS
+    app.enableCors({
+        origin: 'http://localhost:3000',
+        credentials: true
+    })
+
     // set up express-session
     const sessionRepository = app.get(DataSource).getRepository(SessionEntity)
     app.use(
