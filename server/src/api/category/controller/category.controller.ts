@@ -1,31 +1,53 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
+import { ApiBadRequestResponse } from '@nestjs/swagger'
+import { ApiOkResponse } from '@nestjs/swagger'
+import { ApiOperation } from '@nestjs/swagger'
 import { ApiTags } from '@nestjs/swagger'
+import { CategoryService } from '../service/category.service'
+import { CategoryDto } from '../dto/category.dto'
 
 @ApiTags('categories')
 @Controller('categories')
 export class CategoryController {
+    constructor(private categoryService: CategoryService){}
+
+    @ApiOperation({ summary: 'All categories'})
     @Get()
-    getAllCategories() {
-        return 'return all categories'
+    async getAllCategories() {
+        // return 'return all categories'
+        return await this.categoryService.getAllCategories()
     }
 
+    @ApiOperation({ summary: 'Category with this id'})
     @Get(':id')
-    getCategoryWithId(@Param('id') id: string) {
-        return `get category with id ${id}`
+    async getCategoryWithId(@Param('id') id: string) {
+        // return `get category with id ${id}`
+        return await this.categoryService.getCategoryById(parseInt(id))
     }
 
+    @ApiOperation({ summary:'Create a new category'})
+    @ApiOkResponse({ 
+        description:'A new category is created',
+        type: CategoryDto
+    })
+    @ApiBadRequestResponse({ description: 'Category already existed'})
     @Post()
-    createCategory(@Body() body: any) {
-        return `create category with body: ${JSON.stringify(body)}`
+    async createCategory(@Body() categoryDto: CategoryDto) {
+        // return `create category with body: ${JSON.stringify(body)}`
+        return this.categoryService.createCategory(categoryDto)
     }
 
+    @ApiOperation({ summary: 'Update a category'})
     @Put(':id')
-    updateCategory(@Param('id') id: string, @Body() body: any) {
-        return `update category ${id} with body: ${JSON.stringify(body)}`
+    async updateCategory(@Param('id') id: string, @Body() body: CategoryDto) {
+        // return `update category ${id} with body: ${JSON.stringify(body)}`
+        return this.categoryService.updateCategory(parseInt(id), body)
     }
 
+    @ApiOperation({ summary: 'Delete a category'})
     @Delete(':id')
-    deleteCategory(@Param('id') id: string) {
-        return `delete category with id ${id}`
+    async deleteCategory(@Param('id') id: string) {
+        // return `delete category with id ${id}`
+        return await this.categoryService.deleteCategory(parseInt(id))
     }
 }

@@ -9,7 +9,7 @@ POST http://localhost:3001/api/categories
 Content-Type: application/json
 
 {
-    "hello": "big bdi"
+    "type": "gaming"
 }
 
 ### Update a category
@@ -17,8 +17,13 @@ PUT http://localhost:3001/api/categories/12
 Content-Type: application/json
 
 {
-    "hello": "big bdi"
+    "type": "ultrabook"
 }
 
 ### Delete a category
 DELETE http://localhost:3001/api/categories/12
+Content-Type: application/json
+
+{
+    "type": "ultrabook"
+}
