@@ -24,6 +24,7 @@ export class ProductController {
     @ApiOperation({summary:'Create a product'})
     @Post()
     createProduct(@Body() body: createProductDto, @Session() session: ExpressSession) {
+        console.log(body)
         const sellerId = session.accountId
         return this.productService.create(sellerId, body)
     }

@@ -5,33 +5,40 @@ import {
     MaxLength,
     MinLength,
     IsOptional,
-    IsPhoneNumber
+    IsPhoneNumber,
+    IsNumber,
+    IsEnum
 } from 'class-validator'
 import { ProductStatus } from 'src/database/entities/product.entity'
 
 export class createProductDto {
     @ApiProperty()
+    @IsNumber()
     brand: number
 
     @ApiProperty()
+    @IsNumber()
     category: number
 
     @ApiProperty()
+    @IsString()
+    @MinLength(2)
     name: string
 
     @ApiProperty()
-    @MinLength(1)
+    @IsNumber()
     price: number
 
     @ApiProperty()
-    @IsOptional()
+    @IsString()
     description:string
 
     @ApiProperty()
+    @IsNumber()
     stock_quantity:number
 
     @ApiProperty()
-    @IsOptional()
+    @IsEnum(ProductStatus)
     status:ProductStatus
 }
 export class updateProductDto {

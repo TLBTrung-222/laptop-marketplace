@@ -27,14 +27,18 @@ export class ProductService {
         const brand = await this.brandRepository.findOne({
             where: { id: productDto.brand }
         })
+
         const category = await this.categoryRepository.findOne({
             where: { id: productDto.category }
         })
 
         const seller = await this.accountRepository.findOne({where:{id:sellerId}})
-        if (!brand || !category)
-            throw new BadRequestException('Product could not be found')
-        const product={
+        if (!category)
+            throw new BadRequestException('Category of product could not be found')
+        if (!brand)
+            throw new BadRequestException('Brand of product could not be found')
+        console.log(category)
+            const product={
             seller: seller,
             brand: brand,
             category: category,

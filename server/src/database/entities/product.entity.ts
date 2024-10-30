@@ -14,6 +14,7 @@ import { RatingEntity } from './rating.entity';
 import { BrandEntity } from './brand.entity';
 import { CategoryEntity } from './category.entity';
 import { AccountEntity } from './account.entity';
+import { IsOptional } from 'class-validator';
 
 export enum ProductStatus {
     NEW = 'new',
@@ -56,5 +57,6 @@ export class ProductEntity {
         type: 'varchar',
         default: ProductStatus.NEW
     })
+    @IsOptional()
     status: ProductStatus
 }
