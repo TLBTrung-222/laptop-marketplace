@@ -1,32 +1,44 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Delete, Get, Param, Post, Put, Session } from '@nestjs/common'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ProductService } from '../service/product.service'
+import { Session as ExpressSession } from 'express-session'
+import { createProductDto, updateProductDto } from '../dto/product.dto'
 
 @ApiTags('products')
 @Controller('products')
 export class ProductController {
+    constructor(private productService: ProductService){}
+
+    @ApiOperation({summary:'All products returned'})
     @Get()
     getAllProduct() {
-        return 'return all products'
+        return this.productService.findAll()
     }
 
+    @ApiOperation({summary:'Get a product by id'})
     @Get(':id')
     getProductById(@Param('id') id: string) {
-        return `get product with id: ${id}`
+        return this.productService.findById(parseInt(id))
     }
 
+    @ApiOperation({summary:'Create a product'})
     @Post()
-    createProduct(@Body() body: any) {
-        return `created product with body: ${JSON.stringify(body)}`
+    createProduct(@Body() body: createProductDto, @Session() session: ExpressSession) {
+        const sellerId = session.accountId
+        return this.productService.create(sellerId, body)
     }
 
+    @ApiOperation({summary: 'Update a product'})
     @Put(':id')
-    updateProduct(@Param('id') id: string, @Body() body: any) {
-        return `updated product: ${id}, with body: ${JSON.stringify(body)}`
+    updateProduct(@Param('id') id: string, @Body() body: updateProductDto, @Session() session: ExpressSession) {
+        const sellerId = session.accountId
+        return this.productService.update(parseInt(id),sellerId, body)
     }
 
+    @ApiOperation({summary:'Delete a product'})
     @Delete(':id')
-    deleteProduct(@Param('id') id: string) {
-        return `deleted product with id: ${id}`
+    async deleteProduct(@Param('id') id: string) {
+        return await this.productService.delete(parseInt(id))
     }
 
     @Get(':id/specifications')

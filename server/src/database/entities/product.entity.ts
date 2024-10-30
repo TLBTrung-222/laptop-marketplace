@@ -15,39 +15,46 @@ import { BrandEntity } from './brand.entity';
 import { CategoryEntity } from './category.entity';
 import { AccountEntity } from './account.entity';
 
+export enum ProductStatus {
+    NEW = 'new',
+    OLD = 'old'
+}
+
 @Entity('products')
 export class ProductEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(()=>AccountEntity, (account)=>account.id)
-    @JoinColumn({name:'seller_id'})
-    seller: AccountEntity;
-    
-    @OneToOne(()=>BrandEntity,(brand)=>brand.id)
-    @JoinColumn({name:'brand_id'})
-    brand: number;
+    @ManyToOne(() => AccountEntity, (account) => account.id)
+    @JoinColumn({ name: 'seller_id' })
+    seller: AccountEntity
 
-    @OneToOne(()=>CategoryEntity, (category)=>category.category_id)
-    @JoinColumn({name:'category_id'})
-    category: CategoryEntity;
+    @OneToOne(() => BrandEntity, (brand) => brand.id)
+    @JoinColumn({ name: 'brand_id' })
+    brand: BrandEntity
 
-    @OneToMany(()=>RatingEntity, (rating)=>rating.product)
-    rating_id: RatingEntity[];
+    @OneToOne(() => CategoryEntity, (category) => category.category_id)
+    @JoinColumn({ name: 'category_id' })
+    category: CategoryEntity
 
-    @Column()
-    name: string;
+    @OneToMany(() => RatingEntity, (rating) => rating.product)
+    rating_id: RatingEntity[]
 
     @Column()
-    price: number;
+    name: string
 
     @Column()
-    description: string;
+    price: number
 
     @Column()
-    stock_quantity: number;
+    description: string
 
     @Column()
-    status: string;
-    // new | old
+    stock_quantity: number
+
+    @Column({
+        type: 'varchar',
+        default: ProductStatus.NEW
+    })
+    status: ProductStatus
 }
