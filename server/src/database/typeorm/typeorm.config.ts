@@ -3,6 +3,10 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
 import { AccountEntity } from '../entities/account.entity'
 import { RoleEntity } from '../entities/role.entity'
 import { SessionEntity } from '../entities/session.entity'
+import { CategoryEntity } from '../entities/category.entity'
+import { BrandEntity } from '../entities/brand.entity'
+import { RatingEntity } from '../entities/rating.entity'
+import { ProductEntity } from '../entities/product.entity'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -10,7 +14,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         return {
             type: 'sqlite',
             database: 'dev.sqlite',
-            entities: [AccountEntity, RoleEntity, SessionEntity],
+            entities: [AccountEntity, RoleEntity, SessionEntity, ProductEntity, BrandEntity, CategoryEntity, RatingEntity],
             synchronize: true,
             migrationsRun: false
         }
