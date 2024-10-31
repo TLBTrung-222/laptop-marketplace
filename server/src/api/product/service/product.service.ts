@@ -62,8 +62,8 @@ export class ProductService {
         })
     }
 
-    findById(id: number) {
-        const exist = this.productRepository.find({
+    async findById(id: number) {
+        const exist = await this.productRepository.findOne({
             where: { id: id },
             relations: {
                 seller: true,
@@ -72,6 +72,7 @@ export class ProductService {
             }
         })
 
+        console.log(exist)
         if (!exist) throw new NotFoundException('Product could not been found')
         return exist
     }
@@ -81,6 +82,7 @@ export class ProductService {
             where: { id: id }
         })
         if (!exist) throw new BadRequestException('Product could not be found')
+
         const product = new ProductEntity()
         if (productDto.brand) {
             const brand = await this.brandRepository.findOne({
@@ -90,11 +92,12 @@ export class ProductService {
                 throw new BadRequestException('Update brand could not be found')
             product.brand = brand
         }
+
         if (productDto.category) {
             const category = await this.categoryRepository.findOne({
                 where: { id: productDto.category }
             })
-            if (category) {
+            if (!category) {
                 throw new BadRequestException(
                     'Update category could not be found'
                 )
@@ -113,11 +116,11 @@ export class ProductService {
     }
 
     async delete(id: number) {
-        const exist = this.productRepository.findOne({
+        const exist = await this.productRepository.findOne({
             where: { id: id }
         })
 
         if (!exist) throw new NotFoundException('Product could not been found')
-        return this.productRepository.delete(id)
+        return await this.productRepository.delete(id)
     }
 }

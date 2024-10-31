@@ -7,7 +7,8 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsNumber,
-    IsEnum
+    IsEnum,
+    Min
 } from 'class-validator'
 import { ProductStatus } from 'src/database/entities/product.entity'
 
@@ -44,30 +45,38 @@ export class createProductDto {
 export class updateProductDto {
     @ApiProperty()
     @IsOptional()
+    @IsNumber()
     brand: number
 
     @ApiProperty()
     @IsOptional()
+    @IsNumber()
     category: number
 
     @ApiProperty()
     @IsOptional()
+    @IsString()
+    @MinLength(2)
     name: string
 
     @ApiProperty()
-    @MinLength(1)
     @IsOptional()
+    @IsNumber()
     price: number
 
     @ApiProperty()
     @IsOptional()
+    @IsString()
     description: string
 
     @ApiProperty()
     @IsOptional()
+    @IsNumber()
+    @Min(0)
     stock_quantity: number
 
     @ApiProperty()
     @IsOptional()
+    @IsEnum(ProductStatus)
     status: ProductStatus
 }

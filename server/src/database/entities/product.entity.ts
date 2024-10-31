@@ -30,16 +30,17 @@ export class ProductEntity {
     @JoinColumn({ name: 'seller_id' })
     seller: AccountEntity
 
-    @OneToOne(() => BrandEntity, (brand) => brand.id)
+    @ManyToOne(() => BrandEntity, (brand) => brand.products)
     @JoinColumn({ name: 'brand_id' })
     brand: BrandEntity
 
-    @OneToOne(() => CategoryEntity, (category) => category.category_id)
+    @ManyToOne(() => CategoryEntity, (category) => category.products)
     @JoinColumn({ name: 'category_id' })
     category: CategoryEntity
 
     @OneToMany(() => RatingEntity, (rating) => rating.product)
-    rating_id: RatingEntity[]
+    @JoinColumn({ name: 'rating_id' })
+    ratings: RatingEntity[]
 
     @Column()
     name: string

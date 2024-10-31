@@ -17,9 +17,12 @@ export class CategoryService{
     }
 
     async getCategoryById(categoryId: number){
-        return this.categoryRepository.findOne({
+        const exist = await this.categoryRepository.findOne({
             where:{id: categoryId}
         });
+
+        if(!exist) throw new NotFoundException('Category not found')
+        return exist;
     }
 
     async createCategory(categoryDto: CategoryDto ){
@@ -58,7 +61,7 @@ export class CategoryService{
             }
         )
 
-        if (exist) return await this.categoryRepository.delete({id:id})
-        return new NotFoundException('Category not founded')
+        if (!exist) throw new NotFoundException('Category not found')
+        return await this.categoryRepository.delete({id:id})   
     }
 }

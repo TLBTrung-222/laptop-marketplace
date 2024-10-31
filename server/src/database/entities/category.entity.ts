@@ -4,6 +4,8 @@ import {
     Column,
     Entity,
     JoinColumn,
+    ManyToOne,
+    OneToMany,
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
@@ -12,11 +14,12 @@ import { ProductEntity } from './product.entity';
 @Entity('categories')
 export class CategoryEntity {
     @PrimaryGeneratedColumn()
-    id:number;
-
-    @OneToOne(()=>ProductEntity, (product)=>product.category)
-    category_id: ProductEntity;
+    id: number
 
     @Column()
-    type: string;
+    type: string
+
+    // Định nghĩa mối quan hệ OneToMany với ProductEntity
+    @OneToMany(() => ProductEntity, (product) => product.category)
+    products: ProductEntity[]
 }

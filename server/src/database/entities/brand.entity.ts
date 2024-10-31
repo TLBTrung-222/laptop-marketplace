@@ -3,6 +3,8 @@
 import {
     Column,
     Entity,
+    JoinColumn,
+    OneToMany,
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
@@ -14,8 +16,8 @@ export class BrandEntity {
     id: number
 
     @Column()
-    name: string;
+    name: string
 
-    @OneToOne(()=>ProductEntity, (product)=> product.brand)
-    product: ProductEntity;
+    @OneToMany(()=>ProductEntity, (product)=> product.brand)
+    products: ProductEntity[];
 }

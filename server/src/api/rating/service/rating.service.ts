@@ -23,6 +23,8 @@ export class RatingService{
         const product = await this.productRepository.findOne({where:{id:rating.product_id}})
         const buyer = await this.accountRepository.findOne({where:{id:buyerId}})
 
+        if (!product||!buyer) throw new NotFoundException('Its product or buyer not found')
+        
         const newRating = this.ratingRepository.create({
             product: product,
             buyer: buyer,
@@ -62,7 +64,7 @@ export class RatingService{
     }
 
     async delete(id:number){
-        const exist = this.ratingRepository.find({where:{id:id}})
+        const exist = await this.ratingRepository.find({where:{id:id}})
         if (!exist)
             throw new NotFoundException('Rating could not be found')
         return await this.ratingRepository.delete({id:id})
