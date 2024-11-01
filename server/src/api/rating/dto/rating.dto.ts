@@ -1,33 +1,29 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNumber, IsOptional, IsString, Max, Min, MinLength } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator'
 
-export class CreateRatingDto{
-    @ApiProperty()
-    @IsNumber()
-    product_id: number;
-
+export class CreateRatingDto {
     @ApiProperty()
     @Min(1)
     @Max(5)
     @IsNumber()
-    rating_star: number;
+    ratingStar: number
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    comment: string;
+    comment: string
 }
 
-export class UpdateRatingDto{
+export class UpdateRatingDto {
     @ApiPropertyOptional()
     @IsOptional()
     @Min(1)
     @Max(5)
     @IsNumber()
-    rating_star: number;
+    ratingStar: number
 
     @ApiPropertyOptional()
     @IsString()
     @IsOptional()
-    comment: string;
+    comment: string
 }

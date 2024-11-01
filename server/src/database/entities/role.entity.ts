@@ -11,11 +11,11 @@ export class RoleEntity {
     id: RoleId
 
     @Column()
-    role_name: string
+    roleName: string
 
     @OneToMany(() => AccountEntity, (account) => account.role)
     accounts: AccountEntity[]
 
-    @OneToMany(()=>ProductEntity,(product)=>product.seller)
+    @OneToMany(() => ProductEntity, (product) => product.seller)
     products: ProductEntity[]
 }

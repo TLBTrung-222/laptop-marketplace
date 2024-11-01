@@ -12,14 +12,14 @@ import {
 } from 'class-validator'
 import { ProductStatus } from 'src/database/entities/product.entity'
 
-export class createProductDto {
+export class CreateProductDto {
     @ApiProperty()
     @IsNumber()
-    brand: number
+    brandId: number
 
     @ApiProperty()
     @IsNumber()
-    category: number
+    categoryId: number
 
     @ApiProperty()
     @IsString()
@@ -32,26 +32,26 @@ export class createProductDto {
 
     @ApiProperty()
     @IsString()
-    description:string
+    description: string
 
     @ApiProperty()
     @IsNumber()
-    stock_quantity:number
+    stock_quantity: number
 
     @ApiProperty()
     @IsEnum(ProductStatus)
-    status:ProductStatus
+    status: ProductStatus
 }
-export class updateProductDto {
+export class UpdateProductDto {
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    brand: number
+    brandId: number
 
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    category: number
+    categoryId: number
 
     @ApiProperty()
     @IsOptional()
