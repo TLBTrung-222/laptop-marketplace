@@ -45,6 +45,7 @@ export class ProductService {
             )
         if (!brand)
             throw new BadRequestException('Brand of product could not be found')
+
         const product = {
             seller: seller,
             brand: brand,
@@ -64,7 +65,10 @@ export class ProductService {
             relations: {
                 seller: true,
                 brand: true,
-                category: true
+                category: true,
+                ratings: {
+                    buyer: true
+                }
             }
         })
     }
@@ -75,7 +79,10 @@ export class ProductService {
             relations: {
                 seller: true,
                 brand: true,
-                category: true
+                category: true,
+                ratings: {
+                    buyer: true
+                }
             }
         })
 

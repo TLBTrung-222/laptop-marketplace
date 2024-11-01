@@ -1,16 +1,64 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Expose, Type } from 'class-transformer'
 import {
-    IsEmail,
     IsString,
-    MaxLength,
     MinLength,
     IsOptional,
-    IsPhoneNumber,
     IsNumber,
     IsEnum,
     Min
 } from 'class-validator'
+import { ViewAccountDto } from 'src/api/account/dto/account.dto'
+import { ViewBrandDto } from 'src/api/brand/dto/brand.dto'
+import { ViewCategoryDto } from 'src/api/category/dto/category.dto'
+import { ViewRatingDto } from 'src/api/rating/dto/rating.dto'
 import { ProductStatus } from 'src/database/entities/product.entity'
+
+export class ViewProductDto {
+    @ApiProperty()
+    @IsNumber()
+    id: number
+
+    @ApiProperty()
+    @Expose()
+    name: string
+
+    @ApiProperty()
+    @Expose()
+    price: number
+
+    @ApiProperty()
+    @Expose()
+    description: string
+
+    @ApiProperty()
+    @Expose()
+    stock_quantity: number
+
+    @ApiProperty()
+    @Expose()
+    status: ProductStatus
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => ViewAccountDto)
+    seller: ViewAccountDto
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => ViewBrandDto)
+    brand: ViewBrandDto
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => ViewCategoryDto)
+    category: ViewCategoryDto
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => ViewRatingDto)
+    ratings: ViewRatingDto[]
+}
 
 export class CreateProductDto {
     @ApiProperty()

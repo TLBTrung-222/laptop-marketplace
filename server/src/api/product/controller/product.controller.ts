@@ -21,12 +21,18 @@ import {
 } from '@nestjs/swagger'
 import { ProductService } from '../service/product.service'
 import { Session as ExpressSession } from 'express-session'
-import { CreateProductDto, UpdateProductDto } from '../dto/product.dto'
+import {
+    CreateProductDto,
+    UpdateProductDto,
+    ViewProductDto
+} from '../dto/product.dto'
 import { RatingService } from 'src/api/rating/service/rating.service'
 import { CreateRatingDto } from 'src/api/rating/dto/rating.dto'
 import { RatingEntity } from 'src/database/entities/rating.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
+import { ProductEntity } from 'src/database/entities/product.entity'
 
 @ApiTags('products')
 @ApiCookieAuth()
@@ -34,6 +40,7 @@ import { RoleId } from 'src/shared/enum/role.enum'
 @ApiForbiddenResponse({
     description: 'Access to the requested endpoint is forbidden'
 })
+@Serialize(ViewProductDto)
 @Controller('products')
 export class ProductController {
     constructor(
@@ -42,14 +49,21 @@ export class ProductController {
     ) {}
 
     @ApiOperation({ summary: 'Return all products' })
-    @ApiOkResponse({ description: 'All product returned succesfully' })
+    @ApiOkResponse({
+        description: 'All product returned succesfully',
+        isArray: true,
+        type: ProductEntity
+    })
     @Get()
     getAllProduct() {
         return this.productService.findAll()
     }
 
     @ApiOperation({ summary: 'Get a product by id' })
-    @ApiOkResponse({ description: 'Get product by id succesfully' })
+    @ApiOkResponse({
+        description: 'Get product by id succesfully',
+        type: ProductEntity
+    })
     @ApiNotFoundResponse({ description: 'Can not find product with given id' })
     @Get(':id')
     getProductById(@Param('id') id: string) {
@@ -57,7 +71,10 @@ export class ProductController {
     }
 
     @ApiOperation({ summary: 'Create a product' })
-    @ApiOkResponse({ description: 'Created new product succesfully' })
+    @ApiOkResponse({
+        description: 'Created new product succesfully',
+        type: ProductEntity
+    })
     @Auth([RoleId.Seller])
     @ApiBadRequestResponse({ description: 'Invalid input' })
     @ApiNotFoundResponse({
@@ -73,7 +90,10 @@ export class ProductController {
     }
 
     @ApiOperation({ summary: 'Update a product' })
-    @ApiOkResponse({ description: 'Updated product succesfully' })
+    @ApiOkResponse({
+        description: 'Updated product succesfully',
+        type: ProductEntity
+    })
     @ApiBadRequestResponse({ description: 'Invalid input' })
     @ApiNotFoundResponse({ description: 'Product not found' })
     @Auth([RoleId.Seller])
@@ -98,7 +118,9 @@ export class ProductController {
 
     @ApiOperation({ summary: 'Get all ratings for a product' })
     @ApiOkResponse({
-        description: 'All ratings for this product returned succesfully'
+        description: 'All ratings for this product returned succesfully',
+        isArray: true,
+        type: RatingEntity
     })
     @ApiNotFoundResponse({ description: 'Product not found' })
     @Get(':id/ratings')
