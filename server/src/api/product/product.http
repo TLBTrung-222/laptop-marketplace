@@ -9,7 +9,13 @@ POST http://localhost:3001/api/products
 Content-Type: application/json
 
 {
-    "something": "this is product"
+    "brand": 1,
+    "category": 1,
+    "name": "New Product"
+    "price": 100,
+    "description": "This is a new product",
+    "stock_quantity": 100,
+    "status": "old"
 }
 
 ### Update a product
@@ -17,7 +23,13 @@ PUT http://localhost:3001/api/products/12
 Content-Type: application/json
 
 {
-    "something": "this is product"
+    "brand": 1,
+    "category": 1,
+    "name": "New Product"
+    "price": 100,
+    "description": "This is a new product",
+    "stock_quantity": 100,
+    "status": "old"
 }
 
 ### Delete a product
