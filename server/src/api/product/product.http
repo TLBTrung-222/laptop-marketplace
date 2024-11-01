@@ -23,22 +23,42 @@ Content-Type: application/json
 ### Delete a product
 DELETE http://localhost:3001/api/products/12
 
-### Get product's specification
-GET http://localhost:3001/api/products/12/specifications
-
-### Update product's specification
-PUT http://localhost:3001/api/products/12/specifications
+### Create new rating for a product
+POST http://localhost:3001/api/products/1/ratings
 Content-Type: application/json
 
 {
-    "something": "this is product"
+    "ratingStar": 4,
+    "comment": "Product is good"
 }
 
-### Get product's images
-GET http://localhost:3001/api/products/12/images
+# GET /api/products/:id/ratings - Get all ratings for a product
 
-### Add product's specification
-POST http://localhost:3001/api/products/12/images
 
-### Delete a product's image
-DELETE http://localhost:3001/api/products/12/images/13
+
+
+
+
+
+
+
+
+# ### Get product's specification
+# GET http://localhost:3001/api/products/12/specifications
+
+# ### Update product's specification
+# PUT http://localhost:3001/api/products/12/specifications
+# Content-Type: application/json
+
+# {
+#     "something": "this is product"
+# }
+
+# ### Get product's images
+# GET http://localhost:3001/api/products/12/images
+
+# ### Add product's specification
+# POST http://localhost:3001/api/products/12/images
+
+# ### Delete a product's image
+# DELETE http://localhost:3001/api/products/12/images/13

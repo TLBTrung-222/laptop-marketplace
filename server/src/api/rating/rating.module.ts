@@ -7,9 +7,11 @@ import { ProductEntity } from 'src/database/entities/product.entity'
 import { AccountEntity } from 'src/database/entities/account.entity'
 
 @Module({
-    imports:[TypeOrmModule.forFeature([RatingEntity, ProductEntity, AccountEntity])],
+    imports: [
+        TypeOrmModule.forFeature([RatingEntity, ProductEntity, AccountEntity])
+    ],
     controllers: [RatingController],
     providers: [RatingService],
-    exports: []
+    exports: [RatingService]
 })
 export class RatingModule {}

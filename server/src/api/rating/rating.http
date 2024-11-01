@@ -1,6 +1,6 @@
-# POST /api/products/:id/ratings - Add a rating/review
+# GET /api/ratings  - Get all ratings (admin only)
 
-# GET /api/products/:id/ratings - Get all ratings for a product
+# GET /api/ratings/:id - Get rating by id
 
 # PUT /api/ratings/:id - Update a rating (owner only)
 

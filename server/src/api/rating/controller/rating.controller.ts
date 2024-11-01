@@ -1,50 +1,61 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Session } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    Session
+} from '@nestjs/common'
+import {
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags
+} from '@nestjs/swagger'
 import { RatingService } from '../service/rating.service'
 import { CreateRatingDto, UpdateRatingDto } from '../dto/rating.dto'
 import { Session as ExpressSession } from 'express-session'
+import { RatingEntity } from 'src/database/entities/rating.entity'
 
 @ApiTags('ratings')
 @Controller('ratings')
 export class RatingController {
-    constructor(private ratingService: RatingService){}
+    constructor(private ratingService: RatingService) {}
 
-    @ApiOperation({summary:'Get all ratings'})
+    @ApiOperation({ summary: 'Get all ratings' })
+    @ApiOkResponse({
+        description: 'All rating returned succesfully',
+        isArray: true,
+        type: RatingEntity
+    })
     @Get()
-    getAllRatings(){
-        return this.ratingService.findAll();
+    getAllRatings() {
+        return this.ratingService.findAll()
     }
 
-    @ApiOperation({summary:'Get rating by id'})
+    @ApiOperation({ summary: 'Get rating by id' })
+    @ApiOkResponse({ description: 'Rating for a product returned succesfully' })
+    @ApiNotFoundResponse({ description: 'Can not find product with given id' })
     @Get(':id')
-    getRatingById(@Param('id') id:string){
+    getRatingById(@Param('id') id: string) {
         return this.ratingService.findById(parseInt(id))
     }
 
-    @ApiOperation({summary:'Create a rating'})
-    @Post()
-    createRating(
-        @Body() body: CreateRatingDto,
-        @Session() session: ExpressSession
-    ){
-        const buyerId= session.accountId
-        return this.ratingService.create(buyerId, body)
-    }
-
-    @ApiOperation({summary:'Update a rating'})
+    @ApiOperation({ summary: 'Update a rating' })
+    @ApiOkResponse({ description: 'Rating updated succesfully' })
+    @ApiNotFoundResponse({ description: 'Can not find rating with given id' })
     @Put(':id')
-    updateRating(
-        @Param('id') id: string, 
-        @Body() body: UpdateRatingDto,
-        @Session() session: ExpressSession
-    ) {
-        const buyer = session.accountId
-        return this.ratingService.update(parseInt(id), buyer, body)
+    updateRating(@Param('id') ratingId: string, @Body() body: UpdateRatingDto) {
+        return this.ratingService.update(parseInt(ratingId), body)
     }
 
-    @ApiOperation({summary:'Delete a rating'})
+    @ApiOperation({ summary: 'Delete a rating' })
+    @ApiOkResponse({ description: 'Rating deleted succesfully' })
+    @ApiNotFoundResponse({ description: 'Can not find rating with given id' })
     @Delete(':id')
-    deleteRating(@Param('id') id:string){
+    deleteRating(@Param('id') id: string) {
         return this.ratingService.delete(parseInt(id))
     }
 }
