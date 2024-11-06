@@ -71,7 +71,7 @@ export class ProductService {
                 brand: true,
                 category: true,
                 ratings: {
-                    buyer: true
+                    buyerId: true
                 }
             }
         })
@@ -85,7 +85,7 @@ export class ProductService {
                 brand: true,
                 category: true,
                 ratings: {
-                    buyer: true
+                    buyerId: true
                 }
             }
         })
