@@ -62,15 +62,50 @@ Content-Type: application/json
 # PUT http://localhost:3001/api/products/12/specifications
 # Content-Type: application/json
 
-# {
-#     "something": "this is product"
-# }
+{
+    "cpu":"string",
+    "ram":"string",
+    "storage":"string",
+    "gpu":"string",
+    "display":"string",
+    "port":"string",
+    "keyboard":"string",
+    "lan":true,
+    "wifi":true,
+    "bluetooth":true,
+    "webcam":true,
+    "os":"string",
+    "battery":10,
+    "weight":10,
+    "color":"string",
+    "dimensions":"string"
+}//can add only attributes that you want to update
 
 # ### Get product's images
 # GET http://localhost:3001/api/products/12/images
 
 # ### Add product's specification
 # POST http://localhost:3001/api/products/12/images
+Content-Type: application/json
+
+{
+    "cpu":"string",
+    "ram":"string",
+    "storage":"string",
+    "gpu":"string",
+    "display":"string",
+    "port":"string",
+    "keyboard":"string",
+    "lan":true,
+    "wifi":true,
+    "bluetooth":true,
+    "webcam":true,
+    "os":"string",
+    "battery":10,
+    "weight":10,
+    "color":"string",
+    "dimensions":"string"
+}
 
 # ### Delete a product's image
 # DELETE http://localhost:3001/api/products/12/images/13

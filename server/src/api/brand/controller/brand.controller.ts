@@ -8,11 +8,13 @@ import {
     ApiTags
 } from '@nestjs/swagger'
 import { BrandService } from '../service/brand.service'
-import { BrandDto } from '../dto/brand.dto'
+import { BrandDto, ViewBrandDto } from '../dto/brand.dto'
 import { BrandEntity } from 'src/database/entities/brand.entity'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
 @ApiTags('brands')
 @Controller('brands')
+@Serialize(ViewBrandDto)
 export class BrandController {
     constructor(private brandService: BrandService) {}
 

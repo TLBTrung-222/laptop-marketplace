@@ -54,7 +54,7 @@ export class ProductEntity {
     description: string
 
     @Column()
-    stock_quantity: number
+    stockQuantity: number
 
     @Column({
         type: 'varchar',

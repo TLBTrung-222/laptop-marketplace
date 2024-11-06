@@ -1,5 +1,6 @@
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -30,7 +31,7 @@ import {
     ViewProductDto
 } from '../dto/product.dto'
 import { RatingService } from 'src/api/rating/service/rating.service'
-import { CreateRatingDto } from 'src/api/rating/dto/rating.dto'
+import { CreateRatingDto, ViewRatingDto } from 'src/api/rating/dto/rating.dto'
 import { RatingEntity } from 'src/database/entities/rating.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
@@ -38,6 +39,7 @@ import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import { ProductEntity } from 'src/database/entities/product.entity'
 import { SpecificationService } from 'src/api/specification/service/specification.service'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { CreateSpecificationDto, ViewSpecificationDto } from 'src/api/specification/dto/specification.dto'
 
 @ApiTags('products')
 @ApiCookieAuth()
@@ -45,7 +47,6 @@ import { FileInterceptor } from '@nestjs/platform-express'
 @ApiForbiddenResponse({
     description: 'Access to the requested endpoint is forbidden'
 })
-@Serialize(ViewProductDto)
 @Controller('products')
 export class ProductController {
     constructor(
@@ -54,6 +55,7 @@ export class ProductController {
         private specificationService: SpecificationService
     ) {}
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Return all products' })
     @ApiOkResponse({
         description: 'All product returned succesfully',
@@ -65,6 +67,7 @@ export class ProductController {
         return this.productService.findAll()
     }
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Get a product by id' })
     @ApiOkResponse({
         description: 'Get product by id succesfully',
@@ -76,6 +79,7 @@ export class ProductController {
         return this.productService.findById(parseInt(id))
     }
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Create a product' })
     @ApiOkResponse({
         description: 'Created new product succesfully',
@@ -95,6 +99,7 @@ export class ProductController {
         return this.productService.create(sellerId, body)
     }
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Update a product' })
     @ApiOkResponse({
         description: 'Updated product succesfully',
@@ -113,6 +118,7 @@ export class ProductController {
         return this.productService.update(parseInt(id), sellerId, body)
     }
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Delete a product' })
     @ApiOkResponse({ description: 'Product deleted successfully' })
     @ApiNotFoundResponse({ description: 'Product not found' })
@@ -122,6 +128,7 @@ export class ProductController {
         return await this.productService.delete(parseInt(id))
     }
 
+    @Serialize(ViewRatingDto)
     @ApiOperation({ summary: 'Get all ratings for a product' })
     @ApiOkResponse({
         description: 'All ratings for this product returned succesfully',
@@ -134,6 +141,7 @@ export class ProductController {
         return this.ratingService.findByProductId(parseInt(productId))
     }
 
+    @Serialize(ViewRatingDto)
     @ApiOperation({ summary: 'Create new rating for a product' })
     @ApiCreatedResponse({
         description: 'Rating created successfully',
@@ -152,6 +160,7 @@ export class ProductController {
         return this.ratingService.create(parseInt(productId), buyerId, body)
     }
 
+    @Serialize(ViewSpecificationDto)
     @ApiOperation({ summary: 'Get specification by product id' })
     @ApiNotFoundResponse({ description: 'Product not found' })
     @Get(':id/specifications')
@@ -165,6 +174,18 @@ export class ProductController {
         return specification
     }
 
+    @Serialize(ViewSpecificationDto)
+    @ApiOperation({ summary: 'Create specifications of product' })
+    @Post(':/id/specifications')
+    async createProductSpecification(
+        @Param('id') id: string,
+        @Body() body: CreateSpecificationDto
+    ) {
+        console.log(1)
+        return await this.specificationService.create(parseInt(id), body)
+    }
+
+    @Serialize(ViewSpecificationDto)
     @ApiOperation({ summary: 'Get specifications by product id' })
     @ApiNotFoundResponse({ description: 'Product not found' })
     @Put(':id/specifications')
@@ -175,6 +196,7 @@ export class ProductController {
         return await this.specificationService.update(parseInt(id), body)
     }
 
+    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Get images by product id' })
     @Get(':id/images')
     getProductImages(@Param('id') id: string) {

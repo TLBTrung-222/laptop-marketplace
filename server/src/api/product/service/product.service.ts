@@ -57,7 +57,7 @@ export class ProductService {
             name: productDto.name,
             price: productDto.price,
             description: productDto.description,
-            stock_quantity: productDto.stock_quantity,
+            stock_quantity: productDto.stockQuantity,
             status: productDto.status
         }
         const newProduct = this.productRepository.create(product)
@@ -125,8 +125,8 @@ export class ProductService {
         if (productDto.description) product.description = productDto.description
         if (productDto.name) product.name = productDto.name
         if (productDto.price) product.price = productDto.price
-        if (productDto.stock_quantity)
-            product.stock_quantity = productDto.stock_quantity
+        if (productDto.stockQuantity)
+            product.stockQuantity = productDto.stockQuantity
         if (productDto.status) product.status = productDto.status
 
         Object.assign(exist, product)

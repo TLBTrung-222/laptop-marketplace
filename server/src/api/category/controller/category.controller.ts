@@ -4,10 +4,12 @@ import { ApiOkResponse } from '@nestjs/swagger'
 import { ApiOperation } from '@nestjs/swagger'
 import { ApiTags } from '@nestjs/swagger'
 import { CategoryService } from '../service/category.service'
-import { CategoryDto } from '../dto/category.dto'
+import { CategoryDto, ViewCategoryDto } from '../dto/category.dto'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
 @ApiTags('categories')
 @Controller('categories')
+@Serialize(ViewCategoryDto)
 export class CategoryController {
     constructor(private categoryService: CategoryService){}
 

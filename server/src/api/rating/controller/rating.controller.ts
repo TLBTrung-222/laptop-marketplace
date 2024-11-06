@@ -4,9 +4,7 @@ import {
     Delete,
     Get,
     Param,
-    Post,
     Put,
-    Session
 } from '@nestjs/common'
 import {
     ApiForbiddenResponse,
@@ -17,16 +15,18 @@ import {
     ApiUnauthorizedResponse
 } from '@nestjs/swagger'
 import { RatingService } from '../service/rating.service'
-import { UpdateRatingDto } from '../dto/rating.dto'
+import { UpdateRatingDto, ViewRatingDto } from '../dto/rating.dto'
 import { RatingEntity } from 'src/database/entities/rating.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
 @ApiTags('ratings')
 @ApiUnauthorizedResponse({ description: 'Account is not logged in' })
 @ApiForbiddenResponse({
     description: 'Access to the requested endpoint is forbidden'
 })
+@Serialize(ViewRatingDto)
 @Controller('ratings')
 export class RatingController {
     constructor(private ratingService: RatingService) {}

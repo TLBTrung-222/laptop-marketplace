@@ -35,7 +35,7 @@ export class ViewProductDto {
 
     @ApiProperty()
     @Expose()
-    stock_quantity: number
+    stockQuantity: number
 
     @ApiProperty()
     @Expose()
@@ -64,12 +64,12 @@ export class ViewProductDto {
     @ApiProperty()
     @Expose()
     @Type(() => ViewSpecificationDto)
-    specification: ViewSpecificationDto[]
+    specificationId: ViewSpecificationDto
 
     @ApiProperty()
     @Expose()
     @Type(() => ViewImageDto)
-    imageId: ViewImageDto[];
+    imageId: ViewImageDto[]
 }
 
 export class CreateProductDto {
@@ -96,7 +96,7 @@ export class CreateProductDto {
 
     @ApiProperty()
     @IsNumber()
-    stock_quantity: number
+    stockQuantity: number
 
     @ApiProperty()
     @IsEnum(ProductStatus)
@@ -133,7 +133,7 @@ export class UpdateProductDto {
     @IsOptional()
     @IsNumber()
     @Min(0)
-    stock_quantity: number
+    stockQuantity: number
 
     @ApiProperty()
     @IsOptional()
