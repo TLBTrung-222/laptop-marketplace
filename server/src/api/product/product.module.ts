@@ -8,6 +8,8 @@ import { AccountEntity } from 'src/database/entities/account.entity'
 import { ProductService } from './service/product.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RatingModule } from '../rating/rating.module'
+import { SpecificationService } from '../specification/service/specification.service'
+import { SpecificationEntity } from 'src/database/entities/specification.entity'
 
 @Module({
     imports: [
@@ -16,12 +18,14 @@ import { RatingModule } from '../rating/rating.module'
             RatingEntity,
             BrandEntity,
             CategoryEntity,
-            AccountEntity
+            AccountEntity,
+            ProductEntity,
+            SpecificationEntity
         ]),
         RatingModule
     ],
     controllers: [ProductController],
-    providers: [ProductService],
+    providers: [ProductService, SpecificationService],
     exports: []
 })
 export class ProductModule {}

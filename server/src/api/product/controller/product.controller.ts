@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     Get,
+    NotFoundException,
     Param,
     Post,
     Put,
@@ -33,6 +34,9 @@ import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import { ProductEntity } from 'src/database/entities/product.entity'
+import { SpecificationService } from 'src/api/specification/service/specification.service'
+import { plainToClass } from 'class-transformer'
+import { CreateSpecificationDto } from 'src/api/specification/dto/specification.dto'
 
 @ApiTags('products')
 @ApiCookieAuth()
@@ -45,7 +49,8 @@ import { ProductEntity } from 'src/database/entities/product.entity'
 export class ProductController {
     constructor(
         private productService: ProductService,
-        private ratingService: RatingService
+        private ratingService: RatingService,
+        private specificationService: SpecificationService
     ) {}
 
     @ApiOperation({ summary: 'Return all products' })
@@ -146,31 +151,44 @@ export class ProductController {
         return this.ratingService.create(parseInt(productId), buyerId, body)
     }
 
-    // @Get(':id/specifications')
-    // getProductSpecification(@Param('id') id: string) {
-    //     return `get product specification of id: ${id}`
-    // }
+    @ApiOperation({ summary: 'Get specification by product id' })
+    @ApiNotFoundResponse({ description: 'Product not found' })
+    @Get(':id/specifications')
+    async getProductSpecification(@Param('id') id: string) {
+        const specification = await this.specificationService.findById(
+            parseInt(id)
+        )
+        if (!specification)
+            throw new NotFoundException('Specification not found')
+        console.log(specification)
+        return specification
+    }
 
-    // @Put(':id/specifications')
-    // updateProductSpecification(@Param('id') id: string, @Body() body: any) {
-    //     return `update product specification of id: ${id}, with body: ${JSON.stringify(body)}`
-    // }
+    @ApiOperation({ summary: 'Get specifications by product id' })
+    @ApiNotFoundResponse({ description: 'Product not found' })
+    @Put(':id/specifications')
+    async updateProductSpecification(
+        @Param('id') id: string,
+        @Body() body: any
+    ) {
+        return await this.specificationService.update(parseInt(id), body)
+    }
 
-    // @Get(':id/images')
-    // getProductImages(@Param('id') id: string) {
-    //     return `get product images of id: ${id}`
-    // }
+    @Get(':id/images')
+    getProductImages(@Param('id') id: string) {
+        return `get product images of id: ${id}`
+    }
 
-    // @Post(':id/images')
-    // addProductImages(@Param('id') id: string) {
-    //     return `add product images of id: ${id}`
-    // }
+    @Post(':id/images')
+    addProductImages(@Param('id') id: string) {
+        return `add product images of id: ${id}`
+    }
 
-    // @Delete(':id/images/:imageId')
-    // deleteProductImage(
-    //     @Param('id') id: string,
-    //     @Param('imageId') imageId: string
-    // ) {
-    //     return `delete product images of id: ${id}, image id: ${imageId}`
-    // }
+    @Delete(':id/images/:imageId')
+    deleteProductImage(
+        @Param('id') id: string,
+        @Param('imageId') imageId: string
+    ) {
+        return `delete product images of id: ${id}, image id: ${imageId}`
+    }
 }

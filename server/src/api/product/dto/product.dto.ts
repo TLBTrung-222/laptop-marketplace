@@ -12,7 +12,8 @@ import { ViewAccountDto } from 'src/api/account/dto/account.dto'
 import { ViewBrandDto } from 'src/api/brand/dto/brand.dto'
 import { ViewCategoryDto } from 'src/api/category/dto/category.dto'
 import { ViewRatingDto } from 'src/api/rating/dto/rating.dto'
-import { ProductStatus } from 'src/database/entities/product.entity'
+import { ViewSpecificationDto } from 'src/api/specification/dto/specification.dto'
+import { ProductStatus } from 'src/enum/product/product.enum'
 
 export class ViewProductDto {
     @ApiProperty()
@@ -58,6 +59,15 @@ export class ViewProductDto {
     @Expose()
     @Type(() => ViewRatingDto)
     ratings: ViewRatingDto[]
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => ViewSpecificationDto)
+    specification: ViewSpecificationDto[]
+
+    @ApiProperty()
+    @Expose()
+    cpu: string
 }
 
 export class CreateProductDto {

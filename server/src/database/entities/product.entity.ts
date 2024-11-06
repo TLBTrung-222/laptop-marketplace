@@ -1,5 +1,3 @@
-// define brand entity here
-
 import {
     Column,
     Entity,
@@ -15,11 +13,8 @@ import { BrandEntity } from './brand.entity';
 import { CategoryEntity } from './category.entity';
 import { AccountEntity } from './account.entity';
 import { IsOptional } from 'class-validator';
-
-export enum ProductStatus {
-    NEW = 'new',
-    OLD = 'old'
-}
+import { SpecificationEntity } from './specification.entity';
+import { ProductStatus } from 'src/enum/product/product.enum';
 
 @Entity('products')
 export class ProductEntity {
@@ -41,6 +36,9 @@ export class ProductEntity {
     @OneToMany(() => RatingEntity, (rating) => rating.product)
     @JoinColumn({ name: 'rating_id' })
     ratings: RatingEntity[]
+
+    @OneToOne(() => SpecificationEntity, (specification) => specification.productId)
+    specificationId: SpecificationEntity
 
     @Column()
     name: string
