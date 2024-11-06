@@ -7,7 +7,9 @@ import {
     Param,
     Post,
     Put,
-    Session
+    Session,
+    UploadedFile,
+    UseInterceptors
 } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
@@ -35,8 +37,7 @@ import { RoleId } from 'src/shared/enum/role.enum'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import { ProductEntity } from 'src/database/entities/product.entity'
 import { SpecificationService } from 'src/api/specification/service/specification.service'
-import { plainToClass } from 'class-transformer'
-import { CreateSpecificationDto } from 'src/api/specification/dto/specification.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('products')
 @ApiCookieAuth()
@@ -174,21 +175,28 @@ export class ProductController {
         return await this.specificationService.update(parseInt(id), body)
     }
 
+    @ApiOperation({ summary: 'Get images by product id' })
     @Get(':id/images')
     getProductImages(@Param('id') id: string) {
-        return `get product images of id: ${id}`
+        return this.productService.getImage(parseInt(id))
     }
 
+    @ApiOperation({ summary: 'Post images by product id' })
+    @UseInterceptors(FileInterceptor('file'))
     @Post(':id/images')
-    addProductImages(@Param('id') id: string) {
-        return `add product images of id: ${id}`
+    addProductImages(
+        @Param('id') id: string,
+        @UploadedFile() file: Express.Multer.File
+    ) {
+        return this.productService.uploadImage(parseInt(id), file.buffer)
     }
 
+    @ApiOperation({ summary: 'Delete a image' })
     @Delete(':id/images/:imageId')
     deleteProductImage(
         @Param('id') id: string,
         @Param('imageId') imageId: string
     ) {
-        return `delete product images of id: ${id}, image id: ${imageId}`
+        return this.productService.deleteImage(parseInt(id), parseInt(imageId))
     }
 }

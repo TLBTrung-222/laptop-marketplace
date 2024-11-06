@@ -6,7 +6,8 @@ import {
     IsOptional,
     IsNumber,
     IsEnum,
-    Min
+    Min,
+    IsNotEmpty
 } from 'class-validator'
 import { ViewAccountDto } from 'src/api/account/dto/account.dto'
 import { ViewBrandDto } from 'src/api/brand/dto/brand.dto'
@@ -67,7 +68,8 @@ export class ViewProductDto {
 
     @ApiProperty()
     @Expose()
-    cpu: string
+    @Type(() => ViewImageDto)
+    imageId: ViewImageDto[];
 }
 
 export class CreateProductDto {
@@ -137,4 +139,15 @@ export class UpdateProductDto {
     @IsOptional()
     @IsEnum(ProductStatus)
     status: ProductStatus
+}
+
+export class ViewImageDto{
+    @ApiProperty()
+    @Expose()
+    @IsNumber()
+    id: number;
+
+    @ApiProperty()
+    @Expose()
+    image: Buffer;
 }

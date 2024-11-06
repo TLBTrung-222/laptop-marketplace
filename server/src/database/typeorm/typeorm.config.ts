@@ -8,6 +8,7 @@ import { BrandEntity } from '../entities/brand.entity'
 import { RatingEntity } from '../entities/rating.entity'
 import { ProductEntity } from '../entities/product.entity'
 import { SpecificationEntity } from '../entities/specification.entity'
+import { ImageEntity } from '../entities/image.entity'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -15,7 +16,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         return {
             type: 'sqlite',
             database: 'dev.sqlite',
-            entities: [AccountEntity, RoleEntity, SessionEntity, ProductEntity, BrandEntity, CategoryEntity, RatingEntity, SpecificationEntity],
+            entities: [AccountEntity, RoleEntity, SessionEntity, ProductEntity, BrandEntity, CategoryEntity, RatingEntity, SpecificationEntity, ImageEntity],
             synchronize: true,
             migrationsRun: false
         }

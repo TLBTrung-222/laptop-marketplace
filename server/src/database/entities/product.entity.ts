@@ -15,6 +15,7 @@ import { AccountEntity } from './account.entity';
 import { IsOptional } from 'class-validator';
 import { SpecificationEntity } from './specification.entity';
 import { ProductStatus } from 'src/enum/product/product.enum';
+import { ImageEntity } from './image.entity';
 
 @Entity('products')
 export class ProductEntity {
@@ -22,22 +23,25 @@ export class ProductEntity {
     id: number
 
     @ManyToOne(() => AccountEntity, (account) => account.id)
-    @JoinColumn({ name: 'seller_id' })
+    @JoinColumn({ name: 'sellerId' })
     seller: AccountEntity
 
     @ManyToOne(() => BrandEntity, (brand) => brand.products)
-    @JoinColumn({ name: 'brand_id' })
+    @JoinColumn({ name: 'brandId' })
     brand: BrandEntity
 
     @ManyToOne(() => CategoryEntity, (category) => category.products)
-    @JoinColumn({ name: 'category_id' })
+    @JoinColumn({ name: 'categoryId' })
     category: CategoryEntity
 
     @OneToMany(() => RatingEntity, (rating) => rating.product)
-    @JoinColumn({ name: 'rating_id' })
+    @JoinColumn({ name: 'ratingId' })
     ratings: RatingEntity[]
 
-    @OneToOne(() => SpecificationEntity, (specification) => specification.productId)
+    @OneToOne(
+        () => SpecificationEntity,
+        (specification) => specification.productId
+    )
     specificationId: SpecificationEntity
 
     @Column()
@@ -58,4 +62,8 @@ export class ProductEntity {
     })
     @IsOptional()
     status: ProductStatus
+
+    @OneToMany(() => ImageEntity, (image) => image.productId)
+    @JoinColumn({ name: 'imageId' })
+    imageId: ImageEntity[]
 }

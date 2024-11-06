@@ -10,6 +10,7 @@ import { CreateProductDto, UpdateProductDto } from '../dto/product.dto'
 import { BrandEntity } from 'src/database/entities/brand.entity'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { CategoryEntity } from 'src/database/entities/category.entity'
+import { ImageEntity } from 'src/database/entities/image.entity'
 
 @Injectable()
 export class ProductService {
@@ -24,7 +25,10 @@ export class ProductService {
         private brandRepository: Repository<BrandEntity>,
 
         @InjectRepository(CategoryEntity)
-        private categoryRepository: Repository<CategoryEntity>
+        private categoryRepository: Repository<CategoryEntity>,
+
+        @InjectRepository(ImageEntity)
+        private imageRepository: Repository<ImageEntity>
     ) {}
 
     async create(sellerId: number, productDto: CreateProductDto) {
@@ -136,5 +140,46 @@ export class ProductService {
 
         if (!exist) throw new NotFoundException('Product could not been found')
         return await this.productRepository.delete(id)
+    }
+
+    async getImage(id:number){
+        const exist = await this.productRepository.findOne({
+            where: { id: id },
+            relations:{
+                imageId:true
+            }
+        })
+        if (!exist) throw new NotFoundException('Product could not been found')
+        console.log(exist)
+        return exist
+    }
+
+    async uploadImage(id:number,image:Buffer){
+        const exist = await this.productRepository.findOne({
+            where: { id: id },
+            relations:{
+                imageId:true
+            }
+        })
+        if (!exist) throw new NotFoundException('Product could not been found')
+        const newImage = this.imageRepository.create({ image: image, productId: exist })
+        await this.imageRepository.save(newImage)
+        return exist
+    }
+
+    async deleteImage(id:number, imageId:number){
+        const exist = await this.productRepository.findOne({
+            where: { id: id },
+            relations:{
+                imageId:true
+            }
+        })
+        if (!exist) throw new NotFoundException('Product could not been found')
+        const image = await this.imageRepository.findOne({
+            where: { id: imageId, productId: exist.imageId }
+        })
+        if (!image) throw new NotFoundException('Image could not been found')
+        await this.imageRepository.delete(imageId)
+        return exist
     }
 }
