@@ -14,7 +14,7 @@ import { ViewBrandDto } from 'src/api/brand/dto/brand.dto'
 import { ViewCategoryDto } from 'src/api/category/dto/category.dto'
 import { ViewRatingDto } from 'src/api/rating/dto/rating.dto'
 import { ViewSpecificationDto } from 'src/api/specification/dto/specification.dto'
-import { ProductStatus } from 'src/enum/product/product.enum'
+import { ProductStatus } from 'src/shared/enum/product.enum'
 
 export class ViewProductDto {
     @ApiProperty()

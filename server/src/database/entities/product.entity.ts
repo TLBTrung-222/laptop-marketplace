@@ -14,7 +14,7 @@ import { CategoryEntity } from './category.entity';
 import { AccountEntity } from './account.entity';
 import { IsOptional } from 'class-validator';
 import { SpecificationEntity } from './specification.entity';
-import { ProductStatus } from 'src/enum/product/product.enum';
+import { ProductStatus } from 'src/shared/enum/product.enum';
 import { ImageEntity } from './image.entity';
 
 @Entity('products')
