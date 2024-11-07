@@ -71,7 +71,7 @@ export class ProductService {
                 brand: true,
                 category: true,
                 ratings: {
-                    buyerId: true
+                    buyer: true
                 }
             }
         })
@@ -85,7 +85,7 @@ export class ProductService {
                 brand: true,
                 category: true,
                 ratings: {
-                    buyerId: true
+                    buyer: true
                 }
             }
         })
@@ -148,7 +148,7 @@ export class ProductService {
         const existProduct = await this.productRepository.findOne({
             where: { id: id },
             relations: {
-                imageId: true
+                images: true
             }
         })
         if (!existProduct)
@@ -161,14 +161,14 @@ export class ProductService {
         const existProduct = await this.productRepository.findOne({
             where: { id: id },
             relations: {
-                imageId: true
+                images: true
             }
         })
         if (!existProduct)
             throw new NotFoundException('Product could not been found')
         const newImage = this.imageRepository.create({
             image: image,
-            productId: existProduct
+            product: existProduct
         })
         await this.imageRepository.save(newImage)
         return existProduct
@@ -178,13 +178,13 @@ export class ProductService {
         const existProduct = await this.productRepository.findOne({
             where: { id: id },
             relations: {
-                imageId: true
+                images: true
             }
         })
         if (!existProduct)
             throw new NotFoundException('Product could not been found')
         const image = await this.imageRepository.findOne({
-            where: { id: imageId, productId: existProduct.imageId }
+            where: { id: imageId, product: existProduct.images }
         })
         if (!image) throw new NotFoundException('Image could not been found')
         await this.imageRepository.delete(imageId)

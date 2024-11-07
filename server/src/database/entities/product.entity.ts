@@ -52,12 +52,12 @@ export class ProductEntity {
             cascade: ['remove']
         }
     )
-    specificationId: SpecificationEntity
+    specification: SpecificationEntity
 
-    @OneToMany(() => ImageEntity, (image) => image.productId, {
+    @OneToMany(() => ImageEntity, (image) => image.product, {
         cascade: ['remove']
     })
-    imageId: ImageEntity[]
+    images: ImageEntity[]
 
     @Column()
     name: string

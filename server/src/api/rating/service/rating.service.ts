@@ -43,7 +43,7 @@ export class RatingService {
         return this.ratingRepository.find({
             where: { product: existProduct },
             relations: {
-                buyerId: true,
+                buyer: true,
                 product: true
             }
         })
@@ -69,7 +69,7 @@ export class RatingService {
 
         const newRating = this.ratingRepository.create({
             product: product,
-            buyerId: buyer,
+            buyer: buyer,
             ratingStar: rating.ratingStar,
             comment: rating.comment
         })
@@ -79,7 +79,7 @@ export class RatingService {
     async findById(id: number) {
         const exist = await this.ratingRepository.findOne({
             where: { id: id },
-            relations: { buyerId: true }
+            relations: { buyer: true }
         })
         if (!exist) {
             throw new NotFoundException('Rating could not been found')

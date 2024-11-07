@@ -36,6 +36,6 @@ export class AccountEntity {
     @Column({ type: 'blob', nullable: true })
     avatar: Buffer
 
-    @OneToMany(()=>RatingEntity, (rating)=>rating.buyerId)
+    @OneToMany(() => RatingEntity, (rating) => rating.buyer)
     ratings: RatingEntity[]
 }

@@ -12,7 +12,7 @@ export class SpecificationEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => ProductEntity, (product) => product.specificationId) // Sửa đổi để tham chiếu tới quan hệ trong ProductEntity
+    @OneToOne(() => ProductEntity, (product) => product.specification) // Sửa đổi để tham chiếu tới quan hệ trong ProductEntity
     @JoinColumn({ name: 'productId' })
     product: ProductEntity
 

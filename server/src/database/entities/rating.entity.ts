@@ -21,7 +21,7 @@ export class RatingEntity {
 
     @ManyToOne(() => AccountEntity, (account) => account.id)
     @JoinColumn({ name: 'buyerId' })
-    buyerId: AccountEntity
+    buyer: AccountEntity
 
     @Column()
     ratingStar: number

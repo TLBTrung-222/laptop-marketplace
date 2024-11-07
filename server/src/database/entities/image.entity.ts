@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn
+} from 'typeorm'
 import { ProductEntity } from './product.entity'
 
 @Entity()
@@ -9,6 +15,7 @@ export class ImageEntity {
     @Column()
     image: Buffer
 
-    @ManyToOne(() => ProductEntity, (product) => product.imageId)
-    productId: ProductEntity
+    @ManyToOne(() => ProductEntity, (product) => product.images)
+    @JoinColumn({ name: 'productId' })
+    product: ProductEntity
 }

@@ -43,12 +43,12 @@ export class SpecificationService {
     async create(id: number, specificationData: CreateSpecificationDto) {
         const product = await this.productRepository.findOne({
             where: { id },
-            relations: { specificationId: true }
+            relations: { specification: true }
         })
         if (!product) throw new NotFoundException('Product not found')
 
         // if product already have spec, use update
-        if (product.specificationId)
+        if (product.specification)
             throw new BadRequestException(
                 'Product already have specification, use update instead'
             )
