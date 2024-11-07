@@ -20,6 +20,9 @@
 $ npm install
 ```
 
+2. Serialization:
+   To convert entities (`TypeORM`) to exclude sensitive infor, we use `Serialize(View<...>DTO)` for every controller
+
 ## Compile and run the project
 
 ```bash
