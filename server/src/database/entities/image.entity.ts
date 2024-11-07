@@ -1,14 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ProductEntity } from "./product.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { ProductEntity } from './product.entity'
 
 @Entity()
-export class ImageEntity{
+export class ImageEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @Column()
-    image: Buffer;
+    image: Buffer
 
-    @ManyToOne(()=>ProductEntity, (product)=>product.imageId)
-    productId: ProductEntity;
+    @ManyToOne(() => ProductEntity, (product) => product.imageId)
+    productId: ProductEntity
 }

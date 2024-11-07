@@ -13,17 +13,17 @@ export class SpecificationEntity {
     id: number
 
     @OneToOne(() => ProductEntity, (product) => product.specificationId) // Sửa đổi để tham chiếu tới quan hệ trong ProductEntity
-    @JoinColumn()
-    productId: ProductEntity
+    @JoinColumn({ name: 'productId' })
+    product: ProductEntity
 
     @Column()
-    cpu: string;
+    cpu: string
 
     @Column()
-    ram: number
+    ram: string
 
     @Column()
-    storage: number
+    storage: string
 
     @Column()
     gpu: string
@@ -38,22 +38,22 @@ export class SpecificationEntity {
     keyboard: string
 
     @Column()
-    lan: boolean
+    lan: string
 
     @Column()
-    wifi: boolean
+    wifi: string
 
     @Column()
-    bluetooth: boolean
+    bluetooth: string
 
     @Column()
-    webcam: boolean
+    webcam: string
 
     @Column()
     os: string
 
     @Column()
-    battery: number
+    battery: string
 
     @Column()
     weight: number

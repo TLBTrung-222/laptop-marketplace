@@ -1,19 +1,22 @@
-import { Injectable, NotFoundException } from "@nestjs/common"
-import { InjectRepository } from "@nestjs/typeorm"
-import { SpecificationEntity } from "src/database/entities/specification.entity"
-import { Repository } from "typeorm"
-import { CreateSpecificationDto, UpdateSpecificationDto } from "../dto/specification.dto"
-import { ProductEntity } from "src/database/entities/product.entity"
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { SpecificationEntity } from 'src/database/entities/specification.entity'
+import { Repository } from 'typeorm'
+import { CreateSpecificationDto } from '../dto/specification.dto'
+import { ProductEntity } from 'src/database/entities/product.entity'
 
 @Injectable()
 export class SpecificationService {
-
     constructor(
         @InjectRepository(SpecificationEntity)
         private specificationRepository: Repository<SpecificationEntity>,
 
         @InjectRepository(ProductEntity)
-        private productRepository: Repository<ProductEntity>,
+        private productRepository: Repository<ProductEntity>
     ) {}
     // Lấy tất cả thông tin đặc tả
     async findAll(): Promise<SpecificationEntity[]> {
@@ -22,49 +25,59 @@ export class SpecificationService {
         })
     }
 
-    async findById(id: number){
-        const productId = await this.productRepository.findOne({
-            where:{id: id},
-            relations:{
-                specificationId:true
-            }
+    async findById(productId: number) {
+        const product = await this.productRepository.findOne({
+            where: { id: productId }
         })
+        if (!product) throw new NotFoundException('Product not found')
         const specification = await this.specificationRepository.findOne({
-            where: { id:productId.specificationId.id},
+            where: { product },
             relations: {
-                productId:true
+                product: true
             }
         })
         return specification
     }
 
     // Tạo thông tin đặc tả mới
-    async create(id: number, specificationData: CreateSpecificationDto){
-        const product = await this.productRepository.findOne({where: {id: id}})
-        if (!product) throw new NotFoundException('Product not found');
-        const specification = this.specificationRepository.create({...specificationData, productId:product});
-        console.log(specification);
-        return await this.specificationRepository.save(specification)
+    async create(id: number, specificationData: CreateSpecificationDto) {
+        const product = await this.productRepository.findOne({
+            where: { id },
+            relations: { specificationId: true }
+        })
+        if (!product) throw new NotFoundException('Product not found')
+
+        // if product already have spec, use update
+        if (product.specificationId)
+            throw new BadRequestException(
+                'Product already have specification, use update instead'
+            )
+
+        const specification = this.specificationRepository.create({
+            ...specificationData,
+            product
+        })
+        return this.specificationRepository.save(specification)
     }
 
-    async update(
-        id: number,
-        updateData: UpdateSpecificationDto
-    ){
-        const specification = this.specificationRepository.findOneById(id)
+    async update(id: number, updateData: Partial<CreateSpecificationDto>) {
+        const specification = await this.specificationRepository.findOneBy({
+            id
+        })
         if (!specification) {
             throw new NotFoundException('Specification not found')
         }
-        await this.specificationRepository.update(id, updateData)
-        return this.findById(id)
+
+        Object.assign(specification, updateData)
+        return this.specificationRepository.save(specification)
     }
 
     // Xóa thông tin đặc tả theo ID
-    async remove(id: number): Promise<void> {
-        const specification = this.specificationRepository.findOneById(id)
+    async remove(id: number) {
+        const specification = this.specificationRepository.findOneBy({ id })
         if (!specification) {
             throw new NotFoundException('Specification not found')
         }
-        await this.specificationRepository.delete(id)
+        return this.specificationRepository.delete(id)
     }
 }

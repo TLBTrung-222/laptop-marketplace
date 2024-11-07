@@ -11,7 +11,7 @@ Content-Type: application/json
 {
     "brand": 1,
     "category": 1,
-    "name": "New Product"
+    "name": "New Product",
     "price": 100,
     "description": "This is a new product",
     "stock_quantity": 100,
@@ -45,14 +45,6 @@ Content-Type: application/json
 }
 
 # GET /api/products/:id/ratings - Get all ratings for a product
-
-
-
-
-
-
-
-
 
 
 # ### Get product's specification

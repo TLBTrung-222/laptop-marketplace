@@ -23,6 +23,12 @@ $ npm install
 2. Serialization:
    To convert entities (`TypeORM`) to exclude sensitive infor, we use `Serialize(View<...>DTO)` for every controller
 
+3. Decorator:
+   Decorator can get the property type, read more [here](https://stackoverflow.com/questions/38314908/how-to-get-type-data-in-typescript-decorator)
+
+4. Best way to update entity:
+   Get the entity by id, if not found throw error, else assign new update data to that entity instance, then re-save (TypeORM will update if this entity is already on database)
+
 ## Compile and run the project
 
 ```bash

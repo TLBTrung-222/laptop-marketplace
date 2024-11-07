@@ -1,244 +1,155 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Expose } from 'class-transformer'
-import {
-    IsBoolean,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString
-} from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class ViewSpecificationDto {
     @ApiProperty()
     @Expose()
-    @IsNumber()
     id: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     cpu: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     @Expose()
     ram: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     @Expose()
     storage: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     gpu: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     display: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     port: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     keyboard: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsBoolean()
     @Expose()
-    lan: boolean
+    lan: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsBoolean()
     @Expose()
-    wifi: boolean
+    wifi: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsBoolean()
     @Expose()
-    bluetooth: boolean
+    bluetooth: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsBoolean()
     @Expose()
-    webcam: boolean
+    webcam: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     os: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     @Expose()
     battery: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     @Expose()
     weight: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     color: string
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     @Expose()
     dimensions: string
 }
 
 export class CreateSpecificationDto {
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     cpu: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsNumber()
-    ram: number
+    @IsString()
+    ram: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsNumber()
-    storage: number
+    @IsString()
+    storage: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     gpu: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     display: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     port: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     keyboard: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsBoolean()
-    lan: boolean
+    @IsString()
+    lan: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsBoolean()
-    wifi: boolean
+    @IsString()
+    wifi: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsBoolean()
-    bluetooth: boolean
+    @IsString()
+    bluetooth: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsBoolean()
-    webcam: boolean
+    @IsString()
+    webcam: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     os: string
 
+    @ApiProperty()
     @IsNotEmpty()
-    @IsNumber()
-    battery: number
+    @IsString()
+    battery: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
     weight: number
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     color: string
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     dimensions: string
-}
-
-export class UpdateSpecificationDto {
-    @IsOptional()
-    @IsString()
-    cpu?: string
-
-    @IsOptional()
-    @IsNumber()
-    ram?: number
-
-    @IsOptional()
-    @IsNumber()
-    storage?: number
-
-    @IsOptional()
-    @IsString()
-    gpu?: string
-
-    @IsOptional()
-    @IsString()
-    display?: string
-
-    @IsOptional()
-    @IsString()
-    port?: string
-
-    @IsOptional()
-    @IsString()
-    keyboard?: string
-
-    @IsOptional()
-    @IsBoolean()
-    lan?: boolean
-
-    @IsOptional()
-    @IsBoolean()
-    wifi?: boolean
-
-    @IsOptional()
-    @IsBoolean()
-    bluetooth?: boolean
-
-    @IsOptional()
-    @IsBoolean()
-    webcam?: boolean
-
-    @IsOptional()
-    @IsString()
-    os?: string
-
-    @IsOptional()
-    @IsNumber()
-    battery?: number
-
-    @IsOptional()
-    @IsNumber()
-    weight?: number
-
-    @IsOptional()
-    @IsString()
-    color?: string
-
-    @IsOptional()
-    @IsString()
-    dimensions?: string
 }

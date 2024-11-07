@@ -5,6 +5,10 @@ import { IsString, MinLength } from 'class-validator'
 export class ViewCategoryDto {
     @ApiProperty()
     @Expose()
+    id: number
+
+    @ApiProperty()
+    @Expose()
     type: string
 }
 

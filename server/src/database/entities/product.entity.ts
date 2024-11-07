@@ -8,41 +8,56 @@ import {
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
-import { RatingEntity } from './rating.entity';
-import { BrandEntity } from './brand.entity';
-import { CategoryEntity } from './category.entity';
-import { AccountEntity } from './account.entity';
-import { IsOptional } from 'class-validator';
-import { SpecificationEntity } from './specification.entity';
-import { ProductStatus } from 'src/shared/enum/product.enum';
-import { ImageEntity } from './image.entity';
+import { RatingEntity } from './rating.entity'
+import { BrandEntity } from './brand.entity'
+import { CategoryEntity } from './category.entity'
+import { AccountEntity } from './account.entity'
+import { IsOptional } from 'class-validator'
+import { SpecificationEntity } from './specification.entity'
+import { ProductStatus } from 'src/shared/enum/product.enum'
+import { ImageEntity } from './image.entity'
 
 @Entity('products')
 export class ProductEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => AccountEntity, (account) => account.id)
+    @ManyToOne(() => AccountEntity, (account) => account.id, {
+        nullable: false
+    })
     @JoinColumn({ name: 'sellerId' })
     seller: AccountEntity
 
-    @ManyToOne(() => BrandEntity, (brand) => brand.products)
+    @ManyToOne(() => BrandEntity, (brand) => brand.products, {
+        nullable: false
+    })
     @JoinColumn({ name: 'brandId' })
     brand: BrandEntity
 
-    @ManyToOne(() => CategoryEntity, (category) => category.products)
+    @ManyToOne(() => CategoryEntity, (category) => category.products, {
+        nullable: false
+    })
     @JoinColumn({ name: 'categoryId' })
     category: CategoryEntity
 
-    @OneToMany(() => RatingEntity, (rating) => rating.product)
-    @JoinColumn({ name: 'ratingId' })
+    @OneToMany(() => RatingEntity, (rating) => rating.product, {
+        cascade: ['remove']
+    })
     ratings: RatingEntity[]
 
     @OneToOne(
         () => SpecificationEntity,
-        (specification) => specification.productId
+        (specification) => specification.product,
+        {
+            cascade: ['remove']
+        }
     )
     specificationId: SpecificationEntity
+
+    @OneToMany(() => ImageEntity, (image) => image.productId, {
+        cascade: ['remove']
+    })
+    imageId: ImageEntity[]
 
     @Column()
     name: string
@@ -62,8 +77,4 @@ export class ProductEntity {
     })
     @IsOptional()
     status: ProductStatus
-
-    @OneToMany(() => ImageEntity, (image) => image.productId)
-    @JoinColumn({ name: 'imageId' })
-    imageId: ImageEntity[]
 }

@@ -57,7 +57,7 @@ export class ProductService {
             name: productDto.name,
             price: productDto.price,
             description: productDto.description,
-            stock_quantity: productDto.stockQuantity,
+            stockQuantity: productDto.stockQuantity,
             status: productDto.status
         }
         const newProduct = this.productRepository.create(product)
@@ -78,7 +78,7 @@ export class ProductService {
     }
 
     async findById(id: number) {
-        const exist = await this.productRepository.findOne({
+        const existProduct = await this.productRepository.findOne({
             where: { id: id },
             relations: {
                 seller: true,
@@ -90,24 +90,32 @@ export class ProductService {
             }
         })
 
-        if (!exist) throw new NotFoundException('Product could not been found')
-        return exist
+        if (!existProduct)
+            throw new NotFoundException('Product could not been found')
+        return existProduct
     }
 
-    async update(id: number, sellerId: number, productDto: UpdateProductDto) {
-        const exist = await this.productRepository.findOne({
-            where: { id: id }
+    async update(
+        id: number,
+        productDto: Partial<UpdateProductDto>
+    ): Promise<ProductEntity> {
+        const existProduct = await this.productRepository.findOne({
+            where: { id: id },
+            relations: ['brand', 'category']
         })
-        if (!exist) throw new BadRequestException('Product could not be found')
 
-        const product = new ProductEntity()
+        if (!existProduct) {
+            throw new BadRequestException('Product could not be found')
+        }
+
         if (productDto.brandId) {
             const brand = await this.brandRepository.findOne({
                 where: { id: productDto.brandId }
             })
-            if (!brand)
+            if (!brand) {
                 throw new BadRequestException('Update brand could not be found')
-            product.brand = brand
+            }
+            existProduct.brand = brand
         }
 
         if (productDto.categoryId) {
@@ -119,67 +127,67 @@ export class ProductService {
                     'Update category could not be found'
                 )
             }
-            product.category = category
+            existProduct.category = category
         }
 
-        if (productDto.description) product.description = productDto.description
-        if (productDto.name) product.name = productDto.name
-        if (productDto.price) product.price = productDto.price
-        if (productDto.stockQuantity)
-            product.stockQuantity = productDto.stockQuantity
-        if (productDto.status) product.status = productDto.status
+        Object.assign(existProduct, productDto)
 
-        Object.assign(exist, product)
-        return await this.productRepository.save(exist)
+        return this.productRepository.save(existProduct)
     }
 
     async delete(id: number) {
-        const exist = await this.productRepository.findOne({
+        const existProduct = await this.productRepository.findOne({
             where: { id: id }
         })
-
-        if (!exist) throw new NotFoundException('Product could not been found')
+        if (!existProduct)
+            throw new NotFoundException('Product could not been found')
         return await this.productRepository.delete(id)
     }
 
-    async getImage(id:number){
-        const exist = await this.productRepository.findOne({
+    async getImage(id: number) {
+        const existProduct = await this.productRepository.findOne({
             where: { id: id },
-            relations:{
-                imageId:true
+            relations: {
+                imageId: true
             }
         })
-        if (!exist) throw new NotFoundException('Product could not been found')
-        console.log(exist)
-        return exist
+        if (!existProduct)
+            throw new NotFoundException('Product could not been found')
+        console.log(existProduct)
+        return existProduct
     }
 
-    async uploadImage(id:number,image:Buffer){
-        const exist = await this.productRepository.findOne({
+    async uploadImage(id: number, image: Buffer) {
+        const existProduct = await this.productRepository.findOne({
             where: { id: id },
-            relations:{
-                imageId:true
+            relations: {
+                imageId: true
             }
         })
-        if (!exist) throw new NotFoundException('Product could not been found')
-        const newImage = this.imageRepository.create({ image: image, productId: exist })
+        if (!existProduct)
+            throw new NotFoundException('Product could not been found')
+        const newImage = this.imageRepository.create({
+            image: image,
+            productId: existProduct
+        })
         await this.imageRepository.save(newImage)
-        return exist
+        return existProduct
     }
 
-    async deleteImage(id:number, imageId:number){
-        const exist = await this.productRepository.findOne({
+    async deleteImage(id: number, imageId: number) {
+        const existProduct = await this.productRepository.findOne({
             where: { id: id },
-            relations:{
-                imageId:true
+            relations: {
+                imageId: true
             }
         })
-        if (!exist) throw new NotFoundException('Product could not been found')
+        if (!existProduct)
+            throw new NotFoundException('Product could not been found')
         const image = await this.imageRepository.findOne({
-            where: { id: imageId, productId: exist.imageId }
+            where: { id: imageId, productId: existProduct.imageId }
         })
         if (!image) throw new NotFoundException('Image could not been found')
         await this.imageRepository.delete(imageId)
-        return exist
+        return existProduct
     }
 }
