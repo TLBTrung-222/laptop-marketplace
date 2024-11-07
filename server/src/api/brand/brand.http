@@ -9,7 +9,7 @@ POST http://localhost:3001/api/brands
 Content-Type: application/json
 
 {
-    "hello": "big bdi"
+    "name": "dell"
 }
 
 ### Update a brand
@@ -17,8 +17,13 @@ PUT http://localhost:3001/api/brands/12
 Content-Type: application/json
 
 {
-    "hello": "big bdi"
+    "name": "dell"
 }
 
 ### Delete a brand
 DELETE http://localhost:3001/api/brands/12
+Content-Type: application/json
+
+{
+    "name": "dell"
+}

@@ -5,9 +5,11 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { RoleEntity } from './role.entity'
+import { RatingEntity } from './rating.entity'
 
 @Entity('users')
 export class AccountEntity {
@@ -33,4 +35,7 @@ export class AccountEntity {
     // avatar
     @Column({ type: 'blob', nullable: true })
     avatar: Buffer
+
+    @OneToMany(()=>RatingEntity, (rating)=>rating.buyerId)
+    ratings: RatingEntity[]
 }
