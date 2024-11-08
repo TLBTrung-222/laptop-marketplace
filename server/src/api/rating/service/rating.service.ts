@@ -24,7 +24,7 @@ export class RatingService {
     ) {}
 
     async findAll() {
-        return this.ratingRepository.find()
+        return this.ratingRepository.find({ relations: { buyer: true } })
     }
 
     async findByProductId(productId: number) {

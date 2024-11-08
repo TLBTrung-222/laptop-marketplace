@@ -1,11 +1,4 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Put,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common'
 import {
     ApiForbiddenResponse,
     ApiNotFoundResponse,
@@ -54,7 +47,7 @@ export class RatingController {
     @ApiOperation({ summary: 'Update a rating' })
     @ApiOkResponse({ description: 'Rating updated succesfully' })
     @ApiNotFoundResponse({ description: 'Can not find rating with given id' })
-    @Auth([RoleId.Admin])
+    @Auth([RoleId.Buyer])
     @Put(':id')
     updateRating(@Param('id') ratingId: string, @Body() body: UpdateRatingDto) {
         return this.ratingService.update(parseInt(ratingId), body)

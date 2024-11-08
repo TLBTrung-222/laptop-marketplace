@@ -16,7 +16,17 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         return {
             type: 'sqlite',
             database: 'dev.sqlite',
-            entities: [AccountEntity, RoleEntity, SessionEntity, ProductEntity, BrandEntity, CategoryEntity, RatingEntity, SpecificationEntity, ImageEntity],
+            entities: [
+                AccountEntity,
+                RoleEntity,
+                SessionEntity,
+                ProductEntity,
+                BrandEntity,
+                CategoryEntity,
+                RatingEntity,
+                SpecificationEntity,
+                ImageEntity
+            ],
             synchronize: true,
             migrationsRun: false
         }
