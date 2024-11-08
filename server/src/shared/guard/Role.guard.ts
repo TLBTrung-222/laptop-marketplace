@@ -4,7 +4,6 @@ import { Request } from 'express'
 import { Observable } from 'rxjs'
 import { RoleId } from 'src/shared/enum/role.enum'
 
-// compare required and provided role
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
@@ -12,10 +11,14 @@ export class RoleGuard implements CanActivate {
     canActivate(
         context: ExecutionContext
     ): boolean | Promise<boolean> | Observable<boolean> {
-        const requiredRoles = this.reflector.get<RoleId[]>(
+        const requiredRoles = this.reflector.getAllAndOverride<RoleId[]>(
             'roleIds',
-            context.getHandler()
+            [context.getHandler(), context.getClass()]
         )
+
+        if (!requiredRoles) {
+            return true
+        }
 
         const request = context.switchToHttp().getRequest<Request>()
         const userRole = request.account.role.id
