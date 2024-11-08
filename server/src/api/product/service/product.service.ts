@@ -11,6 +11,8 @@ import { BrandEntity } from 'src/database/entities/brand.entity'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { CategoryEntity } from 'src/database/entities/category.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
+import { ApprovalEntity } from 'src/database/entities/approval.entity'
+import { ApprovalStatus } from 'src/shared/enum/approval.enum'
 
 @Injectable()
 export class ProductService {
@@ -28,40 +30,63 @@ export class ProductService {
         private categoryRepository: Repository<CategoryEntity>,
 
         @InjectRepository(ImageEntity)
-        private imageRepository: Repository<ImageEntity>
+        private imageRepository: Repository<ImageEntity>,
+
+        @InjectRepository(ApprovalEntity)
+        private readonly approvalRepository: Repository<ApprovalEntity>
     ) {}
 
-    async create(sellerId: number, productDto: CreateProductDto) {
+    async create(
+        sellerId: number,
+        productDto: CreateProductDto
+    ): Promise<ProductEntity> {
+        const seller = await this.accountRepository.findOne({
+            where: { id: sellerId }
+        })
         const brand = await this.brandRepository.findOne({
             where: { id: productDto.brandId }
         })
-
         const category = await this.categoryRepository.findOne({
             where: { id: productDto.categoryId }
         })
 
-        const seller = await this.accountRepository.findOne({
-            where: { id: sellerId }
-        })
-        if (!category)
+        if (!category) {
             throw new BadRequestException(
                 'Category of product could not be found'
             )
-        if (!brand)
+        }
+        if (!brand) {
             throw new BadRequestException('Brand of product could not be found')
+        }
 
-        const product = {
-            seller: seller,
-            brand: brand,
-            category: category,
+        // Step 1: Create and save the product first
+        const product = this.productRepository.create({
+            seller,
+            brand,
+            category,
             name: productDto.name,
             price: productDto.price,
             description: productDto.description,
             stockQuantity: productDto.stockQuantity,
             status: productDto.status
-        }
-        const newProduct = this.productRepository.create(product)
-        return await this.productRepository.save(newProduct)
+        })
+
+        const savedProduct = await this.productRepository.save(product)
+
+        // Step 2: Create and save the approval
+        const approval = this.approvalRepository.create({
+            approvalStatus: ApprovalStatus.PENDING,
+            product: savedProduct,
+            seller
+        })
+
+        await this.approvalRepository.save(approval)
+
+        // Step 3: Attach the saved approval to the product
+        savedProduct.approval = approval
+
+        // Return the product with the attached approval
+        return await this.productRepository.save(savedProduct)
     }
 
     findAll() {
@@ -72,7 +97,8 @@ export class ProductService {
                 category: true,
                 ratings: {
                     buyer: true
-                }
+                },
+                approval: true
             }
         })
     }
@@ -86,7 +112,8 @@ export class ProductService {
                 category: true,
                 ratings: {
                     buyer: true
-                }
+                },
+                approval: true
             }
         })
 

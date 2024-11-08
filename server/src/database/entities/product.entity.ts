@@ -16,12 +16,39 @@ import { IsOptional } from 'class-validator'
 import { SpecificationEntity } from './specification.entity'
 import { ProductStatus } from 'src/shared/enum/product.enum'
 import { ImageEntity } from './image.entity'
+import { ApprovalEntity } from './approval.entity'
 
 @Entity('products')
 export class ProductEntity {
+    /* -------------------------------------------------------------------------- */
+    /*                                   Columns                                  */
+    /* -------------------------------------------------------------------------- */
+
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column()
+    name: string
+
+    @Column()
+    price: number
+
+    @Column()
+    description: string
+
+    @Column()
+    stockQuantity: number
+
+    @Column({
+        type: 'varchar',
+        default: ProductStatus.NEW
+    })
+    @IsOptional()
+    status: ProductStatus
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  Relations                                 */
+    /* -------------------------------------------------------------------------- */
     @ManyToOne(() => AccountEntity, (account) => account.id, {
         nullable: false
     })
@@ -45,36 +72,18 @@ export class ProductEntity {
     })
     ratings: RatingEntity[]
 
-    @OneToOne(
-        () => SpecificationEntity,
-        (specification) => specification.product,
-        {
-            cascade: ['remove']
-        }
-    )
-    specification: SpecificationEntity
-
     @OneToMany(() => ImageEntity, (image) => image.product, {
         cascade: ['remove']
     })
     images: ImageEntity[]
 
-    @Column()
-    name: string
-
-    @Column()
-    price: number
-
-    @Column()
-    description: string
-
-    @Column()
-    stockQuantity: number
-
-    @Column({
-        type: 'varchar',
-        default: ProductStatus.NEW
+    @OneToOne(() => SpecificationEntity, {
+        cascade: ['remove']
     })
-    @IsOptional()
-    status: ProductStatus
+    specification: SpecificationEntity
+
+    @OneToOne(() => ApprovalEntity, (approval) => approval.product, {
+        onDelete: 'CASCADE'
+    })
+    approval: ApprovalEntity
 }

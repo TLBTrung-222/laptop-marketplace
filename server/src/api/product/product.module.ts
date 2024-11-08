@@ -11,6 +11,7 @@ import { RatingModule } from '../rating/rating.module'
 import { SpecificationService } from '../specification/service/specification.service'
 import { SpecificationEntity } from 'src/database/entities/specification.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
+import { ApprovalEntity } from 'src/database/entities/approval.entity'
 
 @Module({
     imports: [
@@ -22,7 +23,8 @@ import { ImageEntity } from 'src/database/entities/image.entity'
             AccountEntity,
             ProductEntity,
             SpecificationEntity,
-            ImageEntity
+            ImageEntity,
+            ApprovalEntity
         ]),
         RatingModule
     ],

@@ -29,6 +29,8 @@ $ npm install
 4. Best way to update entity:
    Get the entity by id, if not found throw error, else assign new update data to that entity instance, then re-save (TypeORM will update if this entity is already on database)
 
+5. When seller submit new product, BE auto submit a new approval, state 'pending'
+
 ## Compile and run the project
 
 ```bash
@@ -40,17 +42,4 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
