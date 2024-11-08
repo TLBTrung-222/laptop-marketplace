@@ -1,56 +1,65 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { BrandEntity } from "src/database/entities/brand.entity";
-import { Repository } from "typeorm";
-import { BrandDto } from "../dto/brand.dto";
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { BrandEntity } from 'src/database/entities/brand.entity'
+import { Repository } from 'typeorm'
+import { CreateBrandDto } from '../dto/brand.dto'
 
 @Injectable()
-export class BrandService{
+export class BrandService {
     constructor(
         @InjectRepository(BrandEntity)
         private brandRepository: Repository<BrandEntity>
-    ){}
+    ) {}
 
-    async create(brand: BrandDto){
-        const exist = await this.brandRepository.findOne({where:{name: brand.name}})
-        if(exist){
+    async create(brand: CreateBrandDto) {
+        const existBrand = await this.brandRepository.findOne({
+            where: { name: brand.name }
+        })
+        if (existBrand) {
             throw new BadRequestException('Brand already existed')
         }
-        
+
         const newBrand = this.brandRepository.create(brand)
         return await this.brandRepository.save(newBrand)
     }
 
-    getAllBrands(){
-        return this.brandRepository.find();
+    getAllBrands() {
+        return this.brandRepository.find()
     }
 
-    getBrandById(id:number){
-        const exist = this.brandRepository.findOne({where: {id:id}});
-        if(!exist){
-            throw new NotFoundException("Brand not found");
+    getBrandById(id: number) {
+        const existBrand = this.brandRepository.findOne({ where: { id: id } })
+        if (!existBrand) {
+            throw new NotFoundException(`Could not find brand with id: ${id}`)
         }
-        return exist;
+        return existBrand
     }
 
-    async updateBrand(id:number, brand: BrandDto){
-        const exist = await this.brandRepository.findOne({where:{id:id}});
-        
-        if(!exist){
-            throw new NotFoundException("Could not find brand")
+    async updateBrand(id: number, brand: CreateBrandDto) {
+        const existBrand = await this.brandRepository.findOne({
+            where: { id: id }
+        })
+
+        if (!existBrand) {
+            throw new NotFoundException(`Could not find brand with id: ${id}`)
         }
-
-        Object.assign(exist, brand)
-        return await this.brandRepository.save(exist)
+        Object.assign(existBrand, brand)
+        return await this.brandRepository.save(existBrand)
     }
 
-    async deleteBrand(id: number){
-        const exist = await this.brandRepository.findOne({where:{id:id}});
-        
-        if (!exist){
+    async deleteBrand(id: number) {
+        const existBrand = await this.brandRepository.findOne({
+            where: { id: id }
+        })
+
+        if (!existBrand) {
             throw new NotFoundException(`Could not find brand with id: ${id}`)
         }
 
-        return await this.brandRepository.delete({id:id})
+        return await this.brandRepository.delete({ id: id })
     }
 }

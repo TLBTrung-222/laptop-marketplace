@@ -5,10 +5,14 @@ import { IsString, MinLength } from 'class-validator'
 export class ViewBrandDto {
     @ApiProperty()
     @Expose()
+    id: number
+
+    @ApiProperty()
+    @Expose()
     name: string
 }
 
-export class BrandDto {
+export class CreateBrandDto {
     @ApiProperty()
     @IsString()
     @MinLength(1)

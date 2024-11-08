@@ -1,72 +1,40 @@
 import {
     Column,
+    CreateDateColumn,
     Entity,
+    JoinColumn,
+    ManyToOne,
     OneToOne,
-    PrimaryGeneratedColumn,
-    JoinColumn
+    PrimaryGeneratedColumn
 } from 'typeorm'
+import { AccountEntity } from './account.entity'
 import { ProductEntity } from './product.entity'
+import { ApprovalStatus } from 'src/shared/enum/approval.enum'
 
-@Entity('specifications')
-export class SpecificationEntity {
+@Entity('approvals')
+export class ApprovalEntity {
     /* -------------------------------------------------------------------------- */
     /*                                   Columns                                  */
     /* -------------------------------------------------------------------------- */
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    cpu: string
+    @Column({ enum: ApprovalStatus, default: ApprovalStatus.PENDING })
+    approvalStatus: ApprovalStatus
 
-    @Column()
-    ram: string
-
-    @Column()
-    storage: string
-
-    @Column()
-    gpu: string
-
-    @Column()
-    display: string
-
-    @Column()
-    port: string
-
-    @Column()
-    keyboard: string
-
-    @Column()
-    lan: string
-
-    @Column()
-    wifi: string
-
-    @Column()
-    bluetooth: string
-
-    @Column()
-    webcam: string
-
-    @Column()
-    os: string
-
-    @Column()
-    battery: string
-
-    @Column()
-    weight: number
-
-    @Column()
-    color: string
-
-    @Column()
-    dimensions: string
-
+    @CreateDateColumn()
+    submissionDate: Date
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => ProductEntity)
+    @ManyToOne(() => AccountEntity, (account) => account.approvals)
+    @JoinColumn({ name: 'sellerId' })
+    seller: AccountEntity
+
+    @OneToOne(() => ProductEntity, (product) => product.approval, {
+        cascade: true,
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'productId' })
     product: ProductEntity
 }

@@ -9,7 +9,7 @@ import {
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from './product.entity'
 
 @Entity('categories')
 export class CategoryEntity {

@@ -8,7 +8,7 @@ import {
     ApiTags
 } from '@nestjs/swagger'
 import { BrandService } from '../service/brand.service'
-import { BrandDto, ViewBrandDto } from '../dto/brand.dto'
+import { CreateBrandDto, ViewBrandDto } from '../dto/brand.dto'
 import { BrandEntity } from 'src/database/entities/brand.entity'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
@@ -44,7 +44,7 @@ export class BrandController {
     })
     @ApiBadRequestResponse({ description: 'Brand already existed' })
     @Post()
-    createBrand(@Body() body: BrandDto) {
+    createBrand(@Body() body: CreateBrandDto) {
         return this.brandService.create(body)
     }
 
@@ -52,7 +52,7 @@ export class BrandController {
     @ApiOkResponse({ description: 'Update name of brand successfully' })
     @ApiNotFoundResponse({ description: 'Brand not found' })
     @Put(':id')
-    updateBrand(@Param('id') id: string, @Body() body: BrandDto) {
+    updateBrand(@Param('id') id: string, @Body() body: CreateBrandDto) {
         return this.brandService.updateBrand(parseInt(id), body)
     }
 

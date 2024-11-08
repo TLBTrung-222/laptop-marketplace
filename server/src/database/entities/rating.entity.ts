@@ -15,15 +15,13 @@ export class RatingEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => ProductEntity, (product) => product.ratings, {
-        onDelete: 'CASCADE'
-    })
+    @ManyToOne(() => ProductEntity, (product) => product.ratings)
     @JoinColumn({ name: 'productId' })
     product: ProductEntity
 
     @ManyToOne(() => AccountEntity, (account) => account.id)
     @JoinColumn({ name: 'buyerId' })
-    buyerId: AccountEntity
+    buyer: AccountEntity
 
     @Column()
     ratingStar: number

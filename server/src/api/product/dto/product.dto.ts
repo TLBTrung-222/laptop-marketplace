@@ -18,7 +18,7 @@ import { ProductStatus } from 'src/shared/enum/product.enum'
 
 export class ViewProductDto {
     @ApiProperty()
-    @IsNumber()
+    @Expose()
     id: number
 
     @ApiProperty()
@@ -96,6 +96,7 @@ export class CreateProductDto {
 
     @ApiProperty()
     @IsNumber()
+    @Min(0)
     stockQuantity: number
 
     @ApiProperty()
@@ -141,13 +142,13 @@ export class UpdateProductDto {
     status: ProductStatus
 }
 
-export class ViewImageDto{
+export class ViewImageDto {
     @ApiProperty()
     @Expose()
     @IsNumber()
-    id: number;
+    id: number
 
     @ApiProperty()
     @Expose()
-    image: Buffer;
+    image: Buffer
 }
