@@ -11,6 +11,7 @@ import { ProductEntity } from 'src/database/entities/product.entity'
         TypeOrmModule.forFeature([ApprovalEntity, AccountEntity, ProductEntity])
     ],
     controllers: [ApprovalController],
-    providers: [ApprovalService]
+    providers: [ApprovalService],
+    exports: [ApprovalService]
 })
 export class ApprovalModule {}
