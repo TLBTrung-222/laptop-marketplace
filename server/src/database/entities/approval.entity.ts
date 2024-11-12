@@ -27,7 +27,9 @@ export class ApprovalEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @ManyToOne(() => AccountEntity, (account) => account.approvals)
+    @ManyToOne(() => AccountEntity, (account) => account.approvals, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'sellerId' })
     seller: AccountEntity
 

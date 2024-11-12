@@ -1,25 +1,22 @@
 // define brand entity here
 
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    OneToOne,
-    PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ProductEntity } from './product.entity'
 
 @Entity('categories')
 export class CategoryEntity {
+    /* -------------------------------------------------------------------------- */
+    /*                                   Columns                                  */
+    /* -------------------------------------------------------------------------- */
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
     type: string
 
-    // Định nghĩa mối quan hệ OneToMany với ProductEntity
+    /* -------------------------------------------------------------------------- */
+    /*                                  Relations                                 */
+    /* -------------------------------------------------------------------------- */
     @OneToMany(() => ProductEntity, (product) => product.category)
     products: ProductEntity[]
 }
