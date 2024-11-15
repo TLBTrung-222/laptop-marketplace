@@ -6,13 +6,15 @@ import {
     JoinColumn,
     ManyToOne,
     OneToMany,
+    OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { RoleEntity } from './role.entity'
 import { RatingEntity } from './rating.entity'
 import { ApprovalEntity } from './approval.entity'
+import { CartEntity } from './cart.entity'
 
-@Entity('users')
+@Entity('accounts')
 export class AccountEntity {
     /* -------------------------------------------------------------------------- */
     /*                                   Columns                                  */
@@ -38,7 +40,9 @@ export class AccountEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @ManyToOne(() => RoleEntity, (role) => role.accounts)
+    @ManyToOne(() => RoleEntity, (role) => role.accounts, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'roleId' }) // Specifies the column that will be used as the foreign key in the AccountEntity table.
     role: RoleEntity
 
@@ -47,4 +51,7 @@ export class AccountEntity {
 
     @OneToMany(() => RatingEntity, (rating) => rating.buyer)
     ratings: RatingEntity[]
+
+    @OneToOne(() => CartEntity, (cart) => cart.buyer, { onDelete: 'CASCADE' })
+    cart: CartEntity
 }

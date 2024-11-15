@@ -1,29 +1,34 @@
-// define brand entity here
-
 import {
-    Column,
     Entity,
     JoinColumn,
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
-import { ProductEntity } from './product.entity'
+import { AccountEntity } from './account.entity'
+import { CartToProductEntity } from './cart-to-product'
 
-@Entity('brands')
-export class BrandEntity {
+@Entity('carts')
+export class CartEntity {
     /* -------------------------------------------------------------------------- */
     /*                                   Columns                                  */
     /* -------------------------------------------------------------------------- */
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    name: string
-
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToMany(() => ProductEntity, (product) => product.brand)
-    products: ProductEntity[]
+    @OneToOne(() => AccountEntity, (account) => account.cart, {
+        cascade: true,
+        onDelete: 'CASCADE'
+    })
+    @JoinColumn({ name: 'buyerId' })
+    buyer: AccountEntity
+
+    @OneToMany(
+        () => CartToProductEntity,
+        (cartToProduct) => cartToProduct.cartId
+    )
+    cartToProducts: CartToProductEntity[]
 }

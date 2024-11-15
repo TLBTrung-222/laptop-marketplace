@@ -10,6 +10,8 @@ import { ProductEntity } from '../entities/product.entity'
 import { SpecificationEntity } from '../entities/specification.entity'
 import { ImageEntity } from '../entities/image.entity'
 import { ApprovalEntity } from '../entities/approval.entity'
+import { CartToProductEntity } from '../entities/cart-to-product'
+import { CartEntity } from '../entities/cart.entity'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -27,7 +29,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
                 RatingEntity,
                 SpecificationEntity,
                 ImageEntity,
-                ApprovalEntity
+                ApprovalEntity,
+                CartEntity,
+                CartToProductEntity
             ],
             synchronize: true,
             migrationsRun: false

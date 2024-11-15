@@ -6,6 +6,9 @@ import { ProductEntity } from './product.entity'
 
 @Entity('roles')
 export class RoleEntity {
+    /* -------------------------------------------------------------------------- */
+    /*                                   Columns                                  */
+    /* -------------------------------------------------------------------------- */
     @PrimaryColumn()
     @IsEnum(RoleId, { message: 'role id must be 0, 1, or 2' })
     id: RoleId
@@ -13,6 +16,9 @@ export class RoleEntity {
     @Column()
     roleName: string
 
+    /* -------------------------------------------------------------------------- */
+    /*                                  Relations                                 */
+    /* -------------------------------------------------------------------------- */
     @OneToMany(() => AccountEntity, (account) => account.role)
     accounts: AccountEntity[]
 

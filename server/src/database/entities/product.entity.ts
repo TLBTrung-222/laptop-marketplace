@@ -17,6 +17,7 @@ import { SpecificationEntity } from './specification.entity'
 import { ProductStatus } from 'src/shared/enum/product.enum'
 import { ImageEntity } from './image.entity'
 import { ApprovalEntity } from './approval.entity'
+import { CartToProductEntity } from './cart-to-product'
 
 @Entity('products')
 export class ProductEntity {
@@ -50,19 +51,22 @@ export class ProductEntity {
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
     @ManyToOne(() => AccountEntity, (account) => account.id, {
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'sellerId' })
     seller: AccountEntity
 
     @ManyToOne(() => BrandEntity, (brand) => brand.products, {
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'brandId' })
     brand: BrandEntity
 
     @ManyToOne(() => CategoryEntity, (category) => category.products, {
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'categoryId' })
     category: CategoryEntity
@@ -86,4 +90,10 @@ export class ProductEntity {
         onDelete: 'CASCADE'
     })
     approval: ApprovalEntity
+
+    @OneToMany(
+        () => CartToProductEntity,
+        (cartToProduct) => cartToProduct.productId
+    )
+    cartToProducts: CartToProductEntity[]
 }
