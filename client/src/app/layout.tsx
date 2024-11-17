@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 
 import { Modals } from "@/components/modals";
 import { Toaster } from "@/components/ui/sonner";
-import { ModalStoreProvider } from "@/providers/modal-store-provider";
+
 import { QueryProvider } from "@/providers/query-provider";
+import { StoreProvider } from "@/providers/store-provider";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -27,11 +28,11 @@ export default function RootLayout({
         <html lang="en">
             <body className={inter.className}>
                 <QueryProvider>
-                    <ModalStoreProvider>
+                    <StoreProvider>
                         {children}
 
                         <Modals />
-                    </ModalStoreProvider>
+                    </StoreProvider>
                 </QueryProvider>
                 <Toaster position="top-center" richColors theme="light" />
             </body>

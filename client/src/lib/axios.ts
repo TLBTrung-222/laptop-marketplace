@@ -9,4 +9,12 @@ const config: CreateAxiosDefaults = {
 };
 const axiosClient = axios.create(config);
 
+axiosClient.interceptors.response.use(
+    (response) => response.data,
+    (error) => {
+        console.log("🚀 ~ error:", error);
+        throw error;
+    }
+);
+
 export { axiosClient };

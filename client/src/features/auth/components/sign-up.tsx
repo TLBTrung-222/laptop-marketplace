@@ -5,7 +5,6 @@ import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,51 +22,21 @@ import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/icons";
 import { KeyRound, MailIcon, Phone, User2 } from "lucide-react";
 
-import { isValidNumber, parsePhoneNumber } from "libphonenumber-js";
 import { toast } from "sonner";
 
 import { TogglePassword } from "./toggle-password";
 
-import { useModalStore } from "@/providers/modal-store-provider";
+import { useAppStore } from "@/providers/store-provider";
 import { useSignUp } from "../api/use-sign-up";
-
-const formSchema = z.object({
-    name: z.string().min(3, {
-        message: "Name must be at least 3 characters long",
-    }),
-    phoneNumber: z.string().refine(
-        (value) => {
-            try {
-                const phoneNumber = parsePhoneNumber(value, "VN");
-                return isValidNumber(phoneNumber.number);
-            } catch (error) {
-                return false;
-            }
-        },
-        {
-            message: "Invalid phone number for Vietnam",
-        }
-    ),
-    email: z.string().email({
-        message: "Please enter a valid email address",
-    }),
-    password: z.string().min(6, {
-        message: "Password must be at least 6 characters long",
-    }),
-    agreePolicy: z.boolean().refine((value) => value === true, {
-        message: "You must agree to the terms and conditions",
-    }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-export type SignUpFormValues = FormValues;
+import { SignUpFormValues, signUpSchema } from "../schemas/sign-up";
 
 export const SignUpForm = () => {
     const [isShow, setIsShow] = useState(false);
-    const onClose = useModalStore((state) => state.onClose);
+    const onClose = useAppStore((state) => state.modal.onClose);
+    const setUser = useAppStore((state) => state.user.setUser);
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<SignUpFormValues>({
+        resolver: zodResolver(signUpSchema),
         defaultValues: {
             name: "Buyer",
             phoneNumber: "+84901234567",
@@ -79,13 +48,14 @@ export const SignUpForm = () => {
 
     const { isPending, mutate } = useSignUp();
 
-    const onSubmit = (values: FormValues) => {
+    const onSubmit = (values: SignUpFormValues) => {
         const { agreePolicy, ...rest } = values;
         mutate(rest, {
-            onSuccess() {
+            onSuccess(data) {
                 toast.success("Create account successful");
                 form.reset();
                 onClose();
+                setUser(data);
             },
         });
     };

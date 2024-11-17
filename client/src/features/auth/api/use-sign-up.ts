@@ -1,4 +1,5 @@
-import { SignUpFormValues } from "../components/sign-up";
+import { User } from "@/types";
+import { SignUpFormValues } from "../schemas/sign-up";
 
 import { axiosClient } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
@@ -13,7 +14,7 @@ export const useSignUp = () => {
                 "auth/seller/signup",
                 values
             );
-            return response.data;
+            return response.data as User;
         },
         onError: (error) => {
             console.log("🚀 ~ useLogin ~ error:", error);

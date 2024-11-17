@@ -1,4 +1,5 @@
-import { SignInFormValues } from "../components/sign-in";
+import { User } from "@/types";
+import { SignInFormValues } from "../schemas/sign-in";
 
 import { axiosClient } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ export const useLogin = () => {
     const mutation = useMutation({
         mutationFn: async (values: SignInFormValues) => {
             const response = await axiosClient.post("/auth/signin", values);
-            return response.data;
+            return response.data as User;
         },
         onError: (error) => {
             console.log("🚀 ~ useLogin ~ error:", error);
