@@ -1,28 +1,31 @@
-import { createStore } from "zustand/vanilla";
+import { BoundSlice } from "./types";
 
-export type ModalType = "auth";
+import { createStore } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
-export type ModalState = {
-    type: ModalType | null;
-    isOpen: boolean;
-};
+import { createModalSlice } from "./slices/modal-slice";
+import { createUserSlice, partializeUser } from "./slices/user-slice";
 
-export type ModalActions = {
-    onOpen: (type: ModalType) => void;
-    onClose: () => void;
-};
-
-export type ModalStore = ModalState & ModalActions;
-
-export const defaultInitState: ModalState = {
-    type: null,
-    isOpen: false,
-};
-
-export const createModalStore = (initState: ModalState = defaultInitState) => {
-    return createStore<ModalStore>()((set) => ({
-        ...initState,
-        onOpen: (type: ModalType) => set(() => ({ isOpen: true, type })),
-        onClose: () => set(() => ({ isOpen: false, type: null })),
-    }));
+export const createBoundSlice = () => {
+    return createStore<BoundSlice>()(
+        devtools(
+            immer(
+                persist(
+                    (...a) => ({
+                        // @ts-expect-error - This is a bug in zustand
+                        modal: createModalSlice(...a),
+                        // @ts-expect-error - This is a bug in zustand
+                        user: createUserSlice(...a),
+                    }),
+                    {
+                        name: "user",
+                        partialize: (state: BoundSlice) => ({
+                            ...partializeUser(state),
+                        }),
+                    }
+                )
+            )
+        )
+    );
 };

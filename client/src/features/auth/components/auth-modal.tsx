@@ -12,10 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SignInForm } from "./sign-in";
 import { SignUpForm } from "./sign-up";
 
-import { useModalStore } from "@/providers/modal-store-provider";
+import { useAppStore } from "@/providers/store-provider";
 
 export const AuthModal = () => {
-    const { isOpen, type, onClose } = useModalStore((state) => state);
+    const { isOpen, type, onClose } = useAppStore((state) => state.modal);
 
     const isModalOpen = isOpen && type === "auth";
 

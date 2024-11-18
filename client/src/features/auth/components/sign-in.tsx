@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
@@ -17,27 +16,18 @@ import { toast } from "sonner";
 
 import { TogglePassword } from "./toggle-password";
 
-import { useModalStore } from "@/providers/modal-store-provider";
+import { useAppStore } from "@/providers/store-provider";
 import { useLogin } from "../api/use-sign-in";
 
-const formSchema = z.object({
-    email: z.string().email({
-        message: "Please enter a valid email address",
-    }),
-    password: z.string().min(6, {
-        message: "Password must be at least 6 characters long",
-    }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-export type SignInFormValues = FormValues;
+import { SignInFormValues, signInSchema } from "../schemas/sign-in";
 
 export const SignInForm = () => {
     const [isShow, setIsShow] = useState(false);
-    const onClose = useModalStore((state) => state.onClose);
+    const onClose = useAppStore((state) => state.modal.onClose);
+    const setUser = useAppStore((state) => state.user.setUser);
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<SignInFormValues>({
+        resolver: zodResolver(signInSchema),
         defaultValues: {
             email: "buyer@gmail.com",
             password: "password",
@@ -46,12 +36,13 @@ export const SignInForm = () => {
 
     const { isPending, mutate } = useLogin();
 
-    const onSubmit = (values: FormValues) => {
+    const onSubmit = (values: SignInFormValues) => {
         mutate(values, {
-            onSuccess() {
+            onSuccess(data) {
                 toast.success("Login successful");
                 form.reset();
                 onClose();
+                setUser(data);
             },
         });
     };
