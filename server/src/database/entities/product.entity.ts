@@ -18,6 +18,7 @@ import { ProductStatus } from 'src/shared/enum/product.enum'
 import { ImageEntity } from './image.entity'
 import { ApprovalEntity } from './approval.entity'
 import { CartToProductEntity } from './cart-to-product'
+import { OrderToProductEntity } from './order-to-product.entity'
 
 @Entity('products')
 export class ProductEntity {
@@ -96,4 +97,10 @@ export class ProductEntity {
         (cartToProduct) => cartToProduct.productId
     )
     cartToProducts: CartToProductEntity[]
+
+    @OneToMany(
+        () => OrderToProductEntity,
+        (orderToProduct) => orderToProduct.productId
+    )
+    orderToProducts: OrderToProductEntity[]
 }

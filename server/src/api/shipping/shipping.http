@@ -1,5 +1,0 @@
-# POST /api/orders/:id/shipping - Add shipping information
-
-# GET /api/orders/:id/shipping - Get shipping information
-
-# PUT /api/orders/:id/shipping - Update shipping status

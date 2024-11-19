@@ -3,3 +3,22 @@ export interface ApiResponse {
     data: any
     errors: string | string[] | null
 }
+
+export interface VnpParams {
+    [key: string]: string
+    vnp_TmnCode: string
+    vnp_ReturnUrl: string
+    vnp_Version: string
+    vnp_Command: string
+    vnp_Locale: string
+    vnp_CurrCode: string
+    vnp_OrderType: string
+    vnp_TxnRef: string
+    vnp_OrderInfo: string
+    vnp_Amount: string
+    vnp_IpAddr: string
+    vnp_BankCode?: string
+    vnp_CreateDate: string
+    vnp_ExpireDate?: string
+    vnp_SecureHash: string
+}

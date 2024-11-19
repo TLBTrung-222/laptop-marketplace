@@ -6,7 +6,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { ProductEntity } from 'src/database/entities/product.entity'
 import { Repository } from 'typeorm'
-import { CreateProductDto, UpdateProductDto } from '../dto/product.dto'
+import {
+    CreateProductDto,
+    SearchProductDto,
+    UpdateProductDto
+} from '../dto/product.dto'
 import { BrandEntity } from 'src/database/entities/brand.entity'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { CategoryEntity } from 'src/database/entities/category.entity'
@@ -89,18 +93,22 @@ export class ProductService {
         return await this.productRepository.save(savedProduct)
     }
 
-    findAll() {
-        return this.productRepository.find({
-            relations: {
-                seller: true,
-                brand: true,
-                category: true,
-                ratings: {
-                    buyer: true
-                },
-                approval: true
-            }
-        })
+    findAll(query: SearchProductDto) {
+        const queryBuilder = this.productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.brand', 'brand')
+            .leftJoinAndSelect('product.category', 'category')
+            .leftJoinAndSelect('product.seller', 'seller')
+            .leftJoinAndSelect('product.ratings', 'ratings')
+
+        if (query.brand)
+            queryBuilder.andWhere('brand.name = :brand', { brand: query.brand })
+        if (query.category)
+            queryBuilder.andWhere('category.type = :category', {
+                category: query.category
+            })
+
+        return queryBuilder.getMany()
     }
 
     async findById(id: number) {

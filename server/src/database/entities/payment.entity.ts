@@ -1,14 +1,15 @@
+import { PaymentStatus } from 'src/shared/enum/payment.enum'
 import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
-import { ProductEntity } from './product.entity'
+import { OrderEntity } from './order.entity'
 
-@Entity('images')
-export class ImageEntity {
+@Entity('payments')
+export class PaymentEntity {
     /* -------------------------------------------------------------------------- */
     /*                                   Columns                                  */
     /* -------------------------------------------------------------------------- */
@@ -16,14 +17,18 @@ export class ImageEntity {
     id: number
 
     @Column()
-    image: Buffer
+    paymentAmount: number
+
+    @Column({ enum: PaymentStatus, default: PaymentStatus.UNPAID })
+    paymentStatus: PaymentStatus
+
+    @Column({ type: Date })
+    paymentDate: Date
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @ManyToOne(() => ProductEntity, (product) => product.images, {
-        onDelete: 'CASCADE'
-    })
-    @JoinColumn({ name: 'productId' })
-    product: ProductEntity
+    @OneToOne(() => OrderEntity, (order) => order.payment)
+    @JoinColumn({ name: 'orderId' })
+    order: OrderEntity
 }

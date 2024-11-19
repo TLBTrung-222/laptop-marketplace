@@ -1,40 +1,91 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Param,
+    Body,
+    ParseIntPipe,
+    Ip,
+    Query
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
+import { OrderService } from '../service/order.service'
+import { CreateOrderDto, UpdateOrderStatusDto } from '../dto/order.dto'
+import { CurrentAccount } from 'src/shared/decorator/current-account.decorator'
+import { AccountEntity } from 'src/database/entities/account.entity'
+import { Auth } from 'src/shared/decorator/auth.decorator'
+import { RoleId } from 'src/shared/enum/role.enum'
+import { PaymentService } from 'src/api/payment/service/payment.service'
+import { CreatePaymentDto } from 'src/api/payment/dto/payment.dto'
+import { VnpParams } from 'src/types'
 
+// @Auth([RoleId.Buyer])
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
+    constructor(
+        private orderService: OrderService,
+        private paymentService: PaymentService
+    ) {}
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Payment routes                               */
+    /* -------------------------------------------------------------------------- */
+    @Post(':id/payment')
+    async processPayment(
+        @Param('id', ParseIntPipe) orderId: number,
+        @Ip() ip: string,
+        @Body() body: CreatePaymentDto
+    ) {
+        return this.paymentService.createPaymentUrl(ip, orderId, body.bankCode)
+    }
+
+    // called by vnpay
+    @Get('return_url')
+    async returnUrl(@Query() vnpParams: VnpParams) {
+        return this.paymentService.handleReturnUrl(vnpParams)
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                Order routes                                */
+    /* -------------------------------------------------------------------------- */
     @Get()
-    getAllOrders() {
-        return 'return all orders'
+    getAllOrders(@CurrentAccount() buyer: AccountEntity) {
+        return this.orderService.getOrders(buyer)
     }
 
     @Get(':id')
-    getOrderWithId(@Param('id') id: string) {
-        return `get order with id ${id}`
+    getOrderWithId(
+        @CurrentAccount() buyer: AccountEntity,
+        @Param('id') orderId: string
+    ) {
+        return this.orderService.getOrder(buyer, orderId)
     }
 
     @Get(':id/items')
-    getOrderItems(@Param('id') id: string) {
-        return `get items of order: ${id}`
+    getOrderItems(
+        @CurrentAccount() buyer: AccountEntity,
+        @Param('id') orderId: string
+    ) {
+        return this.orderService.getOrderItems(buyer, orderId)
     }
 
     @Put(':id/status')
     updateOrderStatus(
-        @Param('id') id: string,
-        @Body('newStatus') newStatus: string
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: UpdateOrderStatusDto
     ) {
-        return `update order ${id} with new status: ${newStatus}`
+        return this.orderService.updateOrderStatus(id, body.newStatus)
     }
 
     @Post()
-    createOrder(@Body() body: any) {
-        return `create order with body: ${JSON.stringify(body)}`
-    }
-
-    @Post(':id/payment')
-    processOrderPayment(@Param('id') id: string) {
-        return `process order ${id} with payment`
+    createOrder(
+        @CurrentAccount() buyer: AccountEntity,
+        @Body() body: CreateOrderDto
+    ) {
+        return this.orderService.createOrder(buyer, body)
     }
 
     @Put(':id')
@@ -42,8 +93,9 @@ export class OrderController {
         return `update order ${id} with body: ${JSON.stringify(body)}`
     }
 
+    @Auth([RoleId.Admin])
     @Delete(':id')
-    deleteOrder(@Param('id') id: string) {
-        return `delete order with id ${id}`
+    deleteOrder(@Param('id', ParseIntPipe) id: number) {
+        return this.orderService.deleteOrder(id)
     }
 }
