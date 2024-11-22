@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from 'class-validator'
+import { IsEnum, IsIP, IsNumber, IsOptional } from 'class-validator'
 
 // infor filled in by user
 enum BankCode {
@@ -7,8 +7,15 @@ enum BankCode {
     INTCARD = 'INTCARD'
 }
 
-export class CreatePaymentDto {
+export class _CreateVNPAYPaymentDto {
+    @IsNumber()
+    orderId: number
+
     @IsOptional()
     @IsEnum(BankCode)
     bankCode: BankCode
+}
+
+export class CreateVNPAYPaymentDto extends _CreateVNPAYPaymentDto {
+    ipAddress: string
 }

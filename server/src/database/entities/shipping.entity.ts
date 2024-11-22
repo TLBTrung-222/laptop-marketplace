@@ -1,6 +1,7 @@
 import { ShippingStatus } from 'src/shared/enum/shipping.enum'
 import {
     Column,
+    CreateDateColumn,
     Entity,
     JoinColumn,
     OneToOne,
@@ -31,16 +32,16 @@ export class ShippingEntity {
     @Column()
     street: string
 
-    @Column({ type: Date, default: null })
+    @CreateDateColumn()
     shippingDate: Date
 
-    @Column({ type: Date, default: null })
+    @Column({ type: Date, nullable: true })
     deliveryDate: Date
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.shipping)
+    @OneToOne(() => OrderEntity, (order) => order.shipping, { nullable: false })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

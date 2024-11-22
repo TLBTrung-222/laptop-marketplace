@@ -12,16 +12,22 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { OrderService } from '../service/order.service'
-import { CreateOrderDto, UpdateOrderStatusDto } from '../dto/order.dto'
+import {
+    CreateOrderDto,
+    UpdateOrderStatusDto,
+    ViewCreatedOrderDto,
+    ViewOrderDto
+} from '../dto/order.dto'
 import { CurrentAccount } from 'src/shared/decorator/current-account.decorator'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { PaymentService } from 'src/api/payment/service/payment.service'
-import { CreatePaymentDto } from 'src/api/payment/dto/payment.dto'
+import { CreateVNPAYPaymentDto } from 'src/api/payment/dto/payment.dto'
 import { VnpParams } from 'src/types'
+import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
-// @Auth([RoleId.Buyer])
+@Auth([RoleId.Buyer])
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
@@ -33,14 +39,18 @@ export class OrderController {
     /* -------------------------------------------------------------------------- */
     /*                               Payment routes                               */
     /* -------------------------------------------------------------------------- */
-    @Post(':id/payment')
-    async processPayment(
-        @Param('id', ParseIntPipe) orderId: number,
-        @Ip() ip: string,
-        @Body() body: CreatePaymentDto
-    ) {
-        return this.paymentService.createPaymentUrl(ip, orderId, body.bankCode)
-    }
+    // @Post(':id/payment')
+    // async processPayment(
+    //     @Param('id', ParseIntPipe) orderId: number,
+    //     @Ip() ipAddress: string,
+    //     @Body() body: CreateVNPAYPaymentDto
+    // ) {
+    //     return this.paymentService.createPaymentUrl({
+    //         ipAddress,
+    //         orderId,
+    //         bankCode: body.bankCode
+    //     })
+    // }
 
     // called by vnpay
     @Get('return_url')
@@ -80,12 +90,17 @@ export class OrderController {
         return this.orderService.updateOrderStatus(id, body.newStatus)
     }
 
+    @Serialize(ViewCreatedOrderDto)
     @Post()
     createOrder(
         @CurrentAccount() buyer: AccountEntity,
-        @Body() body: CreateOrderDto
+        @Body() body: CreateOrderDto,
+        @Ip() ipAddress: string
     ) {
-        return this.orderService.createOrder(buyer, body)
+        return this.orderService.createOrder(buyer, body, {
+            ...body.vnpayPaymentInfors,
+            ipAddress
+        })
     }
 
     @Put(':id')

@@ -1,5 +1,11 @@
 import { Module } from '@nestjs/common'
-import { ShippingController } from './controller/shipping.controller'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ShippingEntity } from 'src/database/entities/shipping.entity'
+import { ShippingService } from './service/shipping.service'
 
-@Module({ controllers: [ShippingController] })
+@Module({
+    imports: [TypeOrmModule.forFeature([ShippingEntity])],
+    providers: [ShippingService],
+    exports: [ShippingService]
+})
 export class ShippingModule {}

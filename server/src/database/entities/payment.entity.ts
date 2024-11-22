@@ -1,4 +1,4 @@
-import { PaymentStatus } from 'src/shared/enum/payment.enum'
+import { PaymentMethod, PaymentStatus } from 'src/shared/enum/payment.enum'
 import {
     Column,
     Entity,
@@ -22,13 +22,16 @@ export class PaymentEntity {
     @Column({ enum: PaymentStatus, default: PaymentStatus.UNPAID })
     paymentStatus: PaymentStatus
 
-    @Column({ type: Date })
+    @Column({ enum: PaymentMethod, nullable: false })
+    paymentMethod: PaymentMethod
+
+    @Column({ type: Date, nullable: true })
     paymentDate: Date
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.payment)
+    @OneToOne(() => OrderEntity, (order) => order.payment, { nullable: false })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

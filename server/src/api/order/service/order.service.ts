@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { OrderEntity } from 'src/database/entities/order.entity'
@@ -7,6 +11,11 @@ import { CreateOrderDto } from '../dto/order.dto'
 import { ProductEntity } from 'src/database/entities/product.entity'
 import { OrderToProductEntity } from 'src/database/entities/order-to-product.entity'
 import { OrderStatus } from 'src/shared/enum/order.enum'
+import { ShippingService } from 'src/api/shipping/service/shipping.service'
+import { PaymentService } from 'src/api/payment/service/payment.service'
+import { PaymentMethod } from 'src/shared/enum/payment.enum'
+import { CreateVNPAYPaymentDto } from 'src/api/payment/dto/payment.dto'
+import { PaymentEntity } from 'src/database/entities/payment.entity'
 
 @Injectable()
 export class OrderService {
@@ -16,7 +25,9 @@ export class OrderService {
         @InjectRepository(ProductEntity)
         private productRepository: Repository<ProductEntity>,
         @InjectRepository(OrderToProductEntity)
-        private orderToProductRepository: Repository<OrderToProductEntity>
+        private orderToProductRepository: Repository<OrderToProductEntity>,
+        private shippingService: ShippingService,
+        private paymentService: PaymentService
     ) {}
 
     async getOrder(buyer: AccountEntity, orderId: string) {
@@ -53,10 +64,15 @@ export class OrderService {
             .getMany()
     }
 
-    async createOrder(buyer: AccountEntity, body: CreateOrderDto) {
+    // create order, shipping, payment
+    async createOrder(
+        buyer: AccountEntity,
+        createOrderDto: CreateOrderDto,
+        createVNPAYPaymentDto?: CreateVNPAYPaymentDto
+    ) {
         // calculate total price
         let totalAmount = 0
-        for (const orderItem of body.orderItems) {
+        for (const orderItem of createOrderDto.orderItems) {
             const product = await this.productRepository.findOneBy({
                 id: orderItem.productId
             })
@@ -68,27 +84,56 @@ export class OrderService {
 
             totalAmount += orderItem.quantity * product.price
         }
-        // save the order
-        const newOrder = await this.orderRepository
-            .createQueryBuilder()
-            .insert()
-            .into(OrderEntity)
-            .values([{ totalAmount, buyer }])
-            .execute()
 
-        // save all order item
-        const newOrderItems = body.orderItems.map((value) => {
-            return { orderId: newOrder.identifiers[0].id, ...value }
+        /* -------------------------------------------------------------------------- */
+        /*                               create the order                             */
+        /* -------------------------------------------------------------------------- */
+        const newOrder = this.orderRepository.create({
+            totalAmount,
+            buyer
         })
-        await this.orderToProductRepository
-            .createQueryBuilder()
-            .insert()
-            .into(OrderToProductEntity)
-            .values(newOrderItems)
-            .execute()
+        const savedOrder = await this.orderRepository.save(newOrder)
 
-        // return savedOrder
-        return newOrder.generatedMaps[0]
+        /* -------------------------------------------------------------------------- */
+        /*                             save all order item                            */
+        /* -------------------------------------------------------------------------- */
+        const newOrderItems = createOrderDto.orderItems.map((value) => {
+            return { orderId: savedOrder.id, ...value }
+        })
+        await this.orderToProductRepository.save(newOrderItems)
+
+        /* -------------------------------------------------------------------------- */
+        /*                               create shipping                              */
+        /* -------------------------------------------------------------------------- */
+        await this.shippingService.createShipping(
+            savedOrder,
+            createOrderDto.shippingInfors
+        )
+
+        /* -------------------------------------------------------------------------- */
+        /*                               create payment                               */
+        /* -------------------------------------------------------------------------- */
+        // if COD -> return payment entity after saving to db
+        // if VNPAY -> return payment url to user to self-complete -> wait for FE to send infor to save this payment
+        let payment: PaymentEntity | string
+        if (createOrderDto.paymentMethod === PaymentMethod.VNPAY) {
+            if (!createVNPAYPaymentDto.orderId)
+                throw new BadRequestException(
+                    'Need to provide vnpay information for this payment method'
+                )
+
+            payment = await this.paymentService.createPaymentUrl(
+                createVNPAYPaymentDto
+            )
+
+            return { savedOrder, payment }
+        } else {
+            payment = await this.paymentService.createPaymentCod(
+                savedOrder,
+                totalAmount
+            )
+            return { savedOrder }
+        }
     }
 
     async updateOrderStatus(orderId: number, newStatus: OrderStatus) {

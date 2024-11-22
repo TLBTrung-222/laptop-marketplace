@@ -7,6 +7,8 @@ import { OrderService } from './service/order.service'
 import { OrderToProductEntity } from 'src/database/entities/order-to-product.entity'
 import { PaymentModule } from '../payment/payment.module'
 import { PaymentService } from '../payment/service/payment.service'
+import { ShippingModule } from '../shipping/shipping.module'
+import { ShippingService } from '../shipping/service/shipping.service'
 
 @Module({
     imports: [
@@ -15,9 +17,10 @@ import { PaymentService } from '../payment/service/payment.service'
             ProductEntity,
             OrderToProductEntity
         ]),
-        PaymentModule
+        PaymentModule,
+        ShippingModule
     ],
     controllers: [OrderController],
-    providers: [OrderService, PaymentService]
+    providers: [OrderService]
 })
 export class OrderModule {}

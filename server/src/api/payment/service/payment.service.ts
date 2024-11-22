@@ -5,25 +5,43 @@ import { OrderEntity } from 'src/database/entities/order.entity'
 import { Repository } from 'typeorm'
 import * as crypto from 'crypto'
 import { VnpParams } from 'src/types'
+import { CreateVNPAYPaymentDto } from '../dto/payment.dto'
+import { PaymentEntity } from 'src/database/entities/payment.entity'
+import { PaymentMethod } from 'src/shared/enum/payment.enum'
 
 @Injectable()
 export class PaymentService {
     constructor(
         private configService: ConfigService,
         @InjectRepository(OrderEntity)
-        private orderRepository: Repository<OrderEntity>
+        private orderRepository: Repository<OrderEntity>,
+        @InjectRepository(PaymentEntity)
+        private paymentRepository: Repository<PaymentEntity>
     ) {}
 
-    async createPaymentUrl(
-        ipAddress: string,
-        orderId: number,
-        bankCode?: string
-    ) {
+    // for payment method: COD
+    async createPaymentCod(order: OrderEntity, paymentAmount: number) {
+        // just add the payment to db
+        const newPayment = this.paymentRepository.create({
+            order,
+            paymentAmount,
+            paymentMethod: PaymentMethod.COD
+        })
+
+        return this.paymentRepository.save(newPayment)
+    }
+
+    // for payment method: Vnpay
+    async createPaymentUrl(dto: CreateVNPAYPaymentDto) {
         // make sure order is exist
-        const existOrder = await this.orderRepository.findOneBy({ id: orderId })
+        const existOrder = await this.orderRepository.findOneBy({
+            id: dto.orderId
+        })
 
         if (!existOrder)
-            throw new NotFoundException(`Order with id: ${orderId} not founded`)
+            throw new NotFoundException(
+                `Order with id: ${dto.orderId} not founded`
+            )
 
         const amount = existOrder.totalAmount
 
@@ -45,11 +63,12 @@ export class PaymentService {
 
         // passed values
         vnpParams['vnp_TxnRef'] = String(Date.now())
-        vnpParams['vnp_OrderInfo'] = 'Thanh toan GD voi orderId = ' + orderId
+        vnpParams['vnp_OrderInfo'] =
+            'Thanh toan GD voi orderId = ' + dto.orderId
         vnpParams['vnp_Amount'] = String(amount * 100)
-        vnpParams['vnp_IpAddr'] = ipAddress
-        if (bankCode) {
-            vnpParams['vnp_BankCode'] = bankCode
+        vnpParams['vnp_IpAddr'] = dto.ipAddress
+        if (dto.bankCode) {
+            vnpParams['vnp_BankCode'] = dto.bankCode
         }
 
         // generated values
@@ -78,6 +97,9 @@ export class PaymentService {
         const signed = this.createChecksum(vnpParams)
 
         if (secureHash == signed) {
+            /* -------------------------------------------------------------------------- */
+            //!                          TODO: save infor to database                     */
+            /* -------------------------------------------------------------------------- */
             return { code: vnpParams['vnp_ResponseCode'] } // if order success, vnp_ResponseCode is '00'
         } else return { code: '97' }
     }
