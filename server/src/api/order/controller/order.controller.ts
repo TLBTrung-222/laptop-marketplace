@@ -50,7 +50,7 @@ export class OrderController {
     // }
 
     // called by vnpay
-    @Get('return_url')
+    @Get('vnpay_return')
     async returnUrl(@Query() vnpParams: VnpParams) {
         return this.paymentService.handleReturnUrl(vnpParams)
     }
