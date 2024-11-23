@@ -107,6 +107,12 @@ export class PaymentService {
             const existPayment = await this.paymentRepository.findOne({
                 where: { id: paymentId }
             })
+
+            if (!existPayment)
+                throw new NotFoundException(
+                    `Can not find payment with id: ${paymentId}`
+                )
+
             if (existPayment.paymentStatus === PaymentStatus.UNPAID)
                 existPayment.paymentStatus = PaymentStatus.PAID
             else

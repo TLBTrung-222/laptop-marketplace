@@ -22,13 +22,6 @@ export class OrderService {
     constructor(
         @InjectRepository(OrderEntity)
         private orderRepository: Repository<OrderEntity>,
-        @InjectRepository(ProductEntity)
-        private productRepository: Repository<ProductEntity>,
-        @InjectRepository(OrderToProductEntity)
-        private orderToProductRepository: Repository<OrderToProductEntity>,
-        @InjectRepository(PaymentEntity)
-        private paymentRepository: Repository<PaymentEntity>,
-        private shippingService: ShippingService,
         private paymentService: PaymentService,
         private dataSource: DataSource
     ) {}
@@ -61,9 +54,10 @@ export class OrderService {
 
     async getOrders(buyer: AccountEntity) {
         return this.orderRepository
-            .createQueryBuilder('orders')
-            .select()
-            .where('orders.buyerId = :buyerId', { buyerId: buyer.id })
+            .createQueryBuilder('order')
+            .leftJoinAndSelect('order.payment', 'payment')
+            .leftJoinAndSelect('order.shipping', 'shipping')
+            .where('order.buyerId = :buyerId', { buyerId: buyer.id })
             .getMany()
     }
 
