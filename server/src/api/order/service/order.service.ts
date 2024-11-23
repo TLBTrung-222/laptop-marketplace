@@ -52,6 +52,15 @@ export class OrderService {
         return existOrderItems
     }
 
+    async getOrdersAdmin() {
+        return this.orderRepository
+            .createQueryBuilder('order')
+            .leftJoinAndSelect('order.payment', 'payment')
+            .leftJoinAndSelect('order.shipping', 'shipping')
+            .leftJoinAndSelect('order.buyer', 'buyer')
+            .getMany()
+    }
+
     async getOrders(buyer: AccountEntity) {
         return this.orderRepository
             .createQueryBuilder('order')

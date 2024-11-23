@@ -24,13 +24,16 @@ import { RoleId } from 'src/shared/enum/role.enum'
 import { PaymentService } from 'src/api/payment/service/payment.service'
 import { VnpParams } from 'src/types'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
+import { ShippingService } from 'src/api/shipping/service/shipping.service'
+import { UpdateShippingDto } from 'src/api/shipping/dto/shipping.dto'
 
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
     constructor(
         private orderService: OrderService,
-        private paymentService: PaymentService
+        private paymentService: PaymentService,
+        private shippingService: ShippingService
     ) {}
 
     /* -------------------------------------------------------------------------- */
@@ -111,5 +114,21 @@ export class OrderController {
     @Delete(':id')
     deleteOrder(@Param('id', ParseIntPipe) id: number) {
         return this.orderService.deleteOrder(id)
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               Shipping routes                              */
+    /* -------------------------------------------------------------------------- */
+    @Get(':id/shipping')
+    async getShipping(@Param('id', ParseIntPipe) id: number) {
+        return this.shippingService.getShipping(id)
+    }
+
+    @Put(':id/shipping')
+    async updateShipping(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: UpdateShippingDto
+    ) {
+        return this.shippingService.updateShipping(id, body)
     }
 }
