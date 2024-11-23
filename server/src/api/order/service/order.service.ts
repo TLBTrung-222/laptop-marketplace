@@ -87,6 +87,14 @@ export class OrderService {
                             `Can not find product with id: ${orderItem.productId}`
                         )
 
+                    if (orderItem.quantity >= product.stockQuantity)
+                        throw new BadRequestException(
+                            `Not enough stock quantity for product id: ${orderItem.productId}`
+                        )
+
+                    product.stockQuantity -= orderItem.quantity
+                    await entityManager.save(product)
+
                     totalAmount += orderItem.quantity * product.price
                 }
 
