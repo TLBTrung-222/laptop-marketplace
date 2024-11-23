@@ -6,13 +6,15 @@ import { TypeOrmConfigService } from './database/typeorm/typeorm.config'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { SuccessResponseInterceptor } from './shared/interceptor/success-response.interceptor'
 import { ErrorResponse } from './shared/exception/error-response.exception'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
             useClass: TypeOrmConfigService
         }),
-        ApiModule
+        ApiModule,
+        ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true })
     ],
     controllers: [AppController],
     providers: [

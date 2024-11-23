@@ -10,7 +10,8 @@ import { FundModule } from './fund/fund.module'
 import { AdminModule } from './admin/admin.module'
 import { ShippingModule } from './shipping/shipping.module'
 import { AuthModule } from './auth/auth.module'
-import { ApprovalModule } from './approval/approval.module';
+import { ApprovalModule } from './approval/approval.module'
+import { PaymentModule } from './payment/payment.module'
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import { ApprovalModule } from './approval/approval.module';
         FundModule,
         AdminModule,
         ShippingModule,
-        ApprovalModule
+        ApprovalModule,
+        PaymentModule
     ]
 })
 export class ApiModule {}

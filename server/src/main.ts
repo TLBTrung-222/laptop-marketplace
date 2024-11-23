@@ -6,22 +6,29 @@ import { TypeormStore } from 'connect-typeorm'
 import { SessionEntity } from './database/entities/session.entity'
 import { DataSource } from 'typeorm'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { ConfigService } from '@nestjs/config'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+    app.setGlobalPrefix('api')
+    const configService = app.get<ConfigService>(ConfigService)
 
-    // Enable CORS
+    /* -------------------------------------------------------------------------- */
+    /*                                 Enable CORS                                */
+    /* -------------------------------------------------------------------------- */
     app.enableCors({
-        origin: 'http://localhost:3000',
+        origin: configService.get('FRONT_END_URL', 'http://localhost:3000'), // using default value if FRONT_END_URL not founded
         credentials: true
     })
 
-    // set up express-session
+    /* -------------------------------------------------------------------------- */
+    /*                           Set up express-session                           */
+    /* -------------------------------------------------------------------------- */
     const sessionRepository = app.get(DataSource).getRepository(SessionEntity)
     app.use(
         session({
-            secret: 'aRandomSecret',
+            secret: configService.get('SECRET_KEY'),
             resave: false,
             saveUninitialized: false,
             cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
@@ -30,9 +37,10 @@ async function bootstrap() {
             }).connect(sessionRepository)
         })
     )
-    app.setGlobalPrefix('api')
 
-    // set up swagger
+    /* -------------------------------------------------------------------------- */
+    /*                               Set up swagger                               */
+    /* -------------------------------------------------------------------------- */
     const config = new DocumentBuilder()
         .setTitle('Laptop ecommerce website')
         .setDescription('The website REST API documentation')
@@ -42,6 +50,6 @@ async function bootstrap() {
     const documentFactory = () => SwaggerModule.createDocument(app, config)
     SwaggerModule.setup('docs', app, documentFactory)
 
-    await app.listen(3001)
+    await app.listen(parseInt(configService.get('PORT', '3001')))
 }
 bootstrap()

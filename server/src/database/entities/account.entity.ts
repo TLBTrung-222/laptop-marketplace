@@ -13,6 +13,7 @@ import { RoleEntity } from './role.entity'
 import { RatingEntity } from './rating.entity'
 import { ApprovalEntity } from './approval.entity'
 import { CartEntity } from './cart.entity'
+import { OrderEntity } from './order.entity'
 
 @Entity('accounts')
 export class AccountEntity {
@@ -54,4 +55,7 @@ export class AccountEntity {
 
     @OneToOne(() => CartEntity, (cart) => cart.buyer, { onDelete: 'CASCADE' })
     cart: CartEntity
+
+    @OneToMany(() => OrderEntity, (order) => order.buyer)
+    orders: OrderEntity[]
 }

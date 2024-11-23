@@ -152,3 +152,11 @@ export class ViewImageDto {
     @Expose()
     image: Buffer
 }
+
+export class SearchProductDto {
+    @IsOptional()
+    category?: string
+
+    @IsOptional()
+    brand?: string
+}

@@ -8,6 +8,7 @@ import {
     Param,
     Post,
     Put,
+    Query,
     Session,
     UploadedFile,
     UseInterceptors
@@ -27,6 +28,7 @@ import { ProductService } from '../service/product.service'
 import { Session as ExpressSession } from 'express-session'
 import {
     CreateProductDto,
+    SearchProductDto,
     UpdateProductDto,
     ViewProductDto
 } from '../dto/product.dto'
@@ -70,8 +72,8 @@ export class ProductController {
         type: ProductEntity
     })
     @Get()
-    getAllProduct() {
-        return this.productService.findAll()
+    getAllProduct(@Query() query: SearchProductDto) {
+        return this.productService.findAll(query)
     }
 
     @Serialize(ViewProductDto)
