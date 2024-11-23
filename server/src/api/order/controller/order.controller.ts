@@ -15,19 +15,16 @@ import { OrderService } from '../service/order.service'
 import {
     CreateOrderDto,
     UpdateOrderStatusDto,
-    ViewCreatedOrderDto,
-    ViewOrderDto
+    ViewCreatedOrderDto
 } from '../dto/order.dto'
 import { CurrentAccount } from 'src/shared/decorator/current-account.decorator'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { PaymentService } from 'src/api/payment/service/payment.service'
-import { CreateVNPAYPaymentDto } from 'src/api/payment/dto/payment.dto'
 import { VnpParams } from 'src/types'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 
-@Auth([RoleId.Buyer])
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
@@ -61,11 +58,13 @@ export class OrderController {
     /* -------------------------------------------------------------------------- */
     /*                                Order routes                                */
     /* -------------------------------------------------------------------------- */
+    @Auth([RoleId.Buyer])
     @Get()
-    getAllOrders(@CurrentAccount() buyer: AccountEntity) {
+    async getAllOrders(@CurrentAccount() buyer: AccountEntity) {
         return this.orderService.getOrders(buyer)
     }
 
+    @Auth([RoleId.Buyer])
     @Get(':id')
     getOrderWithId(
         @CurrentAccount() buyer: AccountEntity,
@@ -74,6 +73,7 @@ export class OrderController {
         return this.orderService.getOrder(buyer, orderId)
     }
 
+    @Auth([RoleId.Buyer])
     @Get(':id/items')
     getOrderItems(
         @CurrentAccount() buyer: AccountEntity,
@@ -82,6 +82,7 @@ export class OrderController {
         return this.orderService.getOrderItems(buyer, orderId)
     }
 
+    @Auth([RoleId.Buyer])
     @Put(':id/status')
     updateOrderStatus(
         @Param('id', ParseIntPipe) id: number,
@@ -91,18 +92,16 @@ export class OrderController {
     }
 
     @Serialize(ViewCreatedOrderDto)
+    @Auth([RoleId.Buyer])
     @Post()
     createOrder(
         @CurrentAccount() buyer: AccountEntity,
         @Body() body: CreateOrderDto,
         @Ip() ipAddress: string
     ) {
-        return this.orderService.createOrder(buyer, body, {
-            ...body.vnpayPaymentInfors,
-            ipAddress
-        })
+        return this.orderService.createOrder(buyer, body, ipAddress)
     }
-
+    @Auth([RoleId.Buyer])
     @Put(':id')
     updateOrder(@Param('id') id: string, @Body() body: any) {
         return `update order ${id} with body: ${JSON.stringify(body)}`

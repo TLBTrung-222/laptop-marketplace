@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { OrderEntity } from 'src/database/entities/order.entity'
-import { Repository } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import { CreateOrderDto } from '../dto/order.dto'
 import { ProductEntity } from 'src/database/entities/product.entity'
 import { OrderToProductEntity } from 'src/database/entities/order-to-product.entity'
@@ -14,7 +14,7 @@ import { OrderStatus } from 'src/shared/enum/order.enum'
 import { ShippingService } from 'src/api/shipping/service/shipping.service'
 import { PaymentService } from 'src/api/payment/service/payment.service'
 import { PaymentMethod } from 'src/shared/enum/payment.enum'
-import { CreateVNPAYPaymentDto } from 'src/api/payment/dto/payment.dto'
+import { ShippingEntity } from 'src/database/entities/shipping.entity'
 import { PaymentEntity } from 'src/database/entities/payment.entity'
 
 @Injectable()
@@ -26,8 +26,11 @@ export class OrderService {
         private productRepository: Repository<ProductEntity>,
         @InjectRepository(OrderToProductEntity)
         private orderToProductRepository: Repository<OrderToProductEntity>,
+        @InjectRepository(PaymentEntity)
+        private paymentRepository: Repository<PaymentEntity>,
         private shippingService: ShippingService,
-        private paymentService: PaymentService
+        private paymentService: PaymentService,
+        private dataSource: DataSource
     ) {}
 
     async getOrder(buyer: AccountEntity, orderId: string) {
@@ -68,72 +71,81 @@ export class OrderService {
     async createOrder(
         buyer: AccountEntity,
         createOrderDto: CreateOrderDto,
-        createVNPAYPaymentDto?: CreateVNPAYPaymentDto
+        ipAddress: string
     ) {
-        // calculate total price
-        let totalAmount = 0
-        for (const orderItem of createOrderDto.orderItems) {
-            const product = await this.productRepository.findOneBy({
-                id: orderItem.productId
-            })
+        const savedOrder = await this.dataSource.transaction(
+            async (entityManager) => {
+                // calculate total price
+                let totalAmount = 0
+                for (const orderItem of createOrderDto.orderItems) {
+                    const product = await entityManager.findOne(ProductEntity, {
+                        where: { id: orderItem.productId }
+                    })
 
-            if (!product)
-                throw new NotFoundException(
-                    `Can not find product with id: ${orderItem.productId}`
+                    if (!product)
+                        throw new NotFoundException(
+                            `Can not find product with id: ${orderItem.productId}`
+                        )
+
+                    totalAmount += orderItem.quantity * product.price
+                }
+
+                /* -------------------------------------------------------------------------- */
+                /*                               create the order                             */
+                /* -------------------------------------------------------------------------- */
+                const newOrder = entityManager.create(OrderEntity, {
+                    totalAmount,
+                    buyer
+                })
+                const savedOrder = await entityManager.save(
+                    OrderEntity,
+                    newOrder
                 )
 
-            totalAmount += orderItem.quantity * product.price
-        }
+                /* -------------------------------------------------------------------------- */
+                /*                             save all order item                            */
+                /* -------------------------------------------------------------------------- */
+                const newOrderItems = createOrderDto.orderItems.map((value) => {
+                    return { orderId: savedOrder.id, ...value }
+                })
+                await entityManager.save(OrderToProductEntity, newOrderItems)
 
-        /* -------------------------------------------------------------------------- */
-        /*                               create the order                             */
-        /* -------------------------------------------------------------------------- */
-        const newOrder = this.orderRepository.create({
-            totalAmount,
-            buyer
-        })
-        const savedOrder = await this.orderRepository.save(newOrder)
+                /* -------------------------------------------------------------------------- */
+                /*                               create shipping                              */
+                /* -------------------------------------------------------------------------- */
+                const newShipping = entityManager.create(ShippingEntity, {
+                    order: savedOrder,
+                    ...createOrderDto.shippingInfors
+                })
+                await entityManager.save(ShippingEntity, newShipping)
 
-        /* -------------------------------------------------------------------------- */
-        /*                             save all order item                            */
-        /* -------------------------------------------------------------------------- */
-        const newOrderItems = createOrderDto.orderItems.map((value) => {
-            return { orderId: savedOrder.id, ...value }
-        })
-        await this.orderToProductRepository.save(newOrderItems)
+                /* -------------------------------------------------------------------------- */
+                /*                               create payment                               */
+                /* -------------------------------------------------------------------------- */
+                // if VNPAY -> return payment url to user to self-complete -> wait for FE to send infor to save this payment
 
-        /* -------------------------------------------------------------------------- */
-        /*                               create shipping                              */
-        /* -------------------------------------------------------------------------- */
-        await this.shippingService.createShipping(
-            savedOrder,
-            createOrderDto.shippingInfors
+                const newPayment = entityManager.create(PaymentEntity, {
+                    order: savedOrder,
+                    paymentAmount: totalAmount,
+                    paymentMethod: createOrderDto.paymentMethod
+                })
+                await entityManager.save(newPayment)
+                return savedOrder
+            }
         )
 
-        /* -------------------------------------------------------------------------- */
-        /*                               create payment                               */
-        /* -------------------------------------------------------------------------- */
-        // if COD -> return payment entity after saving to db
-        // if VNPAY -> return payment url to user to self-complete -> wait for FE to send infor to save this payment
-        let payment: PaymentEntity | string
+        // Generate payment URL after transaction
         if (createOrderDto.paymentMethod === PaymentMethod.VNPAY) {
-            if (!createVNPAYPaymentDto.orderId)
-                throw new BadRequestException(
-                    'Need to provide vnpay information for this payment method'
-                )
+            const paymentUrl = await this.paymentService.generatePaymentUrl({
+                order: savedOrder,
+                ipAddress,
+                bankCode: createOrderDto.bankCode
+            })
 
-            payment = await this.paymentService.createPaymentUrl(
-                createVNPAYPaymentDto
-            )
-
-            return { savedOrder, payment }
-        } else {
-            payment = await this.paymentService.createPaymentCod(
-                savedOrder,
-                totalAmount
-            )
-            return { savedOrder }
+            return { savedOrder, paymentUrl }
         }
+
+        return { savedOrder }
     }
 
     async updateOrderStatus(orderId: number, newStatus: OrderStatus) {

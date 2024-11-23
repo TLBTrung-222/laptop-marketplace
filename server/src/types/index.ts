@@ -1,3 +1,6 @@
+import { BankCode } from 'src/api/payment/dto/payment.dto'
+import { OrderEntity } from 'src/database/entities/order.entity'
+
 export interface ApiResponse {
     isSuccess: boolean
     data: any
@@ -21,4 +24,10 @@ export interface VnpParams {
     vnp_CreateDate: string
     vnp_ExpireDate?: string
     vnp_SecureHash: string
+}
+
+export interface PaymentUrlParams {
+    order: OrderEntity
+    ipAddress: string
+    bankCode?: BankCode
 }

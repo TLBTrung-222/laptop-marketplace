@@ -1,13 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { OrderEntity } from 'src/database/entities/order.entity'
 import { Repository } from 'typeorm'
 import * as crypto from 'crypto'
-import { VnpParams } from 'src/types'
-import { CreateVNPAYPaymentDto } from '../dto/payment.dto'
+import { PaymentUrlParams, VnpParams } from 'src/types'
 import { PaymentEntity } from 'src/database/entities/payment.entity'
-import { PaymentMethod } from 'src/shared/enum/payment.enum'
+import { PaymentMethod, PaymentStatus } from 'src/shared/enum/payment.enum'
 
 @Injectable()
 export class PaymentService {
@@ -19,31 +22,33 @@ export class PaymentService {
         private paymentRepository: Repository<PaymentEntity>
     ) {}
 
-    // for payment method: COD
-    async createPaymentCod(order: OrderEntity, paymentAmount: number) {
+    // create payment infor and save to db
+    async createPayment(
+        order: OrderEntity,
+        paymentAmount: number,
+        paymentMethod: PaymentMethod
+    ) {
         // just add the payment to db
         const newPayment = this.paymentRepository.create({
             order,
             paymentAmount,
-            paymentMethod: PaymentMethod.COD
+            paymentMethod
         })
 
         return this.paymentRepository.save(newPayment)
     }
 
-    // for payment method: Vnpay
-    async createPaymentUrl(dto: CreateVNPAYPaymentDto) {
-        // make sure order is exist
-        const existOrder = await this.orderRepository.findOneBy({
-            id: dto.orderId
+    async generatePaymentUrl(dto: PaymentUrlParams) {
+        // get the payment id, used for vnp_TxnRef
+        const existPayment = await this.paymentRepository.findOne({
+            where: { order: { id: dto.order.id } }
         })
-
-        if (!existOrder)
+        if (!existPayment)
             throw new NotFoundException(
-                `Order with id: ${dto.orderId} not founded`
+                `Payment of this order: ${dto.order.id} not founded`
             )
 
-        const amount = existOrder.totalAmount
+        const amount = dto.order.totalAmount
 
         /* -------------------------------------------------------------------------- */
         /*                         construct params for vnpay                         */
@@ -62,9 +67,9 @@ export class PaymentService {
         vnpParams['vnp_OrderType'] = 'other'
 
         // passed values
-        vnpParams['vnp_TxnRef'] = String(Date.now())
+        vnpParams['vnp_TxnRef'] = String(existPayment.id)
         vnpParams['vnp_OrderInfo'] =
-            'Thanh toan GD voi orderId = ' + dto.orderId
+            'Thanh toan GD voi orderId = ' + dto.order.id
         vnpParams['vnp_Amount'] = String(amount * 100)
         vnpParams['vnp_IpAddr'] = dto.ipAddress
         if (dto.bankCode) {
@@ -97,9 +102,23 @@ export class PaymentService {
         const signed = this.createChecksum(vnpParams)
 
         if (secureHash == signed) {
-            /* -------------------------------------------------------------------------- */
-            //!                          TODO: save infor to database                     */
-            /* -------------------------------------------------------------------------- */
+            // change paymentStatus from 0 to 1, update payment date
+            const paymentId = parseInt(vnpParams['vnp_TxnRef'])
+            const existPayment = await this.paymentRepository.findOne({
+                where: { id: paymentId }
+            })
+            if (existPayment.paymentStatus === PaymentStatus.UNPAID)
+                existPayment.paymentStatus = PaymentStatus.PAID
+            else
+                throw new BadRequestException(
+                    `The payment with id: ${paymentId} already been paid`
+                )
+            existPayment.paymentDate = this.parseVnpPayDate(
+                // vnp_PayDate in format: yyyyMMddHHmmss
+                vnpParams['vnp_PayDate']
+            )
+            await this.paymentRepository.save(existPayment)
+
             return { code: vnpParams['vnp_ResponseCode'] } // if order success, vnp_ResponseCode is '00'
         } else return { code: '97' }
     }
@@ -148,5 +167,16 @@ export class PaymentService {
 
         // Return the generated HMAC hash as the checksum
         return signed
+    }
+
+    private parseVnpPayDate(vnpPayDate: string): Date {
+        const year = parseInt(vnpPayDate.substring(0, 4))
+        const month = parseInt(vnpPayDate.substring(4, 6)) - 1 // Month is 0-based in JavaScript
+        const day = parseInt(vnpPayDate.substring(6, 8))
+        const hour = parseInt(vnpPayDate.substring(8, 10))
+        const minute = parseInt(vnpPayDate.substring(10, 12))
+        const second = parseInt(vnpPayDate.substring(12, 14))
+
+        return new Date(Date.UTC(year, month, day, hour, minute, second))
     }
 }

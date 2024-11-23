@@ -1,7 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer'
 import {
     ArrayMinSize,
-    IsAlpha,
     IsArray,
     IsDefined,
     IsEnum,
@@ -12,10 +11,7 @@ import {
     ValidateNested
 } from 'class-validator'
 import { ViewAccountDto } from 'src/api/account/dto/account.dto'
-import {
-    _CreateVNPAYPaymentDto,
-    CreateVNPAYPaymentDto
-} from 'src/api/payment/dto/payment.dto'
+import { BankCode } from 'src/api/payment/dto/payment.dto'
 import { CreateShippingDto } from 'src/api/shipping/dto/shipping.dto'
 import { OrderStatus } from 'src/shared/enum/order.enum'
 import { PaymentMethod } from 'src/shared/enum/payment.enum'
@@ -47,9 +43,8 @@ export class CreateOrderDto {
     paymentMethod: PaymentMethod
 
     @IsOptional()
-    @ValidateNested()
-    @Type(() => _CreateVNPAYPaymentDto)
-    vnpayPaymentInfors: _CreateVNPAYPaymentDto
+    @IsEnum(BankCode)
+    bankCode: BankCode
 }
 
 export class UpdateOrderStatusDto {
@@ -85,5 +80,5 @@ export class ViewCreatedOrderDto {
     savedOrder: ViewOrderDto
 
     @Expose()
-    payment?: string
+    paymentUrl?: string
 }

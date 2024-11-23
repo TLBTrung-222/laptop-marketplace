@@ -9,13 +9,15 @@ import { PaymentModule } from '../payment/payment.module'
 import { PaymentService } from '../payment/service/payment.service'
 import { ShippingModule } from '../shipping/shipping.module'
 import { ShippingService } from '../shipping/service/shipping.service'
+import { PaymentEntity } from 'src/database/entities/payment.entity'
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             OrderEntity,
             ProductEntity,
-            OrderToProductEntity
+            OrderToProductEntity,
+            PaymentEntity
         ]),
         PaymentModule,
         ShippingModule
