@@ -27,14 +27,16 @@ export class SignUpAccountDto {
     email: string
 
     @ApiProperty()
+    @IsOptional() // for google sign in/up
     @IsString()
     @MinLength(3)
     @MaxLength(12)
     password: string
 
     @ApiProperty()
+    @IsOptional()
     @IsPhoneNumber('VN')
-    phoneNumber: string
+    phoneNumber?: string
 
     @ApiProperty()
     @IsString()
@@ -45,6 +47,9 @@ export class SignUpAccountDto {
     @ApiPropertyOptional()
     @IsOptional()
     avatar?: Buffer
+
+    @IsOptional()
+    googleId?: string
 }
 
 export class ViewAccountDto {

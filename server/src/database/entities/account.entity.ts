@@ -26,10 +26,10 @@ export class AccountEntity {
     @Column()
     email: string
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber: string
 
-    @Column()
+    @Column({ nullable: true })
     passwordHash: string
 
     @Column()
@@ -37,6 +37,9 @@ export class AccountEntity {
 
     @Column({ type: 'blob', nullable: true })
     avatar: Buffer
+
+    @Column({ nullable: true })
+    googleId?: string
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */

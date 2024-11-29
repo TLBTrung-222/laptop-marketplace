@@ -2,9 +2,12 @@ import {
     BadRequestException,
     Body,
     Controller,
+    Get,
     HttpCode,
     Post,
-    Session
+    Req,
+    Session,
+    UseGuards
 } from '@nestjs/common'
 import { Serialize } from 'src/shared/interceptor/serialize.interceptor'
 import {
@@ -24,6 +27,9 @@ import {
     ApiTags,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger'
+import { AuthGuard } from '@nestjs/passport'
+import { Request } from 'express'
+import { AccountEntity } from 'src/database/entities/account.entity'
 
 // auth controller handle signin/signup route, auth service validate logic, account service handle the CRUD of account
 @ApiTags('auth')
@@ -32,6 +38,27 @@ import {
 export class AuthController {
     constructor(private authService: AuthService) {}
 
+    /* -------------------------------------------------------------------------- */
+    /*                              Google sign in/up                             */
+    /* -------------------------------------------------------------------------- */
+    @Get('google/login')
+    @UseGuards(AuthGuard('google'))
+    handleGoogleLogin() {}
+
+    @Get('google/redirect')
+    @UseGuards(AuthGuard('google'))
+    handleRedirect(
+        @Req() request: Request,
+        @Session() session: ExpressSession
+    ) {
+        //! Passport attach the created account to 'request.user'
+        session.accountId = (request.user as AccountEntity).id // trigger set cookie to client
+        return request.user
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                Local sign in/up                            */
+    /* -------------------------------------------------------------------------- */
     @ApiOperation({ summary: 'Sign in account locally' })
     @ApiOkResponse({ description: 'Sign in succesfully', type: ViewAccountDto })
     @ApiNotFoundResponse({ description: 'Email not founded' })
@@ -72,7 +99,7 @@ export class AuthController {
     @Post('/seller/signup')
     async signUpSeller(
         @Body() body: SignUpAccountDto,
-        @Session() session: any
+        @Session() session: ExpressSession
     ) {
         const account = await this.authService.signUp(body, RoleId.Seller)
         session.accountId = account.id
