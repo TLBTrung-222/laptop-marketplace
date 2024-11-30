@@ -1,4 +1,3 @@
-// src/auth/strategies/google.strategy.ts
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
@@ -29,7 +28,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const { sub: googleId, email, name, picture } = profile._json
 
         try {
-            // Check if user exists by email or googleId
             let account = await this.accountService.findByEmail(email)
 
             if (!account) {

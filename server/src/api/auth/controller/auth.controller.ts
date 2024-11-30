@@ -51,9 +51,8 @@ export class AuthController {
         @Req() request: Request,
         @Session() session: ExpressSession
     ) {
-        //! Passport attach the created account to 'request.user'
-        session.accountId = (request.user as AccountEntity).id // trigger set cookie to client
-        return request.user
+        session.accountId = (request.account as AccountEntity).id // trigger set cookie to client
+        return request.account
     }
 
     /* -------------------------------------------------------------------------- */
