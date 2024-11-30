@@ -13,6 +13,7 @@ import { OrderToProductEntity } from './order-to-product.entity'
 import { OrderStatus } from 'src/shared/enum/order.enum'
 import { PaymentEntity } from './payment.entity'
 import { ShippingEntity } from './shipping.entity'
+import { FundTransactionEntity } from './fund-transaction.entity'
 
 @Entity('orders')
 export class OrderEntity {
@@ -54,4 +55,10 @@ export class OrderEntity {
 
     @OneToOne(() => ShippingEntity, (shipping) => shipping.order)
     shipping: ShippingEntity
+
+    @OneToOne(
+        () => FundTransactionEntity,
+        (fundTransaction) => fundTransaction.order
+    )
+    fundTransaction: FundTransactionEntity
 }

@@ -16,6 +16,8 @@ import { OrderEntity } from '../entities/order.entity'
 import { OrderToProductEntity } from '../entities/order-to-product.entity'
 import { PaymentEntity } from '../entities/payment.entity'
 import { ShippingEntity } from '../entities/shipping.entity'
+import { FundEntity } from '../entities/fund.entity'
+import { FundTransactionEntity } from '../entities/fund-transaction.entity'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -39,7 +41,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
                 OrderEntity,
                 OrderToProductEntity,
                 PaymentEntity,
-                ShippingEntity
+                ShippingEntity,
+                FundEntity,
+                FundTransactionEntity
             ],
             synchronize: true,
             migrationsRun: false

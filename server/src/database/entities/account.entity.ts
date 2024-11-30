@@ -14,6 +14,7 @@ import { RatingEntity } from './rating.entity'
 import { ApprovalEntity } from './approval.entity'
 import { CartEntity } from './cart.entity'
 import { OrderEntity } from './order.entity'
+import { FundEntity } from './fund.entity'
 
 @Entity('accounts')
 export class AccountEntity {
@@ -61,4 +62,7 @@ export class AccountEntity {
 
     @OneToMany(() => OrderEntity, (order) => order.buyer)
     orders: OrderEntity[]
+
+    @OneToOne(() => FundEntity, (fund) => fund.seller)
+    fund: FundEntity
 }
