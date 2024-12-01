@@ -5,6 +5,7 @@ import { AccountEntity } from 'src/database/entities/account.entity'
 import { Repository } from 'typeorm'
 import { SignUpAccountDto, UpdateAccountDto } from '../dto/account.dto'
 import { RoleEntity } from 'src/database/entities/role.entity'
+import { FundEntity } from 'src/database/entities/fund.entity'
 
 @Injectable()
 export class AccountService {
@@ -12,7 +13,9 @@ export class AccountService {
         @InjectRepository(AccountEntity)
         private accountRepository: Repository<AccountEntity>,
         @InjectRepository(RoleEntity)
-        private roleRepository: Repository<RoleEntity>
+        private roleRepository: Repository<RoleEntity>,
+        @InjectRepository(FundEntity)
+        private fundRepository: Repository<FundEntity>
     ) {}
 
     async create(body: SignUpAccountDto, roleId: number) {
@@ -26,7 +29,16 @@ export class AccountService {
             role
         })
 
-        return this.accountRepository.save(newUser)
+        const savedUser = await this.accountRepository.save(newUser)
+        // if new user is seller, need to create fund entity
+        if (roleId === RoleId.Seller) {
+            const newFund = this.fundRepository.create({
+                balance: 0,
+                seller: savedUser
+            })
+            await this.fundRepository.save(newFund)
+        }
+        return savedUser
     }
 
     findAll() {

@@ -56,9 +56,9 @@ export class OrderEntity {
     @OneToOne(() => ShippingEntity, (shipping) => shipping.order)
     shipping: ShippingEntity
 
-    @OneToOne(
+    @OneToMany(
         () => FundTransactionEntity,
         (fundTransaction) => fundTransaction.order
     )
-    fundTransaction: FundTransactionEntity
+    fundTransactions: FundTransactionEntity[]
 }

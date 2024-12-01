@@ -11,15 +11,20 @@ import * as crypto from 'crypto'
 import { PaymentUrlParams, VnpParams } from 'src/types'
 import { PaymentEntity } from 'src/database/entities/payment.entity'
 import { PaymentMethod, PaymentStatus } from 'src/shared/enum/payment.enum'
+import { FundTransactionEntity } from 'src/database/entities/fund-transaction.entity'
+import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
+import { FundEntity } from 'src/database/entities/fund.entity'
 
 @Injectable()
 export class PaymentService {
     constructor(
         private configService: ConfigService,
-        @InjectRepository(OrderEntity)
-        private orderRepository: Repository<OrderEntity>,
         @InjectRepository(PaymentEntity)
-        private paymentRepository: Repository<PaymentEntity>
+        private paymentRepository: Repository<PaymentEntity>,
+        @InjectRepository(FundTransactionEntity)
+        private fundTransactionRepository: Repository<FundTransactionEntity>,
+        @InjectRepository(FundEntity)
+        private fundRepository: Repository<FundEntity>
     ) {}
 
     // create payment infor and save to db
@@ -102,10 +107,13 @@ export class PaymentService {
         const signed = this.createChecksum(vnpParams)
 
         if (secureHash == signed) {
-            // change paymentStatus from 0 to 1, update payment date
+            /* -------------------------------------------------------------------------- */
+            /*                update payment status, fund_transaction, fund               */
+            /* -------------------------------------------------------------------------- */
             const paymentId = parseInt(vnpParams['vnp_TxnRef'])
             const existPayment = await this.paymentRepository.findOne({
-                where: { id: paymentId }
+                where: { id: paymentId },
+                relations: { order: true }
             })
 
             if (!existPayment)
@@ -113,6 +121,7 @@ export class PaymentService {
                     `Can not find payment with id: ${paymentId}`
                 )
 
+            // change paymentStatus from 0 to 1, update payment date + credit payment amount to seller's fund
             if (existPayment.paymentStatus === PaymentStatus.UNPAID)
                 existPayment.paymentStatus = PaymentStatus.PAID
             else
@@ -123,7 +132,31 @@ export class PaymentService {
                 // vnp_PayDate in format: yyyyMMddHHmmss
                 vnpParams['vnp_PayDate']
             )
+
             await this.paymentRepository.save(existPayment)
+
+            // update creditStatus of each order's fundTransaction from 0 to 1
+            const fundTransactions = await this.fundTransactionRepository.find({
+                where: { order: { id: existPayment.order.id } },
+                relations: { fund: true }
+            })
+            // console.log(fundTransactions[0].fund === fundTransactions[1].fund) // false
+            for (const transaction of fundTransactions) {
+                // Mark the fund transaction as paid
+                transaction.creditStatus = FundTransactionStatus.PAID
+
+                // Refetch the fund to ensure it has the latest state
+                const fund = await this.fundRepository.findOne({
+                    where: { fundId: transaction.fund.fundId }
+                })
+
+                // Credit the amount to the seller's fund
+                fund.balance += transaction.creditAmount
+
+                // Save updated fund and transaction
+                await this.fundRepository.save(fund)
+                await this.fundTransactionRepository.save(transaction)
+            }
 
             return { code: vnpParams['vnp_ResponseCode'] } // if order success, vnp_ResponseCode is '00'
         } else return { code: '97' }

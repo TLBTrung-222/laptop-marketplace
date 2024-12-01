@@ -3,11 +3,12 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
-    OneToOne,
+    OneToMany,
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { FundEntity } from './fund.entity'
 import { OrderEntity } from './order.entity'
+import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
 
 @Entity('fund_transactions')
 export class FundTransactionEntity {
@@ -20,6 +21,9 @@ export class FundTransactionEntity {
     @Column({ type: 'numeric' })
     creditAmount: number
 
+    @Column({ enum: FundTransactionStatus })
+    creditStatus: FundTransactionStatus
+
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
@@ -27,7 +31,7 @@ export class FundTransactionEntity {
     @JoinColumn({ name: 'fundId' })
     fund: FundEntity
 
-    @OneToOne(() => OrderEntity, (order) => order.fundTransaction)
+    @ManyToOne(() => OrderEntity, (order) => order.fundTransactions)
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

@@ -16,6 +16,9 @@ import { PaymentService } from 'src/api/payment/service/payment.service'
 import { PaymentMethod } from 'src/shared/enum/payment.enum'
 import { ShippingEntity } from 'src/database/entities/shipping.entity'
 import { PaymentEntity } from 'src/database/entities/payment.entity'
+import { FundTransactionEntity } from 'src/database/entities/fund-transaction.entity'
+import { FundEntity } from 'src/database/entities/fund.entity'
+import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
 
 @Injectable()
 export class OrderService {
@@ -78,11 +81,14 @@ export class OrderService {
     ) {
         const savedOrder = await this.dataSource.transaction(
             async (entityManager) => {
-                // calculate total price
+                // calculate total price, create fund transaction
+                let fundTransactions: FundTransactionEntity[] = []
                 let totalAmount = 0
                 for (const orderItem of createOrderDto.orderItems) {
+                    // get product
                     const product = await entityManager.findOne(ProductEntity, {
-                        where: { id: orderItem.productId }
+                        where: { id: orderItem.productId },
+                        relations: { seller: true }
                     })
 
                     if (!product)
@@ -95,8 +101,24 @@ export class OrderService {
                             `Not enough stock quantity for product id: ${orderItem.productId}`
                         )
 
+                    // subtract remain stock quantity
                     product.stockQuantity -= orderItem.quantity
                     await entityManager.save(product)
+
+                    // create fund transaction for each order item
+                    const sellerFund = await entityManager.findOne(FundEntity, {
+                        where: { seller: { id: product.seller.id } }
+                    })
+
+                    const newFundTransaction = entityManager.create(
+                        FundTransactionEntity,
+                        {
+                            fund: sellerFund,
+                            creditAmount: orderItem.quantity * product.price,
+                            creditStatus: FundTransactionStatus.UNPAID
+                        }
+                    )
+                    fundTransactions.push(newFundTransaction)
 
                     totalAmount += orderItem.quantity * product.price
                 }
@@ -120,6 +142,17 @@ export class OrderService {
                     return { orderId: savedOrder.id, ...value }
                 })
                 await entityManager.save(OrderToProductEntity, newOrderItems)
+
+                /* -------------------------------------------------------------------------- */
+                /*                           create fund transaction                          */
+                /* -------------------------------------------------------------------------- */
+                const newFundTransactions = fundTransactions.map((value) => {
+                    return { order: savedOrder, ...value }
+                })
+                await entityManager.save(
+                    FundTransactionEntity,
+                    newFundTransactions
+                )
 
                 /* -------------------------------------------------------------------------- */
                 /*                               create shipping                              */
