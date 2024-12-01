@@ -1,4 +1,4 @@
-import { ShippingStatus } from 'src/shared/enum/shipping.enum'
+import { ShippingStatus } from '../../shared/enum/shipping.enum'
 import {
     Column,
     CreateDateColumn,

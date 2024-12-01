@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentStatus } from 'src/shared/enum/payment.enum'
+import { PaymentMethod, PaymentStatus } from '../../shared/enum/payment.enum'
 import {
     Column,
     Entity,

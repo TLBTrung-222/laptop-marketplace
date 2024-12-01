@@ -16,7 +16,7 @@ export class ImageEntity {
     id: number
 
     @Column()
-    image: Buffer
+    image: string
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */

@@ -8,7 +8,7 @@ import {
 } from 'typeorm'
 import { FundEntity } from './fund.entity'
 import { OrderEntity } from './order.entity'
-import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
+import { FundTransactionStatus } from '../../shared/enum/fund-transaction.enum'
 
 @Entity('fund_transactions')
 export class FundTransactionEntity {

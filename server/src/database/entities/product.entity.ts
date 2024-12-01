@@ -14,10 +14,10 @@ import { CategoryEntity } from './category.entity'
 import { AccountEntity } from './account.entity'
 import { IsOptional } from 'class-validator'
 import { SpecificationEntity } from './specification.entity'
-import { ProductStatus } from 'src/shared/enum/product.enum'
+import { ProductStatus } from '../../shared/enum/product.enum'
 import { ImageEntity } from './image.entity'
 import { ApprovalEntity } from './approval.entity'
-import { CartToProductEntity } from './cart-to-product'
+import { CartToProductEntity } from './cart-to-product.entity'
 import { OrderToProductEntity } from './order-to-product.entity'
 
 @Entity('products')

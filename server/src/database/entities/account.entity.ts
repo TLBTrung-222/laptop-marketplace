@@ -36,7 +36,7 @@ export class AccountEntity {
     @Column()
     name: string
 
-    @Column({ type: 'blob', nullable: true })
+    @Column({ type: 'bytea', nullable: true })
     avatar: Buffer
 
     @Column({ nullable: true })

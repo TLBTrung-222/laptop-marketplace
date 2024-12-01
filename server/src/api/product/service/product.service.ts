@@ -202,7 +202,7 @@ export class ProductService {
         if (!existProduct)
             throw new NotFoundException('Product could not been found')
         const newImage = this.imageRepository.create({
-            image: image,
+            image: '',
             product: existProduct
         })
         await this.imageRepository.save(newImage)
