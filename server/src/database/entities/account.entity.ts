@@ -14,6 +14,7 @@ import { RatingEntity } from './rating.entity'
 import { ApprovalEntity } from './approval.entity'
 import { CartEntity } from './cart.entity'
 import { OrderEntity } from './order.entity'
+import { FundEntity } from './fund.entity'
 
 @Entity('accounts')
 export class AccountEntity {
@@ -26,10 +27,10 @@ export class AccountEntity {
     @Column()
     email: string
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber: string
 
-    @Column()
+    @Column({ nullable: true })
     passwordHash: string
 
     @Column()
@@ -37,6 +38,9 @@ export class AccountEntity {
 
     @Column({ type: 'blob', nullable: true })
     avatar: Buffer
+
+    @Column({ nullable: true })
+    googleId?: string
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
@@ -58,4 +62,7 @@ export class AccountEntity {
 
     @OneToMany(() => OrderEntity, (order) => order.buyer)
     orders: OrderEntity[]
+
+    @OneToOne(() => FundEntity, (fund) => fund.seller)
+    fund: FundEntity
 }

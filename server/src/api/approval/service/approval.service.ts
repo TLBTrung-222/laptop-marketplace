@@ -29,7 +29,7 @@ export class ApprovalService {
     /* -------------------------------------------------------------------------- */
     async getAllApprovals() {
         return this.approvalRepository.find({
-            relations: { seller: true, product: true }
+            relations: { product: true }
         })
     }
 

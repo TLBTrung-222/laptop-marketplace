@@ -31,6 +31,8 @@ $ npm install
 
 5. When seller submit new product, BE auto submit a new approval, state 'pending'
 
+6. Login with google in this project ultimately retrieve a session as cookie + register user to db.
+
 ## Compile and run the project
 
 ```bash
