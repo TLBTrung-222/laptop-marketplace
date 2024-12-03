@@ -1,0 +1,12 @@
+{
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": "docker-compose-dev.yml",
+            "options": {
+                "tabWidth": 2,
+                "singleQuote": true
+            }
+        }
+    ]
+}
