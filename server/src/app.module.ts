@@ -7,6 +7,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { SuccessResponseInterceptor } from './shared/interceptor/success-response.interceptor'
 import { ErrorResponse } from './shared/exception/error-response.exception'
 import { ConfigModule } from '@nestjs/config'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
     imports: [
@@ -14,7 +16,11 @@ import { ConfigModule } from '@nestjs/config'
             useClass: TypeOrmConfigService
         }),
         ApiModule,
-        ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true })
+        ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true }),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, 'public'),
+            serveRoot: '/public'
+        })
     ],
     controllers: [AppController],
     providers: [
@@ -22,4 +28,9 @@ import { ConfigModule } from '@nestjs/config'
         { provide: APP_FILTER, useClass: ErrorResponse }
     ]
 })
-export class AppModule {}
+export class AppModule {
+    constructor() {
+        console.log('log from app module constructor')
+        console.log(join(__dirname, 'public'))
+    }
+}
