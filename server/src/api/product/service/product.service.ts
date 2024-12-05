@@ -17,6 +17,8 @@ import { CategoryEntity } from 'src/database/entities/category.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
 import { ApprovalEntity } from 'src/database/entities/approval.entity'
 import { ApprovalStatus } from 'src/shared/enum/approval.enum'
+import { readFile, rm } from 'fs/promises'
+import { resolveAssetPath } from 'src/shared/utils/helper'
 
 @Injectable()
 export class ProductService {
@@ -179,34 +181,50 @@ export class ProductService {
         return await this.productRepository.delete(id)
     }
 
-    async getImage(id: number) {
+    async getImages(productId: number) {
         const existProduct = await this.productRepository.findOne({
-            where: { id: id },
+            where: { id: productId },
             relations: {
                 images: true
             }
         })
         if (!existProduct)
-            throw new NotFoundException('Product could not been found')
-        console.log(existProduct)
-        return existProduct
+            throw new NotFoundException('Product could not be found')
+
+        /* --------- loop through each image, read the correspond image.jpg --------- */
+        // const imagesWithBuffers = await Promise.all(
+        //     existProduct.images.map(async (image) => {
+        //         const imagePath = resolveAssetPath(image.image, 'products')
+        //         const buffer = await readFile(imagePath)
+        //         return {
+        //             image,
+        //             buffer
+        //         }
+        //     })
+        // )
+
+        return existProduct.images
     }
 
-    async uploadImage(id: number, image: Buffer) {
+    async uploadImage(productId: number, image: Express.Multer.File) {
+        /* ---------------------- validate if product is exist ---------------------- */
         const existProduct = await this.productRepository.findOne({
-            where: { id: id },
+            where: { id: productId },
             relations: {
                 images: true
             }
         })
         if (!existProduct)
-            throw new NotFoundException('Product could not been found')
+            throw new NotFoundException('Product could not be found')
+
+        /* ------------------- save product image into Image repo ------------------- */
         const newImage = this.imageRepository.create({
-            image: '',
+            image: image.filename,
             product: existProduct
         })
         await this.imageRepository.save(newImage)
-        return existProduct
+
+        return newImage
     }
 
     async deleteImage(id: number, imageId: number) {
@@ -219,10 +237,17 @@ export class ProductService {
         if (!existProduct)
             throw new NotFoundException('Product could not been found')
         const image = await this.imageRepository.findOne({
-            where: { id: imageId, product: existProduct.images }
+            where: { id: imageId }
         })
         if (!image) throw new NotFoundException('Image could not been found')
-        await this.imageRepository.delete(imageId)
-        return existProduct
+
+        const imagePath = resolveAssetPath(image.image, 'products')
+        await rm(imagePath)
+
+        await this.imageRepository.delete(image)
+
+        return {
+            deletedImage: image
+        }
     }
 }

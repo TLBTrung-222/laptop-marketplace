@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoleId } from 'src/shared/enum/role.enum'
 import { AccountEntity } from 'src/database/entities/account.entity'
@@ -8,6 +12,8 @@ import { RoleEntity } from 'src/database/entities/role.entity'
 import { FundEntity } from 'src/database/entities/fund.entity'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { resolveAssetPath } from 'src/shared/utils/helper'
+import { rm } from 'fs/promises'
 
 @Injectable()
 export class AccountService {
@@ -71,10 +77,9 @@ export class AccountService {
     }
 
     async uploadAvatar(account: AccountEntity, file: Express.Multer.File) {
-        const filePath = join('/assets', 'avatars', file.filename)
-        account.avatar = filePath
+        account.avatar = file.filename
         await this.accountRepository.save(account)
-        return { filePath }
+        return account
     }
 
     async getAvatar(account: AccountEntity) {
@@ -82,12 +87,21 @@ export class AccountService {
 
         let data: Buffer
         try {
-            data = readFileSync(
-                join(__dirname, '..', '..', '..', account.avatar)
-            )
+            console.log(resolveAssetPath(account.avatar, 'avatars'))
+            data = readFileSync(resolveAssetPath(account.avatar, 'avatars'))
         } catch (error) {
             throw new NotFoundException('The avatar can not be founded')
         }
         return data
+    }
+
+    async deleteAvatar(account: AccountEntity) {
+        if (!account.avatar)
+            throw new BadRequestException('User do not have avatar')
+
+        const avatarPath = resolveAssetPath(account.avatar, 'avatars')
+        await rm(avatarPath)
+        account.avatar = null
+        this.accountRepository.save(account)
     }
 }

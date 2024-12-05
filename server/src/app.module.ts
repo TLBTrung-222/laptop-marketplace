@@ -17,10 +17,16 @@ import { join } from 'path'
         }),
         ApiModule,
         ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true }),
-        ServeStaticModule.forRoot({
-            rootPath: join(__dirname, 'assets', 'public'),
-            serveRoot: '/public'
-        })
+        ServeStaticModule.forRoot(
+            {
+                rootPath: join(__dirname, 'assets', 'public'),
+                serveRoot: '/public'
+            },
+            {
+                rootPath: join(__dirname, 'assets', 'products'),
+                serveRoot: '/products/public'
+            }
+        )
     ],
     controllers: [AppController],
     providers: [
@@ -28,4 +34,9 @@ import { join } from 'path'
         { provide: APP_FILTER, useClass: ErrorResponse }
     ]
 })
-export class AppModule {}
+export class AppModule {
+    constructor() {
+        console.log('App module here, where am i...')
+        console.log(__dirname)
+    }
+}

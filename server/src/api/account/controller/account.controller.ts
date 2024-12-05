@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     Post,
@@ -38,6 +39,7 @@ import { extname } from 'path'
 @ApiForbiddenResponse({
     description: 'Access to the requested endpoint is forbidden'
 })
+@Serialize(ViewAccountDto)
 @Controller('accounts')
 export class AccountController {
     constructor(private accountService: AccountService) {}
@@ -49,7 +51,6 @@ export class AccountController {
         type: ViewAccountDto
     })
     @Auth([RoleId.Admin])
-    @Serialize(ViewAccountDto)
     @Get()
     getAllAccount() {
         return this.accountService.findAll()
@@ -61,7 +62,6 @@ export class AccountController {
         type: ViewAccountDto
     })
     @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
-    @Serialize(ViewAccountDto)
     @Get('profile')
     getCurrentAccountProfile(@CurrentAccount() account: AccountEntity) {
         return account
@@ -70,7 +70,6 @@ export class AccountController {
     @ApiOperation({ summary: 'Update profile of current account' })
     @ApiOkResponse({ description: 'Update account information succesfully' })
     @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
-    @Serialize(ViewAccountDto)
     @Put(':id')
     updateCurrentAccountProfile(
         @Body() body: UpdateAccountDto,
@@ -117,6 +116,7 @@ export class AccountController {
         @UploadedFile() file: Express.Multer.File,
         @CurrentAccount() account: AccountEntity
     ) {
+        if (!file) throw new BadRequestException('No file uploaded')
         return this.accountService.uploadAvatar(account, file)
     }
 
@@ -124,5 +124,11 @@ export class AccountController {
     @Get('avatar')
     getAvatar(@CurrentAccount() account: AccountEntity) {
         return this.accountService.getAvatar(account)
+    }
+
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
+    @Delete('avatar')
+    deleteAvatar(@CurrentAccount() account: AccountEntity) {
+        return this.accountService.deleteAvatar(account)
     }
 }

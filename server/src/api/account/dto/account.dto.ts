@@ -67,7 +67,7 @@ export class ViewAccountDto {
 
     @ApiProperty()
     @Expose()
-    avatar: Buffer
+    avatar: string
 }
 
 export class UpdateAccountDto {
@@ -85,5 +85,5 @@ export class UpdateAccountDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    avatar: Buffer
+    avatar: string
 }
