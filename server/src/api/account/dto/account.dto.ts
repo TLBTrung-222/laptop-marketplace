@@ -44,10 +44,6 @@ export class SignUpAccountDto {
     @MaxLength(12)
     name: string
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    avatar?: Buffer
-
     @IsOptional()
     googleId?: string
 }

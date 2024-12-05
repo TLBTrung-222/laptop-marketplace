@@ -36,8 +36,8 @@ export class AccountEntity {
     @Column()
     name: string
 
-    @Column({ type: 'bytea', nullable: true })
-    avatar: Buffer
+    @Column({ nullable: true })
+    avatar?: string
 
     @Column({ nullable: true })
     googleId?: string

@@ -6,6 +6,8 @@ import { Repository } from 'typeorm'
 import { SignUpAccountDto, UpdateAccountDto } from '../dto/account.dto'
 import { RoleEntity } from 'src/database/entities/role.entity'
 import { FundEntity } from 'src/database/entities/fund.entity'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 @Injectable()
 export class AccountService {
@@ -66,5 +68,26 @@ export class AccountService {
 
         Object.assign(user, body)
         return await this.accountRepository.save(user)
+    }
+
+    async uploadAvatar(account: AccountEntity, file: Express.Multer.File) {
+        const filePath = join('/assets', 'avatars', file.filename)
+        account.avatar = filePath
+        await this.accountRepository.save(account)
+        return { filePath }
+    }
+
+    async getAvatar(account: AccountEntity) {
+        if (!account.avatar) return null
+
+        let data: Buffer
+        try {
+            data = readFileSync(
+                join(__dirname, '..', '..', '..', account.avatar)
+            )
+        } catch (error) {
+            throw new NotFoundException('The avatar can not be founded')
+        }
+        return data
     }
 }

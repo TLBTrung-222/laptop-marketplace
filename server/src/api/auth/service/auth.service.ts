@@ -6,8 +6,6 @@ import {
 } from '@nestjs/common'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
-import { readFileSync } from 'fs'
-import { join } from 'path'
 import { AccountService } from 'src/api/account/service/account.service'
 import { RoleId } from 'src/shared/enum/role.enum'
 import {
@@ -60,13 +58,6 @@ export class AuthService {
 
         // hash password
         const passwordHash = await this.hashPassword(account.password)
-
-        // attach defaut avatar
-        account.avatar = Boolean(account.avatar)
-            ? account.avatar
-            : readFileSync(
-                  join(process.cwd(), 'src', 'public', 'default_user.jpg')
-              )
 
         // register to db
         const newUser = await this.accountService.create(

@@ -18,7 +18,7 @@ import { join } from 'path'
         ApiModule,
         ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true }),
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, 'public'),
+            rootPath: join(__dirname, 'assets', 'public'),
             serveRoot: '/public'
         })
     ],
@@ -28,9 +28,4 @@ import { join } from 'path'
         { provide: APP_FILTER, useClass: ErrorResponse }
     ]
 })
-export class AppModule {
-    constructor() {
-        console.log('log from app module constructor')
-        console.log(join(__dirname, 'public'))
-    }
-}
+export class AppModule {}

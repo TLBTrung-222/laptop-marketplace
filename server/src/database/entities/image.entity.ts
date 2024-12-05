@@ -15,7 +15,7 @@ export class ImageEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ nullable: true })
     image: string
 
     /* -------------------------------------------------------------------------- */
