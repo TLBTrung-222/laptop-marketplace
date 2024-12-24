@@ -1,0 +1,1 @@
+// schema validation cho sản phẩm (nếu cần)
