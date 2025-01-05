@@ -41,7 +41,10 @@ export class ShippingEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.shipping, { nullable: false })
+    @OneToOne(() => OrderEntity, (order) => order.shipping, {
+        nullable: false,
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

@@ -34,9 +34,4 @@ import { join } from 'path'
         { provide: APP_FILTER, useClass: ErrorResponse }
     ]
 })
-export class AppModule {
-    constructor() {
-        console.log('App module here, where am i...')
-        console.log(__dirname)
-    }
-}
+export class AppModule {}

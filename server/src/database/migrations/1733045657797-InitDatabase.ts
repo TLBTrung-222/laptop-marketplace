@@ -136,6 +136,12 @@ export class InitDatabase1733045657797 implements MigrationInterface {
             ('seller2@gmail.com', '0912345678', '29e0befffad4f8bd.f7c780a7d19b5bb39d349480094ea14990c32d7d3e0ac8f1b98f911bd9219a1c', 'trungseller2', 1),
             ('admin@gmail.com', '0912345678', 'd9dc063991edeed7.f20c48fdd86fbe0282d24e8369a2d8ec226cb2af014155ef9e20babd4b96c3fe', 'trungadmin', 2);`
         )
+        await queryRunner.query(
+            `INSERT INTO "brands" ("name") VALUES ('Dell'), ('Vivo'), ('Lenovo')`
+        )
+        await queryRunner.query(
+            `INSERT INTO "categories" ("type") VALUES ('Ultrabook'), ('Gaming'), ('Workstation')`
+        )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

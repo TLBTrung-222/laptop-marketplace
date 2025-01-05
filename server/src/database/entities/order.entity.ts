@@ -39,7 +39,9 @@ export class OrderEntity {
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
     @ManyToOne(() => AccountEntity, (account) => account.orders, {
-        nullable: false
+        nullable: false,
+        cascade: true,
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'buyerId' })
     buyer: AccountEntity

@@ -87,7 +87,6 @@ export class AccountService {
 
         let data: Buffer
         try {
-            console.log(resolveAssetPath(account.avatar, 'avatars'))
             data = readFileSync(resolveAssetPath(account.avatar, 'avatars'))
         } catch (error) {
             throw new NotFoundException('The avatar can not be founded')

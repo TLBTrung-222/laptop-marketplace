@@ -27,11 +27,15 @@ export class FundTransactionEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @ManyToOne(() => FundEntity, (fund) => fund.fundTransaction)
+    @ManyToOne(() => FundEntity, (fund) => fund.fundTransaction, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'fundId' })
     fund: FundEntity
 
-    @ManyToOne(() => OrderEntity, (order) => order.fundTransactions)
+    @ManyToOne(() => OrderEntity, (order) => order.fundTransactions, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

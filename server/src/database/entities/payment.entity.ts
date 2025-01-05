@@ -31,7 +31,10 @@ export class PaymentEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.payment, { nullable: false })
+    @OneToOne(() => OrderEntity, (order) => order.payment, {
+        nullable: false,
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

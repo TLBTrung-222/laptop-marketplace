@@ -7,7 +7,6 @@ import { SessionEntity } from './database/entities/session.entity'
 import { DataSource } from 'typeorm'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
-import * as passport from 'passport'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
