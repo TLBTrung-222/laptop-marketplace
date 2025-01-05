@@ -102,6 +102,7 @@ export class ProductService {
             .leftJoinAndSelect('product.category', 'category')
             .leftJoinAndSelect('product.seller', 'seller')
             .leftJoinAndSelect('product.ratings', 'ratings')
+            .leftJoin('product.approval', 'approvals')
 
         if (query.brand)
             queryBuilder.andWhere('brand.name = :brand', { brand: query.brand })
@@ -110,7 +111,9 @@ export class ProductService {
                 category: query.category
             })
 
-        return queryBuilder.getMany()
+        return queryBuilder
+            .andWhere(`approvals.approvalStatus = 'approved'`)
+            .getMany()
     }
 
     async findById(id: number) {
