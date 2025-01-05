@@ -3,12 +3,14 @@ import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20'
 import { AccountService } from 'src/api/account/service/account.service'
+import { EmailService } from 'src/api/email/service/email.service'
 import { RoleId } from 'src/shared/enum/role.enum'
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(
         private accountService: AccountService,
+        private emailService: EmailService,
         private configService: ConfigService
     ) {
         super({
@@ -42,6 +44,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                     },
                     RoleId.Buyer
                 )
+
+                // only send email to this new OAuth account
+                await this.emailService.sendSignUpEmail(account.email)
             }
             return account
         } catch (error) {
