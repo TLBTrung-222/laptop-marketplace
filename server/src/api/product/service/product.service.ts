@@ -17,8 +17,9 @@ import { CategoryEntity } from 'src/database/entities/category.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
 import { ApprovalEntity } from 'src/database/entities/approval.entity'
 import { ApprovalStatus } from 'src/shared/enum/approval.enum'
-import { readFile, rm } from 'fs/promises'
+import { rm } from 'fs/promises'
 import { resolveAssetPath } from 'src/shared/utils/helper'
+import { EmailService } from 'src/api/email/service/email.service'
 
 @Injectable()
 export class ProductService {
@@ -39,7 +40,9 @@ export class ProductService {
         private imageRepository: Repository<ImageEntity>,
 
         @InjectRepository(ApprovalEntity)
-        private readonly approvalRepository: Repository<ApprovalEntity>
+        private readonly approvalRepository: Repository<ApprovalEntity>,
+
+        private emailService: EmailService
     ) {}
 
     async create(
@@ -90,6 +93,9 @@ export class ProductService {
 
         // Step 3: Attach the saved approval to the product
         savedProduct.approval = approval
+
+        // send email to admin to ask for approval
+        await this.emailService.sendApprovalEmail('baotrung2853@gmail.com')
 
         // Return the product with the attached approval
         return await this.productRepository.save(savedProduct)

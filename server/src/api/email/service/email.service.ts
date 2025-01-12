@@ -39,4 +39,14 @@ export class EmailService {
             html: `<b>Your order with orderId=${order.id}, total amount=${order.totalAmount}, date=${order.orderDate} has been placed succesfully</b>` // html body
         })
     }
+
+    async sendApprovalEmail(adminEmail: string) {
+        await this.nodeMailerTransporter.sendMail({
+            from: '"Laptop Marketplace" <laptop.marketplace.se347@gmail.com>', // sender address
+            to: adminEmail,
+            subject: 'New pending approval', // Subject line
+            text: 'You have pending approval, please review', // plain text body
+            html: `<b>You have pending approval, please review</b>` // html body
+        })
+    }
 }

@@ -12,6 +12,7 @@ import { SpecificationService } from '../specification/service/specification.ser
 import { SpecificationEntity } from 'src/database/entities/specification.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
 import { ApprovalEntity } from 'src/database/entities/approval.entity'
+import { EmailModule } from '../email/email.module'
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { ApprovalEntity } from 'src/database/entities/approval.entity'
             ImageEntity,
             ApprovalEntity
         ]),
-        RatingModule
+        RatingModule,
+        EmailModule
     ],
     controllers: [ProductController],
     providers: [ProductService, SpecificationService],
