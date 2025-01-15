@@ -1,6 +1,4 @@
-# revert the latest change
-
-npm run typeorm migration:revert<p align="center">
+<p align="center">
 <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 
 </p>
@@ -80,12 +78,17 @@ Note that before running these command, make sure you in package.json, you confi
 ## Compile and run the project
 
 ```bash
-# development
-$ npm run start
+# turn on services
+docker compose -f docker-compose-dev.yml up -d
+```
 
-# watch mode
-$ npm run start:dev
+## Set up project db
 
-# production mode
-$ npm run start:prod
+```bash
+# create database for postgres image
+psql -U postgres
+CREATE DATABASE "laptop-marketplace";
+
+# seeding our db
+npm run typeorm migration:run
 ```
