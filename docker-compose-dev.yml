@@ -1,0 +1,39 @@
+name: laptop-marketplace
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    env_file:
+      - ./client/.env
+    ports:
+      - 3000:3000
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    env_file:
+      - ./server/.env.dev
+    ports:
+      - 3001:3001
+    depends_on:
+      - postgres
+
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_PASSWORD: baotrung285
+    mem_limit: 128m
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  db-data:

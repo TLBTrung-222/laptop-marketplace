@@ -19,6 +19,8 @@ import { PaymentEntity } from 'src/database/entities/payment.entity'
 import { FundTransactionEntity } from 'src/database/entities/fund-transaction.entity'
 import { FundEntity } from 'src/database/entities/fund.entity'
 import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
+import { EmailService } from 'src/api/email/service/email.service'
+import { ApprovalStatus } from 'src/shared/enum/approval.enum'
 
 @Injectable()
 export class OrderService {
@@ -26,6 +28,7 @@ export class OrderService {
         @InjectRepository(OrderEntity)
         private orderRepository: Repository<OrderEntity>,
         private paymentService: PaymentService,
+        private emailService: EmailService,
         private dataSource: DataSource
     ) {}
 
@@ -88,7 +91,7 @@ export class OrderService {
                     // get product
                     const product = await entityManager.findOne(ProductEntity, {
                         where: { id: orderItem.productId },
-                        relations: { seller: true }
+                        relations: { seller: true, approval: true }
                     })
 
                     if (!product)
@@ -99,6 +102,14 @@ export class OrderService {
                     if (orderItem.quantity >= product.stockQuantity)
                         throw new BadRequestException(
                             `Not enough stock quantity for product id: ${orderItem.productId}`
+                        )
+
+                    if (
+                        product.approval.approvalStatus !==
+                        ApprovalStatus.APPROVED
+                    )
+                        throw new BadRequestException(
+                            'Can not place order with unapproved product'
                         )
 
                     // subtract remain stock quantity
@@ -188,6 +199,9 @@ export class OrderService {
 
             return { savedOrder, paymentUrl }
         }
+
+        // send email to user
+        this.emailService.sendOrderCreatedEmail(buyer.email, savedOrder)
 
         return { savedOrder }
     }

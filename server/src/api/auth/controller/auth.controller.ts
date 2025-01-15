@@ -30,13 +30,17 @@ import {
 import { AuthGuard } from '@nestjs/passport'
 import { Request } from 'express'
 import { AccountEntity } from 'src/database/entities/account.entity'
+import { EmailService } from 'src/api/email/service/email.service'
 
 // auth controller handle signin/signup route, auth service validate logic, account service handle the CRUD of account
 @ApiTags('auth')
 @Serialize(ViewAccountDto)
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private emailService: EmailService
+    ) {}
 
     /* -------------------------------------------------------------------------- */
     /*                              Google sign in/up                             */
@@ -47,11 +51,12 @@ export class AuthController {
 
     @Get('google/redirect')
     @UseGuards(AuthGuard('google'))
-    handleRedirect(
+    async handleRedirect(
         @Req() request: Request,
         @Session() session: ExpressSession
     ) {
         session.accountId = (request.account as AccountEntity).id // trigger set cookie to client
+        // email will be sent in google strategy code
         return request.account
     }
 
@@ -86,6 +91,7 @@ export class AuthController {
     ) {
         const account = await this.authService.signUp(body, RoleId.Buyer)
         session.accountId = account.id
+        await this.emailService.sendSignUpEmail(account.email)
         return account
     }
 
@@ -102,6 +108,7 @@ export class AuthController {
     ) {
         const account = await this.authService.signUp(body, RoleId.Seller)
         session.accountId = account.id
+        await this.emailService.sendSignUpEmail(account.email)
         return account
     }
 

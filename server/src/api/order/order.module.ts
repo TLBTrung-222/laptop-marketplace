@@ -8,6 +8,7 @@ import { OrderToProductEntity } from 'src/database/entities/order-to-product.ent
 import { PaymentModule } from '../payment/payment.module'
 import { ShippingModule } from '../shipping/shipping.module'
 import { PaymentEntity } from 'src/database/entities/payment.entity'
+import { EmailModule } from '../email/email.module'
 
 @Module({
     imports: [
@@ -18,7 +19,8 @@ import { PaymentEntity } from 'src/database/entities/payment.entity'
             PaymentEntity
         ]),
         PaymentModule,
-        ShippingModule
+        ShippingModule,
+        EmailModule
     ],
     controllers: [OrderController],
     providers: [OrderService],

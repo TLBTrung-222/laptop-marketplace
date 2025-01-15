@@ -1,52 +1,22 @@
 import { Injectable } from '@nestjs/common'
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
-import { AccountEntity } from '../entities/account.entity'
-import { RoleEntity } from '../entities/role.entity'
-import { SessionEntity } from '../entities/session.entity'
-import { CategoryEntity } from '../entities/category.entity'
-import { BrandEntity } from '../entities/brand.entity'
-import { RatingEntity } from '../entities/rating.entity'
-import { ProductEntity } from '../entities/product.entity'
-import { SpecificationEntity } from '../entities/specification.entity'
-import { ImageEntity } from '../entities/image.entity'
-import { ApprovalEntity } from '../entities/approval.entity'
-import { CartToProductEntity } from '../entities/cart-to-product'
-import { CartEntity } from '../entities/cart.entity'
-import { OrderEntity } from '../entities/order.entity'
-import { OrderToProductEntity } from '../entities/order-to-product.entity'
-import { PaymentEntity } from '../entities/payment.entity'
-import { ShippingEntity } from '../entities/shipping.entity'
-import { FundEntity } from '../entities/fund.entity'
-import { FundTransactionEntity } from '../entities/fund-transaction.entity'
+
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
+    constructor(private configService: ConfigService) {}
+
     createTypeOrmOptions(): TypeOrmModuleOptions {
         return {
-            type: 'sqlite',
-            database: 'dev.sqlite',
-            entities: [
-                AccountEntity,
-                RoleEntity,
-                SessionEntity,
-                ProductEntity,
-                BrandEntity,
-                CategoryEntity,
-                RatingEntity,
-                SpecificationEntity,
-                ImageEntity,
-                ApprovalEntity,
-                CartEntity,
-                CartToProductEntity,
-                OrderEntity,
-                OrderToProductEntity,
-                PaymentEntity,
-                ShippingEntity,
-                FundEntity,
-                FundTransactionEntity
-            ],
-            synchronize: true,
-            migrationsRun: false
+            type: 'postgres',
+            host: this.configService.get('POSTGRES_HOST'),
+            port: this.configService.get('POSTGRES_PORT'),
+            username: this.configService.get('POSTGRES_USERNAME'),
+            password: this.configService.get('POSTGRES_PASSWORD'),
+            database: this.configService.get('POSTGRES_DATABASE'),
+            entities: ['dist/**/*.entity.js'],
+            migrations: ['dist/database/migrations/*.js']
         }
     }
 }

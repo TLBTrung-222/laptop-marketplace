@@ -23,7 +23,9 @@ export class FundEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => AccountEntity, (account) => account.fund)
+    @OneToOne(() => AccountEntity, (account) => account.fund, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'sellerId' })
     seller: AccountEntity
 

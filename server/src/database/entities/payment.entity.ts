@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentStatus } from 'src/shared/enum/payment.enum'
+import { PaymentMethod, PaymentStatus } from '../../shared/enum/payment.enum'
 import {
     Column,
     Entity,
@@ -31,7 +31,10 @@ export class PaymentEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.payment, { nullable: false })
+    @OneToOne(() => OrderEntity, (order) => order.payment, {
+        nullable: false,
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

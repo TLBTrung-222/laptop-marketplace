@@ -8,7 +8,7 @@ import {
 } from 'typeorm'
 import { FundEntity } from './fund.entity'
 import { OrderEntity } from './order.entity'
-import { FundTransactionStatus } from 'src/shared/enum/fund-transaction.enum'
+import { FundTransactionStatus } from '../../shared/enum/fund-transaction.enum'
 
 @Entity('fund_transactions')
 export class FundTransactionEntity {
@@ -27,11 +27,15 @@ export class FundTransactionEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @ManyToOne(() => FundEntity, (fund) => fund.fundTransaction)
+    @ManyToOne(() => FundEntity, (fund) => fund.fundTransaction, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'fundId' })
     fund: FundEntity
 
-    @ManyToOne(() => OrderEntity, (order) => order.fundTransactions)
+    @ManyToOne(() => OrderEntity, (order) => order.fundTransactions, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

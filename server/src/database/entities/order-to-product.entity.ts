@@ -12,7 +12,9 @@ export class OrderToProductEntity {
     orderId: number
 
     @PrimaryColumn()
-    @ManyToOne(() => ProductEntity, (product) => product.orderToProducts)
+    @ManyToOne(() => ProductEntity, (product) => product.orderToProducts, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'productId' })
     productId: number
 

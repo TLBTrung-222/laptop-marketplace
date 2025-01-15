@@ -15,8 +15,8 @@ export class ImageEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    image: Buffer
+    @Column({ nullable: true })
+    image: string
 
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */

@@ -1,15 +1,16 @@
 import {
+    BadRequestException,
     Body,
-    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
-    NotFoundException,
     Param,
+    ParseIntPipe,
     Post,
     Put,
     Query,
     Session,
+    UnsupportedMediaTypeException,
     UploadedFile,
     UseInterceptors
 } from '@nestjs/common'
@@ -30,6 +31,7 @@ import {
     CreateProductDto,
     SearchProductDto,
     UpdateProductDto,
+    ViewImageDto,
     ViewProductDto
 } from '../dto/product.dto'
 import { RatingService } from 'src/api/rating/service/rating.service'
@@ -46,6 +48,9 @@ import {
     ViewSpecificationDto
 } from 'src/api/specification/dto/specification.dto'
 import { SpecificationEntity } from 'src/database/entities/specification.entity'
+import { diskStorage } from 'multer'
+import { extname } from 'path'
+import { Request } from 'express'
 
 @ApiTags('products')
 @ApiCookieAuth()
@@ -220,29 +225,55 @@ export class ProductController {
     /* -------------------------------------------------------------------------- */
     /*                                Images routes                               */
     /* -------------------------------------------------------------------------- */
-    @Serialize(ViewProductDto)
     @ApiOperation({ summary: 'Get images by product id' })
     @Get(':id/images')
-    getProductImages(@Param('id') id: string) {
-        return this.productService.getImage(parseInt(id))
+    getProductImages(@Param('id', ParseIntPipe) id: number) {
+        return this.productService.getImages(id)
     }
 
+    @Serialize(ViewImageDto)
     @ApiOperation({ summary: 'Post images by product id' })
-    @UseInterceptors(FileInterceptor('file'))
     @Post(':id/images')
+    @UseInterceptors(
+        FileInterceptor('image', {
+            fileFilter: (req, file, callback) => {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+                if (!allowedTypes.includes(file.mimetype)) {
+                    return callback(
+                        new UnsupportedMediaTypeException(
+                            'Only images are allowed'
+                        ),
+                        false
+                    )
+                }
+                callback(null, true)
+            },
+            storage: diskStorage({
+                destination: './src/assets/products',
+                filename: (req: Request, file, callback) => {
+                    const productId = req.params.id
+                    const ext = extname(file.originalname)
+                    const fileName = `${productId}-${Date.now()}${ext}`
+                    callback(null, fileName)
+                }
+            })
+        })
+    )
     addProductImages(
-        @Param('id') id: string,
-        @UploadedFile() file: Express.Multer.File
+        @Param('id', ParseIntPipe) id: number,
+        @UploadedFile()
+        file: Express.Multer.File
     ) {
-        return this.productService.uploadImage(parseInt(id), file.buffer)
+        if (!file) throw new BadRequestException('No file uploaded')
+        return this.productService.uploadImage(id, file)
     }
 
     @ApiOperation({ summary: 'Delete a image' })
     @Delete(':id/images/:imageId')
     deleteProductImage(
-        @Param('id') id: string,
-        @Param('imageId') imageId: string
+        @Param('id', ParseIntPipe) productId: number,
+        @Param('imageId', ParseIntPipe) imageId: number
     ) {
-        return this.productService.deleteImage(parseInt(id), parseInt(imageId))
+        return this.productService.deleteImage(productId, imageId)
     }
 }

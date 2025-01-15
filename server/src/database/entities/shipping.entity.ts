@@ -1,4 +1,4 @@
-import { ShippingStatus } from 'src/shared/enum/shipping.enum'
+import { ShippingStatus } from '../../shared/enum/shipping.enum'
 import {
     Column,
     CreateDateColumn,
@@ -41,7 +41,10 @@ export class ShippingEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => OrderEntity, (order) => order.shipping, { nullable: false })
+    @OneToOne(() => OrderEntity, (order) => order.shipping, {
+        nullable: false,
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'orderId' })
     order: OrderEntity
 }

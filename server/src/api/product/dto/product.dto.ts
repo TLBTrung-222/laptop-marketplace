@@ -69,7 +69,7 @@ export class ViewProductDto {
     @ApiProperty()
     @Expose()
     @Type(() => ViewImageDto)
-    imageId: ViewImageDto[]
+    image: ViewImageDto[]
 }
 
 export class CreateProductDto {
@@ -150,7 +150,7 @@ export class ViewImageDto {
 
     @ApiProperty()
     @Expose()
-    image: Buffer
+    image: string
 }
 
 export class SearchProductDto {

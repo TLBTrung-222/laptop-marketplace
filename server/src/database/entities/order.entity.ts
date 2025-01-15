@@ -10,7 +10,7 @@ import {
 } from 'typeorm'
 import { AccountEntity } from './account.entity'
 import { OrderToProductEntity } from './order-to-product.entity'
-import { OrderStatus } from 'src/shared/enum/order.enum'
+import { OrderStatus } from '../../shared/enum/order.enum'
 import { PaymentEntity } from './payment.entity'
 import { ShippingEntity } from './shipping.entity'
 import { FundTransactionEntity } from './fund-transaction.entity'
@@ -39,7 +39,9 @@ export class OrderEntity {
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
     @ManyToOne(() => AccountEntity, (account) => account.orders, {
-        nullable: false
+        nullable: false,
+        cascade: true,
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'buyerId' })
     buyer: AccountEntity

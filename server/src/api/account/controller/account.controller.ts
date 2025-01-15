@@ -1,11 +1,17 @@
 import {
+    BadRequestException,
     Body,
     Controller,
+    Delete,
     Get,
     Param,
+    Post,
     Put,
     Session,
-    UnauthorizedException
+    UnauthorizedException,
+    UnsupportedMediaTypeException,
+    UploadedFile,
+    UseInterceptors
 } from '@nestjs/common'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { Auth } from 'src/shared/decorator/auth.decorator'
@@ -23,6 +29,9 @@ import {
     ApiTags,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { diskStorage } from 'multer'
+import { extname } from 'path'
 
 @ApiTags('accounts')
 @ApiCookieAuth()
@@ -55,7 +64,7 @@ export class AccountController {
     @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
     @Get('profile')
     getCurrentAccountProfile(@CurrentAccount() account: AccountEntity) {
-        return this.accountService.findById(account.id)
+        return account
     }
 
     @ApiOperation({ summary: 'Update profile of current account' })
@@ -75,5 +84,51 @@ export class AccountController {
             )
 
         return this.accountService.update(parseInt(id), body)
+    }
+
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
+    @Post('avatar')
+    @UseInterceptors(
+        FileInterceptor('avatar', {
+            fileFilter: (req, file, callback) => {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+                if (!allowedTypes.includes(file.mimetype)) {
+                    return callback(
+                        new UnsupportedMediaTypeException(
+                            'Only images are allowed'
+                        ),
+                        false
+                    )
+                }
+                callback(null, true)
+            },
+            storage: diskStorage({
+                destination: './src/assets/avatars',
+                filename: (req, file, callback) => {
+                    const ext = extname(file.originalname)
+                    const fileName = `${req.account.id}${ext}`
+                    callback(null, fileName)
+                }
+            })
+        })
+    )
+    uploadAvatar(
+        @UploadedFile() file: Express.Multer.File,
+        @CurrentAccount() account: AccountEntity
+    ) {
+        if (!file) throw new BadRequestException('No file uploaded')
+        return this.accountService.uploadAvatar(account, file)
+    }
+
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
+    @Get('avatar')
+    getAvatar(@CurrentAccount() account: AccountEntity) {
+        return this.accountService.getAvatar(account)
+    }
+
+    @Auth([RoleId.Buyer, RoleId.Seller, RoleId.Admin])
+    @Delete('avatar')
+    deleteAvatar(@CurrentAccount() account: AccountEntity) {
+        return this.accountService.deleteAvatar(account)
     }
 }

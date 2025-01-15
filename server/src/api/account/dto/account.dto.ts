@@ -44,10 +44,6 @@ export class SignUpAccountDto {
     @MaxLength(12)
     name: string
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    avatar?: Buffer
-
     @IsOptional()
     googleId?: string
 }
@@ -71,7 +67,7 @@ export class ViewAccountDto {
 
     @ApiProperty()
     @Expose()
-    avatar: Buffer
+    avatar: string
 }
 
 export class UpdateAccountDto {
@@ -89,5 +85,5 @@ export class UpdateAccountDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    avatar: Buffer
+    avatar: string
 }

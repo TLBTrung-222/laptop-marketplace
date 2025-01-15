@@ -9,7 +9,7 @@ import {
 } from 'typeorm'
 import { AccountEntity } from './account.entity'
 import { ProductEntity } from './product.entity'
-import { ApprovalStatus } from 'src/shared/enum/approval.enum'
+import { ApprovalStatus } from '../../shared/enum/approval.enum'
 
 @Entity('approvals')
 export class ApprovalEntity {
