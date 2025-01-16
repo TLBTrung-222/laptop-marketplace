@@ -4,7 +4,7 @@ import { CartService } from './service/cart.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { CartEntity } from 'src/database/entities/cart.entity'
 import { ProductEntity } from 'src/database/entities/product.entity'
-import { CartToProductEntity } from 'src/database/entities/cart-to-product'
+import { CartToProductEntity } from 'src/database/entities/cart-to-product.entity'
 
 @Module({
     imports: [
