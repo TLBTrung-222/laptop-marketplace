@@ -162,19 +162,23 @@ export class PaymentService {
         } else return { code: '97' }
     }
 
-    private dateToYYYYMMDDHHmmss(expireTime?: number) {
+    private dateToYYYYMMDDHHmmss(expireTime?: number): string {
         const now = new Date()
 
         if (expireTime) {
             now.setMinutes(now.getMinutes() + expireTime) // Add specified minutes
         }
 
-        const year = now.getFullYear()
-        const month = String(now.getMonth() + 1).padStart(2, '0') // Months are 0-based
-        const day = String(now.getDate()).padStart(2, '0')
-        const hours = String(now.getHours()).padStart(2, '0')
-        const minutes = String(now.getMinutes()).padStart(2, '0')
-        const seconds = String(now.getSeconds()).padStart(2, '0')
+        // Calculate UTC+7 offset in milliseconds
+        const utcOffset = 7 * 60 * 60 * 1000 // UTC+7 in milliseconds
+        const utcPlus7Date = new Date(now.getTime() + utcOffset)
+
+        const year = utcPlus7Date.getFullYear()
+        const month = String(utcPlus7Date.getMonth() + 1).padStart(2, '0') // Months are 0-based
+        const day = String(utcPlus7Date.getDate()).padStart(2, '0')
+        const hours = String(utcPlus7Date.getHours()).padStart(2, '0')
+        const minutes = String(utcPlus7Date.getMinutes()).padStart(2, '0')
+        const seconds = String(utcPlus7Date.getSeconds()).padStart(2, '0')
 
         return `${year}${month}${day}${hours}${minutes}${seconds}`
     }
