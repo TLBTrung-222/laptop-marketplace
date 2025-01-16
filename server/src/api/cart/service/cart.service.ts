@@ -8,7 +8,7 @@ import { AccountEntity } from 'src/database/entities/account.entity'
 import { CartEntity } from 'src/database/entities/cart.entity'
 import { Repository } from 'typeorm'
 import { CartDto, UpdateItemDto } from '../dto/cart.dto'
-import { CartToProductEntity } from 'src/database/entities/cart-to-product'
+import { CartToProductEntity } from 'src/database/entities/cart-to-product.entity'
 import { ProductEntity } from 'src/database/entities/product.entity'
 
 @Injectable()
