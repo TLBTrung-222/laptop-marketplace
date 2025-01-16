@@ -1,16 +1,16 @@
 name: laptop-marketplace
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./client:/app
-    env_file:
-      - ./client/.env
-    ports:
-      - 3000:3000
+  # client:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./client:/app
+  #   env_file:
+  #     - ./client/.env
+  #   ports:
+  #     - 3000:3000
 
   api:
     build:
