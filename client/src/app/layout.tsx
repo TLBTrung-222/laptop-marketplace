@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-    subsets: ["latin"],
-    display: "swap",
-});
+import { Toaster } from "@/components/ui/sonner";
+import { inter } from "@/fonts";
+import { QueryProvider } from "@/providers/query-provider";
 
 export const metadata: Metadata = {
     title: "Laptop marketplace",
@@ -21,7 +18,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={inter.className}>
-            <body>{children}</body>
+            <body>
+                <QueryProvider>{children}</QueryProvider>
+                <Toaster richColors theme="light" />
+            </body>
         </html>
     );
 }

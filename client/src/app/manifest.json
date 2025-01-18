@@ -1,6 +1,6 @@
 {
     "name": "Laptop Marketplace",
-    "short_name": "LaptopStore",
+    "short_name": "Laptop",
     "icons": [
         {
             "src": "/web-app-manifest-192x192.png",
