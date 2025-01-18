@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Expose } from 'class-transformer'
+import { Expose, Type } from 'class-transformer'
 import {
     IsEmail,
     IsString,
@@ -8,6 +8,8 @@ import {
     IsOptional,
     IsPhoneNumber
 } from 'class-validator'
+import { RoleEntity } from 'src/database/entities/role.entity'
+import { RoleId } from 'src/shared/enum/role.enum'
 
 export class LoginAccountDto {
     @ApiProperty()
@@ -68,6 +70,15 @@ export class ViewAccountDto {
     @ApiProperty()
     @Expose()
     avatar: string
+
+    @Expose()
+    @Type(() => ViewRoleDto)
+    role: RoleEntity
+}
+
+export class ViewRoleDto {
+    @Expose()
+    roleName: RoleId
 }
 
 export class UpdateAccountDto {
