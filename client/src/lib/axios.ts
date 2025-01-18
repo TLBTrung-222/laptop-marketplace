@@ -8,4 +8,13 @@ const axiosClient = axios.create({
     withCredentials: true,
 });
 
+axiosClient.interceptors.response.use(
+    (response) => {
+        return response.data;
+    },
+    (error) => {
+        return Promise.reject(error.response.data.errors);
+    },
+);
+
 export { axiosClient };

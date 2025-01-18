@@ -98,9 +98,12 @@ export const SignInForm = () => {
                     variant="outline"
                     size="lg"
                     className="w-full"
+                    asChild
                 >
-                    <Icons.google />
-                    Or sign in with Google
+                    <Link href={process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN_URL!}>
+                        <Icons.google />
+                        Or sign in with Google
+                    </Link>
                 </Button>
             </form>
         </Form>

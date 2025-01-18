@@ -10,7 +10,7 @@ export const Navbar = () => {
                 <Button
                     key={item.href}
                     asChild
-                    variant="admin"
+                    variant="admin-ghost"
                     size="lg"
                     className="px-3"
                 >
@@ -24,7 +24,7 @@ export const Navbar = () => {
             ))}
             <div className="mt-auto">
                 <Button
-                    variant="admin"
+                    variant="admin-ghost"
                     size="lg"
                     className="w-full px-3"
                     asChild
