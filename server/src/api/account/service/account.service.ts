@@ -31,26 +31,26 @@ export class AccountService {
             where: { id: roleId }
         })
 
-        const newUser = this.accountRepository.create({
+        const newAccount = this.accountRepository.create({
             ...body,
             passwordHash: body.password,
             role
         })
 
-        const savedUser = await this.accountRepository.save(newUser)
+        const savedAccount = await this.accountRepository.save(newAccount)
         // if new user is seller, need to create fund entity
         if (roleId === RoleId.Seller) {
             const newFund = this.fundRepository.create({
                 balance: 0,
-                seller: savedUser
+                seller: savedAccount
             })
             await this.fundRepository.save(newFund)
         }
-        return savedUser
+        return savedAccount
     }
 
     findAll() {
-        return this.accountRepository.find()
+        return this.accountRepository.find({ relations: { role: true } })
     }
 
     findById(id: number) {
@@ -63,7 +63,10 @@ export class AccountService {
     }
 
     findByEmail(email: string) {
-        return this.accountRepository.findOne({ where: { email } })
+        return this.accountRepository.findOne({
+            where: { email },
+            relations: { role: true }
+        })
     }
 
     async update(id: number, body: UpdateAccountDto) {
@@ -92,6 +95,13 @@ export class AccountService {
             throw new NotFoundException('The avatar can not be founded')
         }
         return data
+    }
+
+    async getAccountProfile(accountId: number) {
+        return this.accountRepository.findOne({
+            where: { id: accountId },
+            relations: { role: true }
+        })
     }
 
     async deleteAvatar(account: AccountEntity) {

@@ -83,7 +83,7 @@ export class PaymentService {
 
         // generated values
         vnpParams['vnp_CreateDate'] = this.dateToYYYYMMDDHHmmss()
-        vnpParams['vnp_ExpireDate'] = this.dateToYYYYMMDDHHmmss(10)
+        // vnpParams['vnp_ExpireDate'] = this.dateToYYYYMMDDHHmmss(10)
         vnpParams = this.sortObject(vnpParams)
         /* -------------------------------------------------------------------------- */
         /*                                add check sum                               */
@@ -151,7 +151,8 @@ export class PaymentService {
                 })
 
                 // Credit the amount to the seller's fund
-                fund.balance += transaction.creditAmount
+                fund.balance =
+                    Number(fund.balance) + Number(transaction.creditAmount)
 
                 // Save updated fund and transaction
                 await this.fundRepository.save(fund)
