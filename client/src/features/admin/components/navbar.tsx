@@ -1,18 +1,23 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NAVBAR_ITEMS } from "../constants";
 
 export const Navbar = () => {
+    const pathname = usePathname();
+
     return (
         <nav className="flex h-full flex-col gap-2 p-4">
             {NAVBAR_ITEMS.map((item) => (
                 <Button
                     key={item.href}
                     asChild
-                    variant="admin-ghost"
+                    variant={pathname === item.href ? "admin" : "admin-ghost"}
                     size="lg"
-                    className="px-3"
+                    className="justify-start px-3"
                 >
                     <Link href={item.href}>
                         <item.icon className="!size-5" />

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetBrand = (id: number) => {
     const query = useQuery({
-        queryKey: ["brands", id],
+        queryKey: ["brand", id],
         queryFn: async () => {
             const response = await axiosClient.get(`/brands/${id}`);
             return response.data as Brand;
