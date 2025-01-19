@@ -20,8 +20,8 @@ export const Navbar = () => {
                     className="w-auto justify-start px-3"
                 >
                     <Link href={item.href}>
-                        <item.icon className="!size-5" />
-                        <span className="hidden font-semibold capitalize md:block">
+                        <item.icon />
+                        <span className="hidden font-medium capitalize md:block">
                             {item.label}
                         </span>
                     </Link>
@@ -36,7 +36,7 @@ export const Navbar = () => {
                 >
                     <Link href="/admin/settings">
                         <Settings className="!size-5" />
-                        <span className="hidden font-semibold capitalize md:block">
+                        <span className="hidden font-medium capitalize md:block">
                             Settings
                         </span>
                     </Link>

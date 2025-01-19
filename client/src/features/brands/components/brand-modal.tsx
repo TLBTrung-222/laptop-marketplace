@@ -4,27 +4,31 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Brand } from "@/types";
-import { EditBrandForm } from "./edit-category-form";
+import { BrandInput } from "../schemas/brand";
+import { BrandForm } from "./brand-form";
 
 type Props = {
-    initialValues: Brand;
+    title: string;
+    initialValues?: BrandInput;
+    onSubmit: (data: BrandInput) => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
 };
 
-export const EditBrandModal = ({
+export const BrandModal = ({
+    title,
+    initialValues,
+    onSubmit,
     open,
     onOpenChange,
-    initialValues,
 }: Props) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit brand</DialogTitle>
+                    <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>
-                <EditBrandForm initialValues={initialValues} />
+                <BrandForm initialValues={initialValues} onSubmit={onSubmit} />
             </DialogContent>
         </Dialog>
     );

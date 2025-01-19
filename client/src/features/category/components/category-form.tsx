@@ -22,7 +22,7 @@ type Props = {
     onSubmit: (data: CategoryInput) => void;
 };
 
-export const CategoryForm = <T,>({ initialValues, onSubmit }: Props) => {
+export const CategoryForm = ({ initialValues, onSubmit }: Props) => {
     const form = useForm<CategoryInput>({
         resolver: zodResolver(categorySchema),
         defaultValues: {

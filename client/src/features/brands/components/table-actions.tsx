@@ -12,7 +12,8 @@ import {
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
 import { useGetBrand } from "../apis/use-get-brand";
-import { EditBrandModal } from "./edit-brand-modal";
+import { BrandInput } from "../schemas/brand";
+import { BrandModal } from "./brand-modal";
 
 interface Props {
     id: number;
@@ -30,6 +31,10 @@ export const RowActions = ({ id }: Props) => {
         return null;
     }
 
+    const onEdit = (data: BrandInput) => {
+        console.log("Editing brand", data);
+    };
+
     const onDelete = async () => {
         const ok = await confirm();
         if (!ok) {
@@ -42,10 +47,12 @@ export const RowActions = ({ id }: Props) => {
     return (
         <>
             <ConfirmationDialog />
-            <EditBrandModal
-                initialValues={data}
+            <BrandModal
                 open={openEdit}
                 onOpenChange={setOpenEdit}
+                title="Edit Brand"
+                initialValues={data}
+                onSubmit={onEdit}
             />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

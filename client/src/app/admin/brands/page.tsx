@@ -1,12 +1,21 @@
 "use client";
 
 import { ExportDataButton } from "@/components/export-data-button";
-import { AddBrandModal } from "@/features/brands/components/add-brand-modal";
+import { Button } from "@/components/ui/button";
+import { BrandModal } from "@/features/brands/components/brand-modal";
 import { BrandTable } from "@/features/brands/components/brand-table";
-import { useRef } from "react";
+import { BrandInput } from "@/features/brands/schemas/brand";
+import { Plus } from "lucide-react";
+import { useRef, useState } from "react";
 
 export default function CategoriesPage() {
     const ref = useRef<HTMLTableElement>(null);
+
+    const [open, setOpen] = useState(false);
+
+    const onAddBrand = (data: BrandInput) => {
+        console.log("🚀 ~ onAddBrand ~ data:", data);
+    };
 
     return (
         <>
@@ -16,9 +25,18 @@ export default function CategoriesPage() {
                 </h1>
                 <div className="flex gap-4">
                     <ExportDataButton tableRef={ref} fileName="Brands" />
-                    <AddBrandModal />
+                    <Button variant="admin" onClick={() => setOpen(true)}>
+                        <Plus />
+                        Add Brand
+                    </Button>
                 </div>
             </div>
+            <BrandModal
+                open={open}
+                onOpenChange={setOpen}
+                title="Add Brand"
+                onSubmit={onAddBrand}
+            />
             <BrandTable tableRef={ref} />
         </>
     );

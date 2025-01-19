@@ -14,27 +14,27 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { DialogClose } from "@/components/ui/dialog";
-import { Brand } from "@/types";
+import { useEffect } from "react";
 import { BrandInput, brandSchema } from "../schemas/brand";
 
 type Props = {
-    initialValues: Brand;
+    initialValues?: BrandInput;
+    onSubmit: (data: BrandInput) => void;
 };
 
-export const EditBrandForm = ({ initialValues }: Props) => {
+export const BrandForm = ({ initialValues, onSubmit }: Props) => {
     const form = useForm<BrandInput>({
         resolver: zodResolver(brandSchema),
         defaultValues: {
-            name: initialValues.name || "",
+            name: "",
         },
     });
 
-    // const { mutate, isPending } = useSignIn();
+    useEffect(() => {
+        if (!initialValues) return;
 
-    const onSubmit = (data: BrandInput) => {
-        console.log("🚀 ~ onSubmit ~ data:", data);
-    };
+        form.reset(initialValues);
+    }, [initialValues, form]);
 
     return (
         <Form {...form}>
@@ -57,9 +57,6 @@ export const EditBrandForm = ({ initialValues }: Props) => {
                     )}
                 />
                 <div className="flex justify-end space-x-4">
-                    <DialogClose asChild>
-                        <Button variant="admin-ghost">Cancel</Button>
-                    </DialogClose>
                     <Button type="submit" variant="admin">
                         Submit
                     </Button>
