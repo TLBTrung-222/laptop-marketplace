@@ -17,11 +17,11 @@ export const Navbar = () => {
                     asChild
                     variant={pathname === item.href ? "admin" : "admin-ghost"}
                     size="lg"
-                    className="justify-start px-3"
+                    className="w-auto justify-start px-3"
                 >
                     <Link href={item.href}>
                         <item.icon className="!size-5" />
-                        <span className="font-semibold capitalize">
+                        <span className="hidden font-semibold capitalize md:block">
                             {item.label}
                         </span>
                     </Link>
@@ -36,7 +36,7 @@ export const Navbar = () => {
                 >
                     <Link href="/admin/settings">
                         <Settings className="!size-5" />
-                        <span className="font-semibold capitalize">
+                        <span className="hidden font-semibold capitalize md:block">
                             Settings
                         </span>
                     </Link>

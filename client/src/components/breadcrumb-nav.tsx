@@ -31,7 +31,7 @@ export function BreadcrumbNav() {
                     >
                         <Link href="/admin">
                             <LayoutGrid className="size-4" />
-                            <span className="hidden sm:inline">Dashboard</span>
+                            <span className="inline">Dashboard</span>
                         </Link>
                     </BreadcrumbLink>
                 </BreadcrumbItem>
@@ -57,7 +57,7 @@ export function BreadcrumbNav() {
                         <Fragment key={breadcrumb.href}>
                             <BreadcrumbLink
                                 asChild
-                                className="hidden hover:text-admin sm:inline-block"
+                                className="inline-block hover:text-admin"
                             >
                                 <Link href={breadcrumb.href}>
                                     {breadcrumb.label}
