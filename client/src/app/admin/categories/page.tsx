@@ -1,12 +1,21 @@
 "use client";
 
 import { ExportDataButton } from "@/components/export-data-button";
-import { AddCategoryModal } from "@/features/category/components/add-category-modal";
+import { Button } from "@/components/ui/button";
+import { CategoryModal } from "@/features/category/components/category-modal";
 import { CategoryTable } from "@/features/category/components/category-table";
-import { useRef } from "react";
+import { CategoryInput } from "@/features/category/schemas/category";
+import { Plus } from "lucide-react";
+import { useRef, useState } from "react";
 
 export default function CategoriesPage() {
     const ref = useRef<HTMLTableElement>(null);
+
+    const [open, setOpen] = useState(false);
+
+    const onAddCategory = (data: CategoryInput) => {
+        console.log("🚀 ~ onAddCategory ~ data", data);
+    };
 
     return (
         <>
@@ -16,9 +25,19 @@ export default function CategoriesPage() {
                 </h1>
                 <div className="flex gap-4">
                     <ExportDataButton tableRef={ref} fileName="Categories" />
-                    <AddCategoryModal />
+
+                    <Button variant="admin" onClick={() => setOpen(true)}>
+                        <Plus />
+                        Add category
+                    </Button>
                 </div>
             </div>
+            <CategoryModal
+                title="Add Category"
+                onSubmit={onAddCategory}
+                open={open}
+                onOpenChange={setOpen}
+            />
             <CategoryTable tableRef={ref} />
         </>
     );

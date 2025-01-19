@@ -14,9 +14,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { useEffect } from "react";
 import { CategoryInput, categorySchema } from "../schemas/category";
 
-export const AddCategoryForm = () => {
+type Props = {
+    initialValues?: CategoryInput;
+    onSubmit: (data: CategoryInput) => void;
+};
+
+export const CategoryForm = <T,>({ initialValues, onSubmit }: Props) => {
     const form = useForm<CategoryInput>({
         resolver: zodResolver(categorySchema),
         defaultValues: {
@@ -24,11 +30,11 @@ export const AddCategoryForm = () => {
         },
     });
 
-    // const { mutate, isPending } = useSignIn();
+    useEffect(() => {
+        if (!initialValues) return;
 
-    const onSubmit = (data: CategoryInput) => {
-        console.log("🚀 ~ onSubmit ~ data:", data);
-    };
+        form.reset(initialValues);
+    }, [initialValues, form]);
 
     return (
         <Form {...form}>

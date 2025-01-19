@@ -59,7 +59,7 @@ export const AddProductForm = () => {
                         control={form.control}
                         name="categoryId"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem>
                                 <FormLabel>Category</FormLabel>
                                 <SelectOptions
                                     options={categoryOptions}
@@ -75,7 +75,7 @@ export const AddProductForm = () => {
                         control={form.control}
                         name="brandId"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem>
                                 <FormLabel>Brand</FormLabel>
                                 <SelectOptions
                                     options={brandOptions}
@@ -91,7 +91,7 @@ export const AddProductForm = () => {
                         control={form.control}
                         name="status"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem>
                                 <FormLabel>Status</FormLabel>
                                 <SelectOptions
                                     options={STATUS_OPTIONS}
@@ -140,12 +140,12 @@ export const AddProductForm = () => {
                         </FormItem>
                     )}
                 />
-                <div className="flex items-start gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
                         control={form.control}
                         name="price"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem>
                                 <FormLabel>Price</FormLabel>
                                 <FormControl>
                                     <div className="relative">
@@ -175,7 +175,7 @@ export const AddProductForm = () => {
                         control={form.control}
                         name="stockQuantity"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem>
                                 <FormLabel>Stock Quantity</FormLabel>
                                 <FormControl>
                                     <Input

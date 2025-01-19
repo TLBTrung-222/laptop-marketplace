@@ -12,7 +12,8 @@ import {
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
 import { useGetCategory } from "../apis/use-get-category";
-import { EditCategoryModal } from "./edit-category-modal";
+import { CategoryInput } from "../schemas/category";
+import { CategoryModal } from "./category-modal";
 
 interface Props {
     id: number;
@@ -30,6 +31,10 @@ export const RowActions = ({ id }: Props) => {
         return null;
     }
 
+    const onEdit = (data: CategoryInput) => {
+        console.log("Editing category", data);
+    };
+
     const onDelete = async () => {
         const ok = await confirm();
         if (!ok) {
@@ -42,8 +47,10 @@ export const RowActions = ({ id }: Props) => {
     return (
         <>
             <ConfirmationDialog />
-            <EditCategoryModal
+            <CategoryModal
+                title="Edit Category"
                 initialValues={data}
+                onSubmit={onEdit}
                 open={openEdit}
                 onOpenChange={setOpenEdit}
             />
