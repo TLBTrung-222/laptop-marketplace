@@ -42,13 +42,19 @@ export function BreadcrumbNav() {
                 {breadcrumbs.map((breadcrumb, index) => {
                     if (breadcrumb.label === "Admin") return null;
 
+                    let label = breadcrumb.label;
+
+                    if (+label) {
+                        label = "Details";
+                    }
+
                     if (index === breadcrumbs.length - 1) {
                         return (
                             <BreadcrumbPage
                                 key={breadcrumb.href}
                                 className="font-medium text-admin"
                             >
-                                {breadcrumb.label}
+                                {label}
                             </BreadcrumbPage>
                         );
                     }
@@ -59,9 +65,7 @@ export function BreadcrumbNav() {
                                 asChild
                                 className="inline-block hover:text-admin"
                             >
-                                <Link href={breadcrumb.href}>
-                                    {breadcrumb.label}
-                                </Link>
+                                <Link href={breadcrumb.href}>{label}</Link>
                             </BreadcrumbLink>
                             <BreadcrumbSeparator>
                                 <ChevronRight className="h-4 w-4" />

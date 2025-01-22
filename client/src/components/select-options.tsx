@@ -15,7 +15,7 @@ type Props = {
 
 export const SelectOptions = ({ options, field, placeholder }: Props) => {
     return (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select onValueChange={field.onChange} value={field.value}>
             <FormControl className="bg-neutral-50">
                 <SelectTrigger>
                     <SelectValue placeholder={placeholder} />

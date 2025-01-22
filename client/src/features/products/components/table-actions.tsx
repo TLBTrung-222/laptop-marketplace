@@ -49,7 +49,7 @@ export const RowActions = ({ id }: Props) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                        <Link href={`/admin/brands/${id}`}>
+                        <Link href={`/admin/products/${id}`}>
                             <Edit />
                             Edit
                         </Link>

@@ -1,15 +1,18 @@
-import { AddProductDetail } from "@/features/products/components/add-product-detail";
-import { AddProductForm } from "@/features/products/components/add-product-form";
+"use client";
+
+import { ProductForm } from "@/features/products/components/product-form";
 import { ProductSection } from "@/features/products/components/product-section";
+import { ProductInput } from "@/features/products/schemas/product";
 
 export default function AddPage() {
+    const onAddProduct = (data: ProductInput) => {
+        console.log("🚀 ~ onAddProduct ~ data:", data);
+    };
+
     return (
         <div className="mx-auto max-w-3xl space-y-6">
             <ProductSection title="General Information">
-                <AddProductForm />
-            </ProductSection>
-            <ProductSection title="Product Details">
-                <AddProductDetail />
+                <ProductForm onSubmit={onAddProduct} />
             </ProductSection>
         </div>
     );
