@@ -9,6 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DEFAULT_AVATAR } from "@/constants";
 import { ChevronDown, LogOut, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { useGetProfile } from "../api/use-get-profile";
@@ -23,7 +24,7 @@ export const Header = () => {
             <div className="flex items-center gap-3">
                 <div className="relative">
                     <Avatar className="size-8">
-                        <AvatarImage src={data?.avatar ?? ""} />
+                        <AvatarImage src={data?.avatar ?? DEFAULT_AVATAR} />
                         <AvatarFallback className="capitalize">
                             {data?.name[0]}
                         </AvatarFallback>

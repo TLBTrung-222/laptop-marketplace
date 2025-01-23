@@ -28,9 +28,10 @@ import { ProductInput, productSchema } from "../schemas/product";
 type Props = {
     id?: number;
     onSubmit: (data: ProductInput) => void;
+    disabled?: boolean;
 };
 
-export const ProductForm = ({ id, onSubmit }: Props) => {
+export const ProductForm = ({ id, onSubmit, disabled }: Props) => {
     const form = useForm<ProductInput>({
         resolver: zodResolver(productSchema),
         defaultValues: {
@@ -205,7 +206,7 @@ export const ProductForm = ({ id, onSubmit }: Props) => {
                     />
                 </div>
                 <div className="flex justify-end space-x-4">
-                    <Button type="submit" variant="admin">
+                    <Button type="submit" variant="admin" disabled={disabled}>
                         Submit
                     </Button>
                 </div>

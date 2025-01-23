@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DEFAULT_AVATAR } from "@/constants";
 import { cn } from "@/lib/utils";
 import { Account } from "@/types";
 import { useState } from "react";
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export const SellerCell = ({ seller }: Props) => {
+    console.log("🚀 ~ SellerCell ~ seller:", seller);
     const [expand, setExpand] = useState(false);
     return (
         <div
@@ -17,8 +19,10 @@ export const SellerCell = ({ seller }: Props) => {
             onClick={() => setExpand(!expand)}
         >
             <Avatar className="size-0 md:size-6 lg:size-8">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={seller.avatar ?? DEFAULT_AVATAR} />
+                <AvatarFallback className="capitalize">
+                    {seller.name[0]}
+                </AvatarFallback>
             </Avatar>
 
             <div className="flex flex-col">
