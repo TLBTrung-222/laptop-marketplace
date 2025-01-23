@@ -48,3 +48,11 @@ export type Product = {
     category: Category;
     ratings: Rating[];
 };
+
+export type Approval = {
+    id: number;
+    approvalStatus: "pending" | "approved" | "rejected";
+    submissionDate: string;
+    seller: Account;
+    product: Product;
+};

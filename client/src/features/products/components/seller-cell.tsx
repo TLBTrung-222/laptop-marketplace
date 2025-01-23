@@ -1,7 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DEFAULT_AVATAR } from "@/constants";
+import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 import { Account } from "@/types";
 import { useState } from "react";
@@ -18,12 +17,11 @@ export const SellerCell = ({ seller }: Props) => {
             className="flex cursor-pointer items-center gap-x-2"
             onClick={() => setExpand(!expand)}
         >
-            <Avatar className="size-0 md:size-6 lg:size-8">
-                <AvatarImage src={seller.avatar ?? DEFAULT_AVATAR} />
-                <AvatarFallback className="capitalize">
-                    {seller.name[0]}
-                </AvatarFallback>
-            </Avatar>
+            <UserAvatar
+                src={seller.avatar}
+                alt={seller.name}
+                className="size-6 lg:size-8"
+            />
 
             <div className="flex flex-col">
                 <p>{seller.name}</p>

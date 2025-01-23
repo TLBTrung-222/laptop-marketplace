@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,7 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DEFAULT_AVATAR } from "@/constants";
+import { UserAvatar } from "@/components/user-avatar";
 import { ChevronDown, LogOut, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { useGetProfile } from "../api/use-get-profile";
@@ -23,12 +22,11 @@ export const Header = () => {
         <div className="fixed left-0 right-0 top-0 z-40 flex w-full items-center justify-end border-b border-gray-200 bg-white p-4">
             <div className="flex items-center gap-3">
                 <div className="relative">
-                    <Avatar className="size-8">
-                        <AvatarImage src={data?.avatar ?? DEFAULT_AVATAR} />
-                        <AvatarFallback className="capitalize">
-                            {data?.name[0]}
-                        </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                        src={data?.avatar}
+                        alt={data?.name}
+                        className="size-8"
+                    />
                     <div className="absolute -bottom-1 -right-1 size-2.5 -translate-x-1/2 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </div>
                 <DropdownMenu>

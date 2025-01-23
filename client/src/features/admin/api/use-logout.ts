@@ -1,10 +1,11 @@
 import { axiosClient } from "@/lib/axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const useLogout = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async () => {
@@ -15,6 +16,9 @@ export const useLogout = () => {
             toast.error("Failed to logout");
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["profile"],
+            });
             router.push("/sign-in");
         },
     });
