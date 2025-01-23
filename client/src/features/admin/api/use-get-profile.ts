@@ -1,4 +1,5 @@
 import { axiosClient } from "@/lib/axios";
+import { Account } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetProfile = () => {
@@ -6,7 +7,7 @@ export const useGetProfile = () => {
         queryKey: ["profile"],
         queryFn: async () => {
             const response = await axiosClient.get("/accounts/profile");
-            return response.data;
+            return response.data as Account;
         },
     });
 

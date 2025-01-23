@@ -1,4 +1,5 @@
 import { axiosClient } from "@/lib/axios";
+import { Account } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,15 +10,19 @@ export const useSignIn = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: SignInInput) => {
-            await axiosClient.post("/auth/signin", data);
+            const result = await axiosClient.post("/auth/signin", data);
+            return result.data as Account;
         },
         onError: (error) => {
             console.error(error);
             toast.error("Invalid credentials");
         },
-        onSuccess: () => {
-            router.push("/admin");
+        onSuccess: (data) => {
             toast.success("Welcome back");
+
+            if (data.role.roleName === "admin") {
+                router.push("/admin");
+            }
         },
     });
 

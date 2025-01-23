@@ -13,6 +13,7 @@ type Props = {
     onSubmit: (data: BrandInput) => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    disabled?: boolean;
 };
 
 export const BrandModal = ({
@@ -21,6 +22,7 @@ export const BrandModal = ({
     onSubmit,
     open,
     onOpenChange,
+    disabled = false,
 }: Props) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -28,7 +30,11 @@ export const BrandModal = ({
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>
-                <BrandForm initialValues={initialValues} onSubmit={onSubmit} />
+                <BrandForm
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    disabled={disabled}
+                />
             </DialogContent>
         </Dialog>
     );

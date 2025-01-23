@@ -1,3 +1,5 @@
+export type Role = "admin" | "seller" | "buyer";
+
 export type ApiResponse<T> = {
     data: T;
     isSuccess: boolean;
@@ -20,6 +22,10 @@ export type Account = {
     phoneNumber: string;
     name: string;
     avatar: string | null;
+    googleId: string | null;
+    role: {
+        roleName: Role;
+    };
 };
 
 export type Rating = {

@@ -15,7 +15,7 @@ export const useLogout = () => {
             toast.error("Failed to logout");
         },
         onSuccess: () => {
-            router.push("/");
+            router.push("/sign-in");
         },
     });
     return mutation;

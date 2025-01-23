@@ -23,8 +23,10 @@ export const Header = () => {
             <div className="flex items-center gap-3">
                 <div className="relative">
                     <Avatar className="size-8">
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarImage src={data?.avatar ?? ""} />
+                        <AvatarFallback className="capitalize">
+                            {data?.name[0]}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-1 -right-1 size-2.5 -translate-x-1/2 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </div>
@@ -33,7 +35,7 @@ export const Header = () => {
                         <div className="flex items-center gap-3">
                             <div className="leading-none">
                                 <p className="text-sm font-semibold">
-                                    Jay Hargudson
+                                    {data?.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                     Admin
@@ -48,11 +50,11 @@ export const Header = () => {
                         <DropdownMenuItem asChild>
                             <Link href={`mailto:${data?.email}`}>
                                 <Mail className="size-4" />
-                                admin@gmail.com
+                                {data?.email}
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href={`tel:${data?.phone}`}>
+                            <Link href={`tel:${data?.phoneNumber}`}>
                                 <Phone className="size-4" />
                                 0912345678
                             </Link>

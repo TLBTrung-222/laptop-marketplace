@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
+import { useDeleteBrand } from "../apis/use-delete-brand";
+import { useEditBrand } from "../apis/use-edit-brand";
 import { useGetBrand } from "../apis/use-get-brand";
 import { BrandInput } from "../schemas/brand";
 import { BrandModal } from "./brand-modal";
@@ -27,12 +29,21 @@ export const RowActions = ({ id }: Props) => {
         "Are you sure you want to delete this brand?",
     );
 
+    const edit = useEditBrand(id);
+    const remove = useDeleteBrand(id);
+
+    const isPending = edit.isPending || remove.isPending;
+
     if (!data) {
         return null;
     }
 
     const onEdit = (data: BrandInput) => {
-        console.log("Editing brand", data);
+        edit.mutate(data, {
+            onSuccess() {
+                setOpenEdit(false);
+            },
+        });
     };
 
     const onDelete = async () => {
@@ -41,7 +52,7 @@ export const RowActions = ({ id }: Props) => {
             return;
         }
 
-        console.log("Deleting brand", id);
+        remove.mutate();
     };
 
     return (
@@ -53,10 +64,15 @@ export const RowActions = ({ id }: Props) => {
                 title="Edit Brand"
                 initialValues={data}
                 onSubmit={onEdit}
+                disabled={isPending}
             />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="size-8 p-0">
+                    <Button
+                        variant="ghost"
+                        className="size-8 p-0"
+                        disabled={isPending}
+                    >
                         <MoreHorizontal className="size-4" />
                     </Button>
                 </DropdownMenuTrigger>

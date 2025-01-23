@@ -20,9 +20,10 @@ import { BrandInput, brandSchema } from "../schemas/brand";
 type Props = {
     initialValues?: BrandInput;
     onSubmit: (data: BrandInput) => void;
+    disabled?: boolean;
 };
 
-export const BrandForm = ({ initialValues, onSubmit }: Props) => {
+export const BrandForm = ({ initialValues, onSubmit, disabled }: Props) => {
     const form = useForm<BrandInput>({
         resolver: zodResolver(brandSchema),
         defaultValues: {
@@ -57,7 +58,7 @@ export const BrandForm = ({ initialValues, onSubmit }: Props) => {
                     )}
                 />
                 <div className="flex justify-end space-x-4">
-                    <Button type="submit" variant="admin">
+                    <Button type="submit" variant="admin" disabled={disabled}>
                         Submit
                     </Button>
                 </div>
