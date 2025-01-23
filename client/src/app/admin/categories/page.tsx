@@ -2,6 +2,7 @@
 
 import { ExportDataButton } from "@/components/export-data-button";
 import { Button } from "@/components/ui/button";
+import { useCreateCategory } from "@/features/category/apis/use-create-category";
 import { CategoryModal } from "@/features/category/components/category-modal";
 import { CategoryTable } from "@/features/category/components/category-table";
 import { CategoryInput } from "@/features/category/schemas/category";
@@ -12,9 +13,14 @@ export default function CategoriesPage() {
     const ref = useRef<HTMLTableElement>(null);
 
     const [open, setOpen] = useState(false);
+    const { isPending, mutate } = useCreateCategory();
 
     const onAddCategory = (data: CategoryInput) => {
-        console.log("🚀 ~ onAddCategory ~ data", data);
+        mutate(data, {
+            onSuccess() {
+                setOpen(false);
+            },
+        });
     };
 
     return (
@@ -37,6 +43,7 @@ export default function CategoriesPage() {
                 onSubmit={onAddCategory}
                 open={open}
                 onOpenChange={setOpen}
+                disabled={isPending}
             />
             <CategoryTable tableRef={ref} />
         </>

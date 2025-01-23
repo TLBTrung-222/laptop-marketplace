@@ -20,9 +20,10 @@ import { CategoryInput, categorySchema } from "../schemas/category";
 type Props = {
     initialValues?: CategoryInput;
     onSubmit: (data: CategoryInput) => void;
+    disabled?: boolean;
 };
 
-export const CategoryForm = ({ initialValues, onSubmit }: Props) => {
+export const CategoryForm = ({ initialValues, onSubmit, disabled }: Props) => {
     const form = useForm<CategoryInput>({
         resolver: zodResolver(categorySchema),
         defaultValues: {
@@ -57,7 +58,7 @@ export const CategoryForm = ({ initialValues, onSubmit }: Props) => {
                     )}
                 />
                 <div className="flex justify-end space-x-4">
-                    <Button type="submit" variant="admin">
+                    <Button type="submit" variant="admin" disabled={disabled}>
                         Submit
                     </Button>
                 </div>

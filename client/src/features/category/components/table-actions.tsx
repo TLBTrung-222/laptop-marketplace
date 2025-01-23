@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
+import { useDeleteCategory } from "../apis/use-delete-brand";
+import { useEditCategory } from "../apis/use-edit-category";
 import { useGetCategory } from "../apis/use-get-category";
 import { CategoryInput } from "../schemas/category";
 import { CategoryModal } from "./category-modal";
@@ -27,12 +29,19 @@ export const RowActions = ({ id }: Props) => {
         "Are you sure you want to delete this category?",
     );
 
+    const edit = useEditCategory(id);
+    const remove = useDeleteCategory(id);
+
     if (!data) {
         return null;
     }
 
     const onEdit = (data: CategoryInput) => {
-        console.log("Editing category", data);
+        edit.mutate(data, {
+            onSuccess() {
+                setOpenEdit(false);
+            },
+        });
     };
 
     const onDelete = async () => {
@@ -41,8 +50,10 @@ export const RowActions = ({ id }: Props) => {
             return;
         }
 
-        console.log("Deleting category", id);
+        remove.mutate();
     };
+
+    const isPending = edit.isPending || remove.isPending;
 
     return (
         <>
@@ -53,6 +64,7 @@ export const RowActions = ({ id }: Props) => {
                 onSubmit={onEdit}
                 open={openEdit}
                 onOpenChange={setOpenEdit}
+                disabled={isPending}
             />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

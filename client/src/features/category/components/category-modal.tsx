@@ -13,6 +13,7 @@ type Props = {
     onSubmit: (data: CategoryInput) => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    disabled?: boolean;
 };
 
 export const CategoryModal = ({
@@ -21,6 +22,7 @@ export const CategoryModal = ({
     onSubmit,
     open,
     onOpenChange,
+    disabled,
 }: Props) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -31,6 +33,7 @@ export const CategoryModal = ({
                 <CategoryForm
                     initialValues={initialValues}
                     onSubmit={onSubmit}
+                    disabled={disabled}
                 />
             </DialogContent>
         </Dialog>
