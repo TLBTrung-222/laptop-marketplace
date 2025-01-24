@@ -59,4 +59,9 @@ export const SELLER_NAVBAR_ITEMS: NavbarItem[] = [
         label: "Products",
         icon: ShoppingBag,
     },
+    {
+        href: "/seller/approvals",
+        label: "Approvals",
+        icon: ListCheck,
+    },
 ];

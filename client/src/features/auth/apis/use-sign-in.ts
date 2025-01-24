@@ -23,6 +23,10 @@ export const useSignIn = () => {
             if (data.role.roleName === "admin") {
                 router.push("/admin");
             }
+
+            if (data.role.roleName === "seller") {
+                router.push("/seller");
+            }
         },
     });
 
