@@ -5,6 +5,7 @@ import {
     ListCheck,
     LucideIcon,
     ShoppingBag,
+    Truck,
     Users,
 } from "lucide-react";
 
@@ -44,5 +45,10 @@ export const NAVBAR_ITEMS: NavbarItem[] = [
         href: "/admin/accounts",
         label: "Accounts",
         icon: Users,
+    },
+    {
+        href: "/admin/orders",
+        label: "Orders",
+        icon: Truck,
     },
 ];

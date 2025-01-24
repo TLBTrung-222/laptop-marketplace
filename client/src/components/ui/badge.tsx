@@ -21,6 +21,7 @@ const badgeVariants = cva(
                     "border-admin-100 bg-admin-100 text-admin-500 hover:bg-admin-100/80",
                 pending: "border-amber-100 bg-amber-100 text-amber-500",
                 rejected: "border-red-100 bg-red-100 text-red-500",
+                delivering: "border-blue-100 bg-blue-100 text-blue-500",
             },
         },
         defaultVariants: {
