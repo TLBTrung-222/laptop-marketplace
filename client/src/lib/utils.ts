@@ -36,3 +36,10 @@ export function generateBreadcrumbs(path: string) {
         return acc;
     }, []);
 }
+
+export function normalizeString(str: string) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}

@@ -31,7 +31,7 @@ export const Header = () => {
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className="flex items-center gap-3">
+                        <div className="flex cursor-pointer items-center gap-3">
                             <div className="leading-none">
                                 <p className="text-sm font-semibold">
                                     {data?.name}

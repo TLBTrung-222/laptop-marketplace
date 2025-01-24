@@ -1,3 +1,4 @@
+import { Auth } from "@/components/auth";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { Header } from "@/features/admin/components/header";
 import { Sidebar } from "@/features/admin/components/sidebar";
@@ -8,7 +9,7 @@ type Props = {
 
 export default function AdminLayout({ children }: Props) {
     return (
-        <>
+        <Auth role="admin">
             <div className="flex w-full">
                 <Sidebar />
                 <div className="flex w-full flex-col pl-16 md:pl-48 lg:pl-64">
@@ -19,6 +20,6 @@ export default function AdminLayout({ children }: Props) {
                     </div>
                 </div>
             </div>
-        </>
+        </Auth>
     );
 }
