@@ -18,9 +18,13 @@ async function bootstrap() {
     /*                                 Enable CORS                                */
     /* -------------------------------------------------------------------------- */
     app.enableCors({
-        origin: configService.get('FRONT_END_URL', 'http://localhost:3000'), // using default value if FRONT_END_URL not founded
-        credentials: true
+        origin: configService.get('FRONT_END_URL', 'http://localhost:3000'), // Allow frontend
+        credentials: true // Allow cookies
     })
+
+    // Set trust proxy
+    const expressApp = app.getHttpAdapter().getInstance()
+    expressApp.set('trust proxy', 1) // Trust the first proxy (Nginx in your case)
 
     /* -------------------------------------------------------------------------- */
     /*                           Set up express-session                           */
@@ -31,7 +35,12 @@ async function bootstrap() {
             secret: configService.get('SECRET_KEY'),
             resave: false,
             saveUninitialized: false,
-            cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
+            cookie: {
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+                httpOnly: true, // Prevent client-side JavaScript access
+                secure: true,
+                sameSite: 'none'
+            },
             store: new TypeormStore({
                 cleanupLimit: 2
             }).connect(sessionRepository)

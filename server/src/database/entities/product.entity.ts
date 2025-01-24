@@ -81,9 +81,13 @@ export class ProductEntity {
     })
     images: ImageEntity[]
 
-    @OneToOne(() => SpecificationEntity, {
-        cascade: ['remove']
-    })
+    @OneToOne(
+        () => SpecificationEntity,
+        (specification) => specification.product,
+        {
+            cascade: ['remove']
+        }
+    )
     specification: SpecificationEntity
 
     @OneToOne(() => ApprovalEntity, (approval) => approval.product, {

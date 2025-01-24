@@ -54,7 +54,7 @@ export class SpecificationEntity {
     @Column()
     battery: string
 
-    @Column()
+    @Column({ type: 'float' })
     weight: number
 
     @Column()
@@ -66,7 +66,9 @@ export class SpecificationEntity {
     /* -------------------------------------------------------------------------- */
     /*                                  Relations                                 */
     /* -------------------------------------------------------------------------- */
-    @OneToOne(() => ProductEntity)
+    @OneToOne(() => ProductEntity, (product) => product.specification, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn({ name: 'productId' })
     product: ProductEntity
 }
