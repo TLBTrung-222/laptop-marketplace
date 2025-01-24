@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: Props) {
                 <Sidebar />
                 <div className="flex w-full flex-col pl-16 md:pl-48 lg:pl-64">
                     <Header />
-                    <div className="h-screen overflow-y-auto bg-gray-50 px-6 py-8 pt-20">
+                    <div className="min-h-screen overflow-y-auto bg-gray-50 px-6 py-8 pt-20">
                         <BreadcrumbNav />
                         {children}
                     </div>

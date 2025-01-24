@@ -13,7 +13,7 @@ export default function ProductsPage() {
                 <div className="flex gap-4">
                     {/* <ExportDataButton tableRef={ref} fileName="Categories" /> */}
                     <Button variant="admin" asChild>
-                        <Link href="/admin/products/add">
+                        <Link href="/seller/products/add">
                             <Plus />
                             Add product
                         </Link>

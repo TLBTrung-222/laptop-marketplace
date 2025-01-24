@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -16,22 +17,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetBrands } from "@/features/brands/apis/use-get-brands";
-import { useGetCategories } from "@/features/category/apis/use-get-categories";
+import { formatPrice } from "@/lib/utils";
+import { Product } from "@/types";
 import { useEffect } from "react";
-import { useGetProduct } from "../apis/use-get-product";
 import { STATUS_OPTIONS } from "../constants";
 import { useGetBrandsOpts } from "../hooks/get-brands-opts";
 import { useGetCategoriesOpts } from "../hooks/get-categories-opts";
 import { ProductInput, productSchema } from "../schemas/product";
 
 type Props = {
-    id?: number;
+    initialValues?: Product;
     onSubmit: (data: ProductInput) => void;
     disabled?: boolean;
 };
 
-export const ProductForm = ({ id, onSubmit, disabled }: Props) => {
+export const ProductForm = ({ initialValues, onSubmit, disabled }: Props) => {
     const form = useForm<ProductInput>({
         resolver: zodResolver(productSchema),
         defaultValues: {
@@ -43,24 +43,21 @@ export const ProductForm = ({ id, onSubmit, disabled }: Props) => {
         },
     });
 
-    const { data: product } = useGetProduct(id);
-    const { data: brands } = useGetBrands();
-    const { data: categories } = useGetCategories();
-
     const brandOptions = useGetBrandsOpts();
     const categoryOptions = useGetCategoriesOpts();
 
     useEffect(() => {
-        if (!product || !brands || !categories) return;
+        if (!initialValues || !categoryOptions.length || !brandOptions.length)
+            return;
 
-        const { brand, category, seller, ratings, ...rest } = product;
+        const { brand, category, seller, ratings, ...rest } = initialValues;
 
         form.reset({
             ...rest,
-            brandId: product.brand.id.toString(),
-            categoryId: product.category.id.toString(),
+            brandId: initialValues.brand.id.toString(),
+            categoryId: initialValues.category.id.toString(),
         });
-    }, [product, form, brands, categories]);
+    }, [initialValues, form, categoryOptions.length, brandOptions.length]);
 
     return (
         <Form {...form}>
@@ -177,7 +174,9 @@ export const ProductForm = ({ id, onSubmit, disabled }: Props) => {
                                         </Badge>
                                     </div>
                                 </FormControl>
-
+                                <FormDescription>
+                                    Price: {formatPrice(field.value)}
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}

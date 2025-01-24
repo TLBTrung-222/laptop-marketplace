@@ -33,11 +33,11 @@ export const Header = () => {
                     <DropdownMenuTrigger asChild>
                         <div className="flex cursor-pointer items-center gap-3">
                             <div className="leading-none">
-                                <p className="text-sm font-semibold">
+                                <p className="text-sm font-semibold capitalize">
                                     {data?.name}
                                 </p>
-                                <p className="text-xs text-muted-foreground">
-                                    Admin
+                                <p className="text-xs capitalize text-muted-foreground">
+                                    {data?.role.roleName}
                                 </p>
                             </div>
                             <ChevronDown className="size-4 text-muted-foreground" />

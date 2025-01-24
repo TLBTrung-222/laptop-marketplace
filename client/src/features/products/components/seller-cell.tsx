@@ -10,7 +10,6 @@ type Props = {
 };
 
 export const SellerCell = ({ seller }: Props) => {
-    console.log("🚀 ~ SellerCell ~ seller:", seller);
     const [expand, setExpand] = useState(false);
     return (
         <div
