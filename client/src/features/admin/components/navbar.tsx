@@ -1,41 +1,38 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
 import Link from "next/link";
-import { NAVBAR_ITEMS } from "../constants";
+import { usePathname } from "next/navigation";
+import { ADMIN_NAVBAR_ITEMS, SELLER_NAVBAR_ITEMS } from "../constants";
+import { Setting } from "./settings";
 
 export const Navbar = () => {
+    const pathname = usePathname();
+
+    const navbarItems = pathname.includes("admin")
+        ? ADMIN_NAVBAR_ITEMS
+        : SELLER_NAVBAR_ITEMS;
+
     return (
         <nav className="flex h-full flex-col gap-2 p-4">
-            {NAVBAR_ITEMS.map((item) => (
+            {navbarItems.map((item) => (
                 <Button
                     key={item.href}
                     asChild
-                    variant="admin"
+                    variant={pathname === item.href ? "admin" : "admin-ghost"}
                     size="lg"
-                    className="px-3"
+                    className="w-auto justify-start px-3"
                 >
                     <Link href={item.href}>
-                        <item.icon className="!size-5" />
-                        <span className="font-semibold capitalize">
+                        <item.icon />
+                        <span className="hidden font-medium capitalize md:block">
                             {item.label}
                         </span>
                     </Link>
                 </Button>
             ))}
             <div className="mt-auto">
-                <Button
-                    variant="admin"
-                    size="lg"
-                    className="w-full px-3"
-                    asChild
-                >
-                    <Link href="/admin/settings">
-                        <Settings className="!size-5" />
-                        <span className="font-semibold capitalize">
-                            Settings
-                        </span>
-                    </Link>
-                </Button>
+                <Setting />
             </div>
         </nav>
     );

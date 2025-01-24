@@ -19,7 +19,11 @@ const buttonVariants = cva(
                     "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
-                admin: "hover:text-admin justify-start text-neutral-500 hover:bg-admin-50",
+                admin: "bg-admin text-white hover:bg-admin/90",
+                "admin-ghost":
+                    "hover:text-admin justify-start text-neutral-500 hover:bg-admin-50",
+                "admin-secondary":
+                    "bg-admin-100 text-admin hover:bg-admin-100/80",
             },
             size: {
                 default: "h-9 px-4 py-2",

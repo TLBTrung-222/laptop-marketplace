@@ -131,10 +131,8 @@ export class InitDatabase1733045657797 implements MigrationInterface {
             `INSERT INTO "accounts" ("email", "phoneNumber", "passwordHash", "name", "roleId") 
             VALUES 
             ('buyer@gmail.com', '0912345678', '56d12015cb2e3142.8b29c9f53cc728571bc47ecb255c7a1e896be056e7645c3a3265663c04934704', 'trungbuyer', 0),
-            ('buyer2@gmail.com', '0912345678', 'ac1f28d9c3bb65df.450dab0fa8cf924d5383518032dd73e4123b6cff173cffc63d0ae44ce0673d51', 'trungbuyer2', 0),
-            ('seller@gmail.com', '0912345678', 'fdb4435621c6f4a3.7985fb88c81ddfe62e906ff936ca9b3e49e72b5c6317625adccd24d5bc9439c3', 'trungseller', 1),
-            ('seller2@gmail.com', '0912345678', '29e0befffad4f8bd.f7c780a7d19b5bb39d349480094ea14990c32d7d3e0ac8f1b98f911bd9219a1c', 'trungseller2', 1),
-            ('admin@gmail.com', '0912345678', 'd9dc063991edeed7.f20c48fdd86fbe0282d24e8369a2d8ec226cb2af014155ef9e20babd4b96c3fe', 'trungadmin', 2);`
+            ('admin@gmail.com', '0912345678', 'd9dc063991edeed7.f20c48fdd86fbe0282d24e8369a2d8ec226cb2af014155ef9e20babd4b96c3fe', 'trungadmin', 2),
+            ('baotrung2853@gmail.com', '0912345678', 'd9dc063991edeed7.f20c48fdd86fbe0282d24e8369a2d8ec226cb2af014155ef9e20babd4b96c3fe', 'trungadmin', 2);`
         )
         await queryRunner.query(
             `INSERT INTO "brands" ("name") VALUES ('Dell'), ('Vivo'), ('Lenovo')`
