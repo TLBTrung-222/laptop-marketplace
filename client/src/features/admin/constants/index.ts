@@ -15,7 +15,7 @@ type NavbarItem = {
     icon: LucideIcon;
 };
 
-export const NAVBAR_ITEMS: NavbarItem[] = [
+export const ADMIN_NAVBAR_ITEMS: NavbarItem[] = [
     {
         href: "/admin",
         label: "Dashboard",
@@ -25,11 +25,6 @@ export const NAVBAR_ITEMS: NavbarItem[] = [
         href: "/admin/approvals",
         label: "Approvals",
         icon: ListCheck,
-    },
-    {
-        href: "/admin/products",
-        label: "Products",
-        icon: ShoppingBag,
     },
     {
         href: "/admin/categories",
@@ -42,13 +37,26 @@ export const NAVBAR_ITEMS: NavbarItem[] = [
         icon: Factory,
     },
     {
+        href: "/admin/orders",
+        label: "Orders",
+        icon: Truck,
+    },
+    {
         href: "/admin/accounts",
         label: "Accounts",
         icon: Users,
     },
+];
+
+export const SELLER_NAVBAR_ITEMS: NavbarItem[] = [
     {
-        href: "/admin/orders",
-        label: "Orders",
-        icon: Truck,
+        href: "/seller",
+        label: "Dashboard",
+        icon: LayoutGrid,
+    },
+    {
+        href: "/seller/products",
+        label: "Products",
+        icon: ShoppingBag,
     },
 ];

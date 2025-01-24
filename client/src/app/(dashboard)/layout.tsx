@@ -9,7 +9,7 @@ type Props = {
 
 export default function AdminLayout({ children }: Props) {
     return (
-        <Auth role="admin">
+        <Auth>
             <div className="flex w-full">
                 <Sidebar />
                 <div className="flex w-full flex-col pl-16 md:pl-48 lg:pl-64">

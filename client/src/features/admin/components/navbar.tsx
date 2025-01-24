@@ -1,17 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAVBAR_ITEMS } from "../constants";
+import { ADMIN_NAVBAR_ITEMS, SELLER_NAVBAR_ITEMS } from "../constants";
+import { Setting } from "./settings";
 
 export const Navbar = () => {
     const pathname = usePathname();
 
+    const navbarItems = pathname.includes("admin")
+        ? ADMIN_NAVBAR_ITEMS
+        : SELLER_NAVBAR_ITEMS;
+
     return (
         <nav className="flex h-full flex-col gap-2 p-4">
-            {NAVBAR_ITEMS.map((item) => (
+            {navbarItems.map((item) => (
                 <Button
                     key={item.href}
                     asChild
@@ -28,19 +32,7 @@ export const Navbar = () => {
                 </Button>
             ))}
             <div className="mt-auto">
-                <Button
-                    variant="admin-ghost"
-                    size="lg"
-                    className="w-full px-3"
-                    asChild
-                >
-                    <Link href="/admin/settings">
-                        <Settings className="!size-5" />
-                        <span className="hidden font-medium capitalize md:block">
-                            Settings
-                        </span>
-                    </Link>
-                </Button>
+                <Setting />
             </div>
         </nav>
     );

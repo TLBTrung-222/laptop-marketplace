@@ -10,7 +10,9 @@ export const Logo = () => {
                 height={34}
                 className="size-8"
             />
-            <h1 className="hidden text-2xl font-semibold md:block">Admin</h1>
+            <h1 className="hidden font-semibold md:block md:text-xl lg:text-2xl">
+                Dashboard
+            </h1>
         </div>
     );
 };

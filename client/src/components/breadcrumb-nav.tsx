@@ -19,7 +19,10 @@ export function BreadcrumbNav() {
     const pathname = usePathname();
     const breadcrumbs = generateBreadcrumbs(pathname);
 
-    if (pathname === "/" || pathname === "/admin") return null;
+    if (pathname === "/" || pathname === "/admin" || pathname === "/seller")
+        return null;
+
+    const rootRoute = pathname.includes("admin") ? "/admin" : "/seller";
 
     return (
         <Breadcrumb className="mb-4">
@@ -29,7 +32,7 @@ export function BreadcrumbNav() {
                         asChild
                         className="flex items-center gap-1 hover:text-admin"
                     >
-                        <Link href="/admin">
+                        <Link href={rootRoute}>
                             <LayoutGrid className="size-4" />
                             <span className="inline">Dashboard</span>
                         </Link>
@@ -40,7 +43,11 @@ export function BreadcrumbNav() {
                 </BreadcrumbSeparator>
 
                 {breadcrumbs.map((breadcrumb, index) => {
-                    if (breadcrumb.label === "Admin") return null;
+                    if (
+                        breadcrumb.label === "Admin" ||
+                        breadcrumb.label === "Seller"
+                    )
+                        return null;
 
                     let label = breadcrumb.label;
 

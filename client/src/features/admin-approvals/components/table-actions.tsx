@@ -13,6 +13,7 @@ import {
 import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
     Dialog,
     DialogContent,
@@ -22,13 +23,13 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { UserAvatar } from "@/components/user-avatar";
 import { useConfirm } from "@/hooks/use-confirm";
 import { formatPrice } from "@/lib/utils";
 import { Approval } from "@/types";
 import { format } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useGetAdminApproval } from "../apis/use-get-admin-approval";
 import { usePreviewApproval } from "../apis/use-preview";
@@ -92,27 +93,42 @@ export const RowActions = ({ id }: Props) => {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="flex items-center gap-x-4">
-                        <UserAvatar src={seller.avatar} alt={seller.name} />
-                        <div className="mr-auto">
-                            <h2 className="text-lg font-semibold">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                            <UserAvatar
+                                src={seller.avatar}
+                                alt={seller.name}
+                                className="size-10"
+                            />
+                            <h2 className="text-2xl font-bold capitalize">
                                 {seller.name}
                             </h2>
-                            <p className="flex items-center text-sm text-muted-foreground">
-                                <Mail className="mr-1 size-4" />
-                                {seller.email}
-                            </p>
-                            <p className="flex items-center text-sm text-muted-foreground">
-                                <Phone className="mr-1 size-4" />
-                                {seller.phoneNumber}
-                            </p>
-                        </div>
-                        <ApprovalBadge status={approvalStatus} />
-                    </div>
 
-                    <Separator />
+                            <ApprovalBadge status={approvalStatus} />
+                        </CardHeader>
+                        <CardContent className="mt-4 space-y-2">
+                            <div className="flex items-center gap-3">
+                                <Mail className="size-4 text-muted-foreground" />
+                                <Link
+                                    href={`mailto:${seller.email}`}
+                                    className="text-sm hover:underline"
+                                >
+                                    {seller.email}
+                                </Link>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Phone className="size-4 text-muted-foreground" />
+                                <Link
+                                    href={`tel:${seller.phoneNumber}`}
+                                    className="text-sm hover:underline"
+                                >
+                                    {seller.phoneNumber}
+                                </Link>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                    <ScrollArea className="max-h-[calc(100vh-20rem)] pr-3">
+                    <ScrollArea className="mt-8 max-h-[calc(100vh-20rem)] pr-3">
                         <div className="grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-2">
                             <div className="relative flex items-center justify-center">
                                 <Image

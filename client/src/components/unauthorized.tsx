@@ -3,7 +3,7 @@ import { ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-    role: "admin" | "seller";
+    role: string;
 };
 
 export const Unauthorized = ({ role }: Props) => {
