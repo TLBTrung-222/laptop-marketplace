@@ -3,8 +3,8 @@ import { Skeleton } from "./ui/skeleton";
 
 export const DashboardSkeleton = () => {
     return (
-        <div className="flex h-screen w-full">
-            <div className="flex h-screen w-[76px] flex-col items-center gap-4 border-r border-gray-200 bg-white p-2 shadow-sm md:w-[190px] lg:w-[255px] lg:p-4">
+        <div className="flex min-h-screen w-full">
+            <div className="flex min-h-screen w-[76px] flex-col items-center gap-4 border-r border-gray-200 bg-white p-2 shadow-sm md:w-[190px] lg:w-[255px] lg:p-4">
                 {Array.from({ length: 5 }).map((_, index) => (
                     <Skeleton key={index} className="h-10 w-full min-w-10" />
                 ))}

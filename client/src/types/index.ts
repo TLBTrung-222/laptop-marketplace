@@ -49,6 +49,27 @@ export type Product = {
     ratings: Rating[];
 };
 
+export type ProductDetail = {
+    id: number;
+    cpu: string;
+    ram: string;
+    storage: string;
+    gpu: string;
+    display: string;
+    port: string;
+    keyboard: string;
+    lan: string;
+    wifi: string;
+    bluetooth: string;
+    webcam: string;
+    os: string;
+    battery: string;
+    weight: number;
+    color: string;
+    dimensions: string;
+    product: Product;
+};
+
 export type Approval = {
     id: number;
     approvalStatus: "pending" | "approved" | "rejected";

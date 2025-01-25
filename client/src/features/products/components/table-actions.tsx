@@ -12,6 +12,7 @@ import {
 import { useConfirm } from "@/hooks/use-confirm";
 import Link from "next/link";
 import { useGetProduct } from "../apis/use-get-product";
+import { useRemoveProduct } from "../apis/use-remove-product";
 
 interface Props {
     id: number;
@@ -24,6 +25,8 @@ export const RowActions = ({ id }: Props) => {
         "Are you sure you want to delete this product?",
     );
 
+    const { isPending, mutate } = useRemoveProduct(id);
+
     if (!data) {
         return null;
     }
@@ -34,7 +37,7 @@ export const RowActions = ({ id }: Props) => {
             return;
         }
 
-        console.log("Deleting brand", id);
+        mutate();
     };
 
     return (
@@ -43,13 +46,17 @@ export const RowActions = ({ id }: Props) => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="size-8 p-0">
+                    <Button
+                        variant="ghost"
+                        className="size-8 p-0"
+                        disabled={isPending}
+                    >
                         <MoreHorizontal className="size-4" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                        <Link href={`/admin/products/${id}`}>
+                        <Link href={`/seller/products/${id}`}>
                             <Edit />
                             Edit
                         </Link>

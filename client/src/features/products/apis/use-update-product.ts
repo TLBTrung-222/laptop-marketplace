@@ -1,7 +1,5 @@
 import { axiosClient } from "@/lib/axios";
-import { Product } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ProductInput } from "../schemas/product";
 
@@ -10,25 +8,24 @@ type ProductRequest = Omit<ProductInput, "categoryId" | "brandId"> & {
     brandId: number;
 };
 
-export const useCreateProduct = () => {
+export const useUpdateProduct = (id: number) => {
     const queryClient = useQueryClient();
-    const router = useRouter();
 
     const mutation = useMutation({
         mutationFn: async (data: ProductRequest) => {
-            const response = await axiosClient.post("/products", data);
-            return response.data as Product;
+            const response = await axiosClient.put(`/products/${id}`, data);
+            return response.data;
         },
         onError: (error) => {
             console.log("🚀 ~ error:", error);
-            toast.error("Failed to create product");
+            toast.error("Failed to update product");
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["products"],
             });
-            router.push(`/seller/products/${data.id}`);
-            toast.success("Product created successfully");
+
+            toast.success("Product updated successfully");
         },
     });
 
