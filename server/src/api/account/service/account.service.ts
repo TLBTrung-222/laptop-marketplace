@@ -11,9 +11,10 @@ import { SignUpAccountDto, UpdateAccountDto } from '../dto/account.dto'
 import { RoleEntity } from 'src/database/entities/role.entity'
 import { FundEntity } from 'src/database/entities/fund.entity'
 import { readFileSync } from 'fs'
-import { join } from 'path'
 import { resolveAssetPath } from 'src/shared/utils/helper'
 import { rm } from 'fs/promises'
+import { S3Service } from 'src/api/s3/service/s3.service'
+import { extname } from 'path'
 
 @Injectable()
 export class AccountService {
@@ -23,7 +24,8 @@ export class AccountService {
         @InjectRepository(RoleEntity)
         private roleRepository: Repository<RoleEntity>,
         @InjectRepository(FundEntity)
-        private fundRepository: Repository<FundEntity>
+        private fundRepository: Repository<FundEntity>,
+        private s3Service: S3Service
     ) {}
 
     async create(body: SignUpAccountDto, roleId: number) {
@@ -80,21 +82,27 @@ export class AccountService {
     }
 
     async uploadAvatar(account: AccountEntity, file: Express.Multer.File) {
-        account.avatar = file.filename
+        // delete user's avatar if any
+        if (account.avatar) {
+            await this.deleteAvatar(account)
+        }
+
+        const key = `${account.id}${extname(file.originalname)}`
+        const s3Key = await this.s3Service.uploadImage(
+            'avatars',
+            key,
+            file.buffer,
+            file.mimetype
+        )
+        account.avatar = s3Key
         await this.accountRepository.save(account)
-        return account
+
+        return s3Key
     }
 
     async getAvatar(account: AccountEntity) {
         if (!account.avatar) return null
-
-        let data: Buffer
-        try {
-            data = readFileSync(resolveAssetPath(account.avatar, 'avatars'))
-        } catch (error) {
-            throw new NotFoundException('The avatar can not be founded')
-        }
-        return data
+        return this.s3Service.getImageSignedUrl(account.avatar)
     }
 
     async getAccountProfile(accountId: number) {
@@ -108,9 +116,8 @@ export class AccountService {
         if (!account.avatar)
             throw new BadRequestException('User do not have avatar')
 
-        const avatarPath = resolveAssetPath(account.avatar, 'avatars')
-        await rm(avatarPath)
+        await this.s3Service.deleteImage(account.avatar)
         account.avatar = null
-        this.accountRepository.save(account)
+        return this.accountRepository.save(account)
     }
 }
