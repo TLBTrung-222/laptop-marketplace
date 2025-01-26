@@ -20,6 +20,9 @@ import { ApprovalStatus } from 'src/shared/enum/approval.enum'
 import { rm } from 'fs/promises'
 import { resolveAssetPath } from 'src/shared/utils/helper'
 import { EmailService } from 'src/api/email/service/email.service'
+import { S3Service } from 'src/api/s3/service/s3.service'
+import { randomUUID } from 'crypto'
+import { extname } from 'path'
 
 @Injectable()
 export class ProductService {
@@ -42,12 +45,15 @@ export class ProductService {
         @InjectRepository(ApprovalEntity)
         private readonly approvalRepository: Repository<ApprovalEntity>,
 
-        private emailService: EmailService
+        private emailService: EmailService,
+
+        private s3Service: S3Service
     ) {}
 
     async create(
         sellerId: number,
-        productDto: CreateProductDto
+        productDto: CreateProductDto,
+        productImages: Array<Express.Multer.File>
     ): Promise<ProductEntity> {
         const seller = await this.accountRepository.findOne({
             where: { id: sellerId }
@@ -68,7 +74,7 @@ export class ProductService {
             throw new BadRequestException('Brand of product could not be found')
         }
 
-        // Step 1: Create and save the product first
+        // Step 1: Create and save the product + upload images to S3
         const product = this.productRepository.create({
             seller,
             brand,
@@ -81,6 +87,10 @@ export class ProductService {
         })
 
         const savedProduct = await this.productRepository.save(product)
+
+        for (const image of productImages) {
+            await this.uploadImage(savedProduct.id, image)
+        }
 
         // Step 2: Create and save the approval
         const approval = this.approvalRepository.create({
@@ -108,6 +118,7 @@ export class ProductService {
             .leftJoinAndSelect('product.category', 'category')
             .leftJoinAndSelect('product.seller', 'seller')
             .leftJoinAndSelect('product.ratings', 'ratings')
+            .leftJoinAndSelect('product.images', 'images')
             .leftJoin('product.approval', 'approvals')
 
         if (query.brand)
@@ -132,7 +143,8 @@ export class ProductService {
                 ratings: {
                     buyer: true
                 },
-                approval: true
+                approval: true,
+                images: true
             }
         })
 
@@ -200,18 +212,6 @@ export class ProductService {
         if (!existProduct)
             throw new NotFoundException('Product could not be found')
 
-        /* --------- loop through each image, read the correspond image.jpg --------- */
-        // const imagesWithBuffers = await Promise.all(
-        //     existProduct.images.map(async (image) => {
-        //         const imagePath = resolveAssetPath(image.image, 'products')
-        //         const buffer = await readFile(imagePath)
-        //         return {
-        //             image,
-        //             buffer
-        //         }
-        //     })
-        // )
-
         return existProduct.images
     }
 
@@ -226,37 +226,43 @@ export class ProductService {
         if (!existProduct)
             throw new NotFoundException('Product could not be found')
 
-        /* ------------------- save product image into Image repo ------------------- */
-        const newImage = this.imageRepository.create({
-            image: image.filename,
+        if (existProduct.images.length > 8)
+            throw new BadRequestException(
+                'The number of product images can not exceed 8'
+            )
+
+        /* --------------------- upload product image into S3  ------------------------ */
+        const uniqueSuffix = `${Date.now()}-${randomUUID()}` // add some random to prevent key collision
+        const key = `${existProduct.id}-${uniqueSuffix}${extname(image.originalname)}`
+        const s3Key = await this.s3Service.uploadImage(
+            'products',
+            key,
+            image.buffer,
+            image.mimetype
+        )
+        await this.imageRepository.save({
+            image: s3Key,
             product: existProduct
         })
-        await this.imageRepository.save(newImage)
 
-        return newImage
+        return s3Key
     }
 
-    async deleteImage(id: number, imageId: number) {
-        const existProduct = await this.productRepository.findOne({
-            where: { id: id },
-            relations: {
-                images: true
-            }
+    async deleteImage(key: string) {
+        const existedImage = await this.imageRepository.findOne({
+            where: { image: key }
         })
-        if (!existProduct)
-            throw new NotFoundException('Product could not been found')
-        const image = await this.imageRepository.findOne({
-            where: { id: imageId }
-        })
-        if (!image) throw new NotFoundException('Image could not been found')
+        if (!existedImage)
+            throw new NotFoundException('Image could not been found')
 
-        const imagePath = resolveAssetPath(image.image, 'products')
-        await rm(imagePath)
+        // delete from s3
+        await this.s3Service.deleteImage(key)
 
-        await this.imageRepository.delete(image)
+        // delete from db
+        await this.imageRepository.delete(existedImage)
 
         return {
-            deletedImage: image
+            deletedImage: key
         }
     }
 }

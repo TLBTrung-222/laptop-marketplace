@@ -13,6 +13,7 @@ import { SpecificationEntity } from 'src/database/entities/specification.entity'
 import { ImageEntity } from 'src/database/entities/image.entity'
 import { ApprovalEntity } from 'src/database/entities/approval.entity'
 import { EmailModule } from '../email/email.module'
+import { S3Module } from '../s3/s3.module'
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { EmailModule } from '../email/email.module'
             ApprovalEntity
         ]),
         RatingModule,
-        EmailModule
+        EmailModule,
+        S3Module
     ],
     controllers: [ProductController],
     providers: [ProductService, SpecificationService],

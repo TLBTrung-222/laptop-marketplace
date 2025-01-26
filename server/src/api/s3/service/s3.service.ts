@@ -70,7 +70,7 @@ export class S3Service {
 
             return url
         } catch (error) {
-            throw new HttpException('Error when uploading image', 500)
+            throw new HttpException('Error when getting image', 500)
         }
     }
 
@@ -83,7 +83,7 @@ export class S3Service {
 
             await this.s3.send(command)
         } catch (error) {
-            throw new HttpException('Error when uploading image', 500)
+            throw new HttpException('Error when deleting image', 500)
         }
     }
 }
