@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { AuthController } from './controller/auth.controller'
 import { AuthService } from './service/auth.service'
 import { AccountModule } from '../account/account.module'
-import { AccountService } from '../account/service/account.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AccountEntity } from 'src/database/entities/account.entity'
 import { RoleEntity } from 'src/database/entities/role.entity'
@@ -19,7 +18,7 @@ import { EmailModule } from '../email/email.module'
         PassportModule.register({ property: 'account' })
     ],
     controllers: [AuthController],
-    providers: [AuthService, AccountService, GoogleStrategy],
+    providers: [AuthService, GoogleStrategy],
     exports: []
 })
 export class AuthModule {}

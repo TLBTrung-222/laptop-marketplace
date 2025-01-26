@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Expose, Type } from 'class-transformer'
+import { Expose, Transform, Type } from 'class-transformer'
 import {
     IsString,
     MinLength,
@@ -64,20 +64,22 @@ export class ViewProductDto {
     @ApiProperty()
     @Expose()
     @Type(() => ViewSpecificationDto)
-    specificationId: ViewSpecificationDto
+    specification: ViewSpecificationDto
 
     @ApiProperty()
     @Expose()
     @Type(() => ViewImageDto)
-    image: ViewImageDto[]
+    images: ViewImageDto[]
 }
 
 export class CreateProductDto {
     @ApiProperty()
+    @Transform(({ value }) => parseFloat(value))
     @IsNumber()
     brandId: number
 
     @ApiProperty()
+    @Transform(({ value }) => parseFloat(value))
     @IsNumber()
     categoryId: number
 
@@ -87,6 +89,7 @@ export class CreateProductDto {
     name: string
 
     @ApiProperty()
+    @Transform(({ value }) => parseFloat(value))
     @IsNumber()
     price: number
 
@@ -95,6 +98,7 @@ export class CreateProductDto {
     description: string
 
     @ApiProperty()
+    @Transform(({ value }) => parseFloat(value))
     @IsNumber()
     @Min(0)
     stockQuantity: number

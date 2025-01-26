@@ -101,18 +101,10 @@ export class AccountController {
                     )
                 }
                 callback(null, true)
-            },
-            storage: diskStorage({
-                destination: './src/assets/avatars',
-                filename: (req, file, callback) => {
-                    const ext = extname(file.originalname)
-                    const fileName = `${req.account.id}${ext}`
-                    callback(null, fileName)
-                }
-            })
+            }
         })
     )
-    uploadAvatar(
+    async uploadAvatar(
         @UploadedFile() file: Express.Multer.File,
         @CurrentAccount() account: AccountEntity
     ) {
