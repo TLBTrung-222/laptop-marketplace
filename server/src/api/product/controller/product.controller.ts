@@ -78,7 +78,7 @@ export class ProductController {
     @ApiOperation({ summary: 'Post images by product id' })
     @Post(':id/images')
     @UseInterceptors(
-        FileInterceptor('image', {
+        FilesInterceptor('image', 8, {
             fileFilter: (req, file, callback) => {
                 const allowedTypes = [
                     'image/jpeg',
@@ -99,12 +99,12 @@ export class ProductController {
         })
     )
     addProductImages(
-        @Param('id', ParseIntPipe) id: number,
-        @UploadedFile()
-        file: Express.Multer.File
+        @Param('id', ParseIntPipe) productId: number,
+        @UploadedFiles()
+        files: Array<Express.Multer.File>
     ) {
-        if (!file) throw new BadRequestException('No file uploaded')
-        return this.productService.uploadImage(id, file)
+        if (!files.length) throw new BadRequestException('No file uploaded')
+        return this.productService.uploadImages(productId, files)
     }
 
     @ApiOperation({ summary: 'Delete an image by key' })

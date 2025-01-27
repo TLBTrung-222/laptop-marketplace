@@ -248,6 +248,12 @@ export class ProductService {
         return s3Key
     }
 
+    async uploadImages(productId: number, images: Array<Express.Multer.File>) {
+        for (const image of images) {
+            await this.uploadImage(productId, image)
+        }
+    }
+
     async deleteImage(key: string) {
         const existedImage = await this.imageRepository.findOne({
             where: { image: key }
