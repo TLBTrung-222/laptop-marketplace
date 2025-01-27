@@ -17,7 +17,6 @@ export const profileSchema = z.object({
     phoneNumber: z.string().refine(validatePhoneNumber, {
         message: "Invalid phone number",
     }),
-    avatar: z.any().optional(),
 });
 
 export type ProfileInput = z.infer<typeof profileSchema>;

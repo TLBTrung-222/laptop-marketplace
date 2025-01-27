@@ -7,27 +7,27 @@ import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-type UploadedFile = {
+export interface UploadedFile {
     id: string;
     file: File;
     preview: string;
-};
+}
 
-type Props = {
+export interface MultiImageUploadProps {
     initialImages: TImage[];
     onImagesUpload: (files: File[]) => Promise<void>;
     onRemoveImage: (image: string) => Promise<void>;
     maxFiles?: number;
     className?: string;
-};
+}
 
-export const ProductImages = ({
+export default function MultiImageUpload({
     initialImages = [],
     onImagesUpload,
     onRemoveImage,
     maxFiles = 5,
     className,
-}: Props) => {
+}: MultiImageUploadProps) {
     const [isDragging, setIsDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
     const [isUploading, setIsUploading] = useState(false);
@@ -69,6 +69,7 @@ export const ProductImages = ({
             const remainingSlots = maxFiles - totalImages;
             const filesToProcess = imageFiles.slice(0, remainingSlots);
 
+            // Create preview URLs first
             const newFiles: UploadedFile[] = await Promise.all(
                 filesToProcess.map(async (file) => {
                     return new Promise((resolve) => {
@@ -85,16 +86,18 @@ export const ProductImages = ({
                 }),
             );
 
+            // Add files with previews to state temporarily
             setUploadedFiles((prev) => [...prev, ...newFiles]);
 
+            // Upload all files at once
             if (newFiles.length > 0) {
                 await onImagesUpload(newFiles.map((f) => f.file));
-
+                // Clear uploaded files as they will be part of initialImages after parent revalidation
                 setUploadedFiles([]);
             }
         } catch (error) {
             console.error("Error uploading files:", error);
-
+            // Remove failed uploads from state
             setUploadedFiles([]);
         } finally {
             setIsUploading(false);
@@ -105,11 +108,13 @@ export const ProductImages = ({
         if (removingImages.has(image)) return;
 
         try {
+            // Only track loading state until server responds
             setRemovingImages((prev) => new Set(prev).add(image));
             await onRemoveImage(image);
         } catch (error) {
             console.error("Error removing image:", error);
         } finally {
+            // Clear loading state immediately after server responds
             setRemovingImages((prev) => {
                 const next = new Set(prev);
                 next.delete(image);
@@ -124,8 +129,10 @@ export const ProductImages = ({
 
     return (
         <div className={cn("w-full space-y-4", className)}>
+            {/* Preview Grid */}
             {(initialImages.length > 0 || uploadedFiles.length > 0) && (
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    {/* Initial Images */}
                     {initialImages.map((image) => (
                         <div
                             key={image.id}
@@ -155,6 +162,7 @@ export const ProductImages = ({
                         </div>
                     ))}
 
+                    {/* Temporary Preview Files */}
                     {uploadedFiles.map((file) => (
                         <div
                             key={file.id}
@@ -174,6 +182,7 @@ export const ProductImages = ({
                 </div>
             )}
 
+            {/* Upload Area */}
             {totalImages < maxFiles && (
                 <div
                     className={cn(
@@ -232,4 +241,4 @@ export const ProductImages = ({
             )}
         </div>
     );
-};
+}

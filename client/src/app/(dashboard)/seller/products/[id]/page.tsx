@@ -3,8 +3,10 @@
 import { useCreateDetails } from "@/features/products/apis/use-create-details";
 import { useGetDetails } from "@/features/products/apis/use-get-details";
 import { useGetProduct } from "@/features/products/apis/use-get-product";
+import { useRemoveImage } from "@/features/products/apis/use-remove-image";
 import { useUpdateDetails } from "@/features/products/apis/use-update-details";
 import { useUpdateProduct } from "@/features/products/apis/use-update-product";
+import { useUploadImages } from "@/features/products/apis/use-upload-images";
 import { ProductDetail } from "@/features/products/components/product-detail";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductImages } from "@/features/products/components/product-images";
@@ -24,6 +26,8 @@ export default function ProductPage() {
     const createDetails = useCreateDetails(+id);
     const updateDetails = useUpdateDetails(details.data?.id);
     const updateProduct = useUpdateProduct(+id);
+    const uploadImages = useUploadImages(+id);
+    const removeImage = useRemoveImage(+id);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -45,8 +49,21 @@ export default function ProductPage() {
         }
     };
 
-    const onImagesUploaded = (files: File[]) => {
-        console.log("🚀 ~ onImagesUploaded ~ files:", files);
+    const onImagesUploaded = async (files: File[]) => {
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append("image", file);
+        });
+        await uploadImages.mutateAsync(formData);
+    };
+
+    const onRemoveImage = async (image: string) => {
+        const imageUrl = image.replace(
+            `${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/`,
+            "",
+        );
+
+        removeImage.mutate(imageUrl);
     };
 
     return (
@@ -65,8 +82,10 @@ export default function ProductPage() {
             </ProductSection>
             <ProductSection title="Product Images">
                 <ProductImages
-                    maxFiles={5}
-                    onImagesUploaded={onImagesUploaded}
+                    maxFiles={8}
+                    initialImages={product.data?.images || []}
+                    onImagesUpload={onImagesUploaded}
+                    onRemoveImage={onRemoveImage}
                 />
             </ProductSection>
             <ProductSection title="Product Details">

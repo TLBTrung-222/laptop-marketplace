@@ -19,16 +19,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Settings } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useGetProfile } from "../api/use-get-profile";
 import { useEditProfile } from "../api/use-update-profile";
 import { ProfileInput, profileSchema } from "../schemas/profile";
+import { UploadAvatar } from "./upload-avatar";
 export const Setting = () => {
     const [open, setOpen] = useState(false);
 
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const { data: profile, isPending } = useGetProfile();
 
     const form = useForm<ProfileInput>({
@@ -40,14 +39,6 @@ export const Setting = () => {
         form.reset(profile);
     }, [isPending, profile, form]);
 
-    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const url = URL.createObjectURL(file);
-            setPreviewUrl(url);
-        }
-    };
-
     const edit = useEditProfile(profile?.id);
 
     const onSubmit = async (data: ProfileInput) => {
@@ -55,10 +46,6 @@ export const Setting = () => {
             onSuccess() {
                 setOpen(false);
                 form.reset();
-                if (previewUrl) {
-                    URL.revokeObjectURL(previewUrl);
-                    setPreviewUrl(null);
-                }
             },
         });
     };
@@ -82,46 +69,12 @@ export const Setting = () => {
                     <DialogHeader>
                         <DialogTitle>Edit Profile</DialogTitle>
                     </DialogHeader>
+                    <UploadAvatar avatar={profile?.avatar} />
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
                             className="space-y-6"
                         >
-                            <FormField
-                                control={form.control}
-                                name="avatar"
-                                render={({ field: { onChange, ...field } }) => (
-                                    <FormItem className="flex w-full items-center justify-center">
-                                        <FormLabel className="cursor-pointer">
-                                            <div className="relative size-32 overflow-hidden rounded-full border-2 border-muted">
-                                                <Image
-                                                    src={
-                                                        previewUrl ||
-                                                        "/avatar.svg"
-                                                    }
-                                                    alt="Profile preview"
-                                                    width={128}
-                                                    height={128}
-                                                />
-                                            </div>
-                                        </FormLabel>
-
-                                        <FormControl>
-                                            <Input
-                                                type="file"
-                                                className="invisible size-0"
-                                                accept="image/*"
-                                                onChange={(e) => {
-                                                    onChange(e.target.files);
-                                                    onImageChange(e);
-                                                }}
-                                            />
-                                        </FormControl>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                             <FormField
                                 control={form.control}
                                 name="name"

@@ -36,6 +36,11 @@ export type Rating = {
     buyer: Account;
 };
 
+export type Image = {
+    id: number;
+    image: string;
+};
+
 export type Product = {
     id: number;
     name: string;
@@ -47,6 +52,7 @@ export type Product = {
     brand: Brand;
     category: Category;
     ratings: Rating[];
+    images: Image[];
 };
 
 export type ProductDetail = {

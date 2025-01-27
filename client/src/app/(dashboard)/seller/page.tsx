@@ -55,8 +55,8 @@ export default function Dashboard() {
                 <Card>
                     <CardContent className="p-6">
                         <div className="flex items-center gap-2">
-                            <div className="rounded-lg bg-primary/20 p-2">
-                                <DollarSign className="h-4 w-4 text-primary" />
+                            <div className="rounded-lg bg-admin/20 p-2">
+                                <DollarSign className="h-4 w-4 text-admin" />
                             </div>
                             <span className="text-sm text-muted-foreground">
                                 Total Revenue

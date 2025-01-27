@@ -7,27 +7,27 @@ import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-type UploadedFile = {
+export interface UploadedFile {
     id: string;
     file: File;
     preview: string;
-};
+}
 
-type Props = {
+export interface MultiImageUploadProps {
     initialImages: TImage[];
     onImagesUpload: (files: File[]) => Promise<void>;
     onRemoveImage: (image: string) => Promise<void>;
     maxFiles?: number;
     className?: string;
-};
+}
 
-export const ProductImages = ({
+export default function MultiImageUpload({
     initialImages = [],
     onImagesUpload,
     onRemoveImage,
     maxFiles = 5,
     className,
-}: Props) => {
+}: MultiImageUploadProps) {
     const [isDragging, setIsDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
     const [isUploading, setIsUploading] = useState(false);
@@ -232,4 +232,4 @@ export const ProductImages = ({
             )}
         </div>
     );
-};
+}
