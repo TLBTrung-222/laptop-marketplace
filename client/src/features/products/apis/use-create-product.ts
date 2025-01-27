@@ -15,8 +15,16 @@ export const useCreateProduct = () => {
     const router = useRouter();
 
     const mutation = useMutation({
-        mutationFn: async (data: ProductRequest) => {
-            const response = await axiosClient.post("/products", data);
+        mutationFn: async (data: ProductInput) => {
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => {
+                formData.append(key, value.toString());
+            });
+            const response = await axiosClient.post("/products", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             return response.data as Product;
         },
         onError: (error) => {

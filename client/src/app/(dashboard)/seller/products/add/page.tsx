@@ -9,11 +9,7 @@ export default function AddPage() {
     const { isPending, mutate } = useCreateProduct();
 
     const onAddProduct = (data: ProductInput) => {
-        mutate({
-            ...data,
-            categoryId: parseInt(data.categoryId),
-            brandId: parseInt(data.brandId),
-        });
+        mutate(data);
     };
 
     return (

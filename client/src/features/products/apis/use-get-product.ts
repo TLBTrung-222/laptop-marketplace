@@ -8,7 +8,14 @@ export const useGetProduct = (id?: number) => {
         enabled: !!id,
         queryFn: async () => {
             const response = await axiosClient.get(`/products/${id}`);
-            return response.data as Product;
+            const product = response.data as Product;
+            if (product.images.length > 0) {
+                product.images = product.images.map((image) => ({
+                    ...image,
+                    image: `${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/${image.image}`,
+                }));
+            }
+            return product;
         },
     });
     return query;
