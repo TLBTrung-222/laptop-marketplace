@@ -1,101 +1,181 @@
+"use client"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetProducts } from "@/features/products/apis/use-get-products";
 import Image from "next/image";
+import { Fragment, useEffect, useState } from "react";
+import { Product } from "@/types";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import ProductList from "./component/productList";
+import Header from "./component/header";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  var {data, isLoading, error}= useGetProducts();
+  const [isSignIn, setIsSignIn] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col">  
+      <Header data={data}/>
+      <main className="pl-8 pt-1 pb-1 pr-8">
+        <PaginatedProducts products={data} perPage={12}/>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <Footer/>
     </div>
+  );
+}
+
+const Footer = ()=>{
+  return(
+    <footer className="row-start-3 gap-6 items-center justify-center bg-[#253B80] p-4 mt-4 ml-0 mr-0 w-full text-[#CBCBCB]">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-white">Company</h1>
+          <p>about us</p>
+          <p>blog</p>
+          <p>returns</p>
+          <p>order status</p>
+        </div>
+        <div>
+          <h1 className="text-white">Info</h1>
+          <p>How it works?</p>
+          <p>FAQ</p>
+        </div>
+        <div>
+          <h1 className="text-white">Contact us</h1>
+          <div className="flex">
+            <Image
+              src="/location.ico"
+              width={24}
+              height={24}
+              alt="location"
+            />
+            <p>123 Main Street, Any Town, VN</p>
+          </div>
+          <div className="flex">
+            <Image
+              src="/call-calling.ico"
+              width={24}
+              height={24}
+              alt="call-calling"
+            />
+            <p>+84 (012) 34-4567</p>
+          </div>
+          <div className="flex">
+            <Image
+              src="/sms.ico"
+              width={24}
+              height={24}
+              alt="sms"
+            />
+            <p>TechHeimSupport@gmail.com</p>
+          </div>
+        </div> 
+        <div>
+          <h1 className="text-white">Sign up for News and updates</h1>
+          <div className="flex gap-1">
+            <Image
+              src="/facebook.ico"
+              width={30}
+              height={30}
+              alt="sms"
+            />
+            <Image
+              src="/twitter.ico"
+              width={30}
+              height={30}
+              alt="sms"
+            />
+            <Image
+              src="/Instagram.ico"
+              width={30}
+              height={30}
+              alt="sms"
+            />
+            <Image
+              src="/Youtube.ico"
+              width={30}
+              height={30}
+              alt="sms"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col justify-between">
+          <Image
+              src="/online-chat.png"
+              width={30}
+              height={30}
+              alt="sms"
+            />
+          <Image
+              src="/back-to-up.png"
+              width={30}
+              height={30}
+              alt="sms"
+              className="hover:cursor-pointer"
+            />
+        </div>
+      </div>
+      <div className="copy right"></div>
+    </footer>
+  )
+}
+
+const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perPage:number})=>{
+  const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage-1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentProducts = products?.slice(startIndex, endIndex);
+  const totalPages = products?Math.ceil(products.length/perPage):0;
+
+  return (
+    <Fragment>
+      <ProductList data={currentProducts}/>
+      <div className="mt-4 flex gap-2">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#"
+                onClick={()=> setCurrentPage((prev)=>Math.max(prev-1,1))}
+                className={`${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+              />
+            </PaginationItem>
+            {/* Render số trang */}
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            {totalPages>5&&
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>}
+
+            <PaginationItem>
+              <PaginationNext href="#" 
+                onClick={()=>setCurrentPage((prev)=>Math.min(prev+1,totalPages))}
+                className={`${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </Fragment>
   );
 }
