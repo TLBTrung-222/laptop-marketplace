@@ -51,24 +51,39 @@ const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perP
                 className={`${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
               />
             </PaginationItem>
-            {/* Render số trang */}
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  href="#"
-                  isActive={currentPage === index + 1}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
+              {Array.from({ length: 4 }).map((_, index) => {
+              var pageNumber: number;
+              if (currentPage===1){
+                pageNumber = currentPage + index;
+              }
+              else{
+                if(currentPage>totalPages-totalPages%4){
+                  pageNumber = totalPages - totalPages%4 + index
+                }
+                else pageNumber = currentPage + index - 1; // Hiển thị các số trang xung quanh currentPage
+              }
+              // Kiểm tra nếu số trang hợp lệ (lớn hơn 0 và nhỏ hơn hoặc bằng totalPages)
+              if (pageNumber > 0 && pageNumber <= totalPages) {
+                return (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === pageNumber}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+              return null;
+            })}
 
-            {totalPages>5&&
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>}
-
+            {currentPage>totalPages-(totalPages%4)? undefined : 1 &&
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>}
+            
             <PaginationItem>
               <PaginationNext href="#" 
                 onClick={()=>setCurrentPage((prev)=>Math.min(prev+1,totalPages))}

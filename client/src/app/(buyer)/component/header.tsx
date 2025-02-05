@@ -6,7 +6,7 @@ import { Fragment, useState } from "react";
 import ProductList from "./productList";
 import Image from "next/image";
 import { useCart } from "./cart-context";
-import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function Header({data}:{data:Product[]|undefined}){
@@ -234,11 +234,11 @@ const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; on
               className="bg-white p-6 rounded-lg shadow-lg w-1/2 relative"
               onClick={(e) => e.stopPropagation()}
               >
-                <div
+                <X
                   className="absolute top-6 right-6 hover:cursor-pointer"
                   onClick={onClose}
-                >x</div>
-              <h2 className="text-lg font-bold mb-2">Tìm kiếm sản phẩm</h2>
+                />
+              <h2 className="text-lg font-bold mb-2">Search Products</h2>
               <input
               type="text"
               placeholder="What can we help you to find?"
@@ -324,55 +324,6 @@ const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; on
         )
 }
 
-const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perPage:number})=>{
-  const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage-1) * perPage;
-  const endIndex = startIndex + perPage;
-  const currentProducts = products?.slice(startIndex, endIndex);
-  const totalPages = products?Math.ceil(products.length/perPage):0;
-
-  return (
-    <Fragment>
-      <ProductList data={currentProducts}/>
-      <div className="mt-4 flex gap-2">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#"
-                onClick={()=> setCurrentPage((prev)=>Math.max(prev-1,1))}
-                className={`${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </PaginationItem>
-            {/* Render số trang */}
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  href="#"
-                  isActive={currentPage === index + 1}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            {totalPages>5&&
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>}
-
-            <PaginationItem>
-              <PaginationNext href="#" 
-                onClick={()=>setCurrentPage((prev)=>Math.min(prev+1,totalPages))}
-                className={`${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-    </Fragment>
-  );
-}
 const CartMenu = ({onClose}:{onClose:()=>void})=>{
   const { cart, removeFromCart, totalPrice, totalPriceProducts, increaseQuantity, decreaseQuantity } = useCart();
   return(
@@ -406,7 +357,7 @@ const CartMenu = ({onClose}:{onClose:()=>void})=>{
                   <div>
                     <p className="text-sm">{item.name}</p>
                     <div className="flex justify-between mt-4">
-                      <p className="text-sm">${item.price}</p>
+                      <p className="text-sm">${formatCurrency(item.price)}</p>
                       <div className="flex gap-2 ml-10">
                         <Trash2
                           className="text-red-500 ml-4 size-5 hover:cursor-pointer"
@@ -442,3 +393,7 @@ const CartMenu = ({onClose}:{onClose:()=>void})=>{
     </div>
   )
 }
+
+const formatCurrency = (amount:number) => {
+  return new Intl.NumberFormat('vi-VN').format(amount);
+};
