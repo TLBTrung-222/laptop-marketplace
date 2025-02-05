@@ -1,9 +1,11 @@
 "use client";
-
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Home, Settings, Inbox } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Header from "../component/header";
+import { usePathname } from "next/navigation";
+import { Product } from "@/types";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     const menuItems = [
@@ -13,12 +15,32 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         { label: "Wish list", path: "/profile/orders", icon: Inbox },
         { label: "Notification", path: "/profile/orders", icon: Inbox },
     ];
+    const pathname = usePathname();
+    const [isHeader, setIsHeader] = useState(true);
+
+    const [data, setData] = useState<Product[] | undefined>(undefined);
 
     const [mounted, setMounted] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         setMounted(true);
+
+        // Chỉ fetch API sau khi component đã mount
+        if (mounted) {
+            const { data, isLoading, error } = useGetProducts();
+            setData(data);
+            setIsLoading(isLoading);
+        }
+
+        // Cập nhật header dựa vào pathname
+        setIsHeader(listPathHaveHeaders.includes(pathname));
     }, []);
+
+    
+    const listPathHaveHeaders = ["/account"];
+    useEffect(() => {
+        setIsHeader(listPathHaveHeaders.includes(pathname));
+    }, [pathname, mounted]);
 
     if (!mounted) {
         return null;
@@ -26,6 +48,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
     return (
         <div>
+            <Header data={data}/>
             <div className="flex">
                 {/* <SidebarTrigger/> */}
                 {/* Sidebar chỉ áp dụng cho Profile */}

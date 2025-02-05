@@ -1,20 +1,17 @@
 "use client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetProducts } from "@/features/products/apis/use-get-products";
-import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { Product } from "@/types";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import ProductList from "./component/productList";
 import Header from "./component/header";
+import Footer from "./component/footer";
+import { productListExample } from "./component/product-ex";
 
 export default function Home() {
   var {data, isLoading, error}= useGetProducts();
-  const [isSignIn, setIsSignIn] = useState(true);
   const [mounted, setMounted] = useState(false);
-
+  data=productListExample;
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -27,107 +24,12 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">  
       <Header data={data}/>
       <main className="pl-8 pt-1 pb-1 pr-8">
-        <PaginatedProducts products={data} perPage={12}/>
+        {/* <PaginatedProducts products={data} perPage={1}/> */}
+        <PaginatedProducts products={productListExample} perPage={1}/>
       </main>
       <Footer/>
     </div>
   );
-}
-
-const Footer = ()=>{
-  return(
-    <footer className="row-start-3 gap-6 items-center justify-center bg-[#253B80] p-4 mt-4 ml-0 mr-0 w-full text-[#CBCBCB]">
-      <div className="flex justify-between">
-        <div>
-          <h1 className="text-white">Company</h1>
-          <p>about us</p>
-          <p>blog</p>
-          <p>returns</p>
-          <p>order status</p>
-        </div>
-        <div>
-          <h1 className="text-white">Info</h1>
-          <p>How it works?</p>
-          <p>FAQ</p>
-        </div>
-        <div>
-          <h1 className="text-white">Contact us</h1>
-          <div className="flex">
-            <Image
-              src="/location.ico"
-              width={24}
-              height={24}
-              alt="location"
-            />
-            <p>123 Main Street, Any Town, VN</p>
-          </div>
-          <div className="flex">
-            <Image
-              src="/call-calling.ico"
-              width={24}
-              height={24}
-              alt="call-calling"
-            />
-            <p>+84 (012) 34-4567</p>
-          </div>
-          <div className="flex">
-            <Image
-              src="/sms.ico"
-              width={24}
-              height={24}
-              alt="sms"
-            />
-            <p>TechHeimSupport@gmail.com</p>
-          </div>
-        </div> 
-        <div>
-          <h1 className="text-white">Sign up for News and updates</h1>
-          <div className="flex gap-1">
-            <Image
-              src="/facebook.ico"
-              width={30}
-              height={30}
-              alt="sms"
-            />
-            <Image
-              src="/twitter.ico"
-              width={30}
-              height={30}
-              alt="sms"
-            />
-            <Image
-              src="/Instagram.ico"
-              width={30}
-              height={30}
-              alt="sms"
-            />
-            <Image
-              src="/Youtube.ico"
-              width={30}
-              height={30}
-              alt="sms"
-            />
-          </div>
-        </div>
-        <div className="flex flex-col justify-between">
-          <Image
-              src="/online-chat.png"
-              width={30}
-              height={30}
-              alt="sms"
-            />
-          <Image
-              src="/back-to-up.png"
-              width={30}
-              height={30}
-              alt="sms"
-              className="hover:cursor-pointer"
-            />
-        </div>
-      </div>
-      <div className="copy right"></div>
-    </footer>
-  )
 }
 
 const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perPage:number})=>{

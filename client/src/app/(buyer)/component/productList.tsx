@@ -1,20 +1,44 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Product } from "@/types";
 import Image from "next/image";
+import { useCart } from "./cart-context";
+import { toast } from "sonner";
+
+type ProductCart ={
+    id: string;
+    name: string;
+    price: number;
+    images: string[];
+    category: string;
+    quantity: number;
+    stockquantity: number;
+}
 
 export default function ProductList({data}:{data:Product[]|undefined}){
+    const {addToCart} = useCart();
     return(
         <div>
         <div className="gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center justify-between">
             {
             data?.map((product:Product, index:number)=>(
                 <Card key={index} className="w-64 h-72 overflow-hidden mb-1 md:w-full"> 
-                <Image 
+                <div className="relative">
+                    <Image 
                     src={"https://laptop-marketplace-se347.s3.ap-southeast-2.amazonaws.com/"+product.images[0].image||"/product.png"}
                     alt="Card Image" 
                     width={600} height={600}
                     className="w-full h-56 object-cover hover:cursor-pointer"
                 />
+                <Image
+                    src='/basket.png'                
+                    alt="Add to Cart"
+                    width={30}
+                    height={30}
+                    onClick={()=>addToCart({...product, quantity:1})}
+                    className="absolute top-1 right-1 hover:cursor-pointer"
+                />
+                </div>
                 <hr className=""/>
                 <div className="flex justify-between relative">
                     <div>

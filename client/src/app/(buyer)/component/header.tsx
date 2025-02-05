@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Product } from "@/types";
+import { CartItem, Product } from "@/types";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import ProductList from "./productList";
 import Image from "next/image";
-
-
+import { useCart } from "./cart-context";
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Header({data}:{data:Product[]|undefined}){
     const [isSignIn, setIsSignIn] = useState(true);
@@ -14,7 +15,8 @@ export default function Header({data}:{data:Product[]|undefined}){
     const [isMenuVisible, setMenuVisible] = useState(false);
     const [isOpenSignIn, setIsOpenSignIn] = useState(false);
     const [isOpenSignUp, setIsOpenSignUp] = useState(false);
-
+    const [isOpenCartMenu, setIsOpenCartMenu] = useState(false);
+    const {totalPrice} = useCart()
     const router = useRouter();
     const handleHomeClick = () => {
         if (window.location.pathname === "/") {
@@ -24,92 +26,125 @@ export default function Header({data}:{data:Product[]|undefined}){
         router.push("/");
         }
     };
+
+    const handleProfileClick = () => {
+      router.push("/account");
+    }
+
     return(
         <div>
-            <header className="flex gap-4 justify-between items-center pl-8 pt-1 pb-1 pr-8 sticky">
-            <Image
-            className=""
-            src="/favicon.ico"
-            width={56}    
-            height={63}
-            alt="Ảnh trang web"
-            />
-            <div className="flex gap-2">
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2"
-                    onClick={handleHomeClick}
-                >Home</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Products</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">FAQ</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Contact Us</h1>
-            </div>
-            <div className="flex flex-row gap-1 items-center">
+            {/* <CartProvider> */}
+              <header className="flex gap-4 justify-between items-center pl-8 pt-1 pb-1 pr-8 sticky">
                 <Image
-                src="/search.png"
-                alt="Icon tìm kiếm"
-                width={30}
-                height={30}
-                className="hover:cursor-pointer"
-                onClick={()=>setIsOpenSearch(true)}
+                className=""
+                src="/favicon.ico"
+                width={56}    
+                height={63}
+                alt="Ảnh trang web"
                 />
-                {
-                    isSignIn?
-                    (
-                    <div className="flex flex-row">
-                        <Image
-                        src="/basket.png"
-                        alt="Icon giỏ hàng"
-                        width={30}
-                        height={30}
-                        className="hover:cursor-pointer"
-                        />
-                        <Image
-                        src="/profile.png"
-                        alt="Icon profile"
-                        width={30}
-                        height={30}
-                        className="hover:cursor-pointer"
-                        onClick={()=>setMenuVisible(true)}
-                        />
-                    </div>
-                    ):
-                    (
-                    <div className="flex gap-1">
-                        <Button className="bg-green-400" onClick={()=>setIsOpenSignUp(true)}>Sign up</Button>
-                        <Button className="bg-blue-400">Sign in</Button>
-                    </div>
-                    )
-                }
-            </div>
-            </header>
-            <hr className="pl-8 pt-1 pb-1 pr-8 w-full"/>
+                <div className="flex gap-2">
+                    <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2"
+                        onClick={handleHomeClick}
+                    >Home</h1>
+                    <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Products</h1>
+                    <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">FAQ</h1>
+                    <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Contact Us</h1>
+                </div>
+                <div className="flex flex-row gap-1 items-center">
+                  <Image
+                  src="/search.png"
+                  alt="Icon tìm kiếm"
+                  width={30}
+                  height={30}
+                  className="hover:cursor-pointer"
+                  onClick={()=>setIsOpenSearch(true)}
+                  />
+                    {
+                      isSignIn?
+                      (
+                      <div className="flex flex-row">
+                          <div className="relative">
+                            <Image
+                              src="/basket.png"
+                              alt="Icon giỏ hàng"
+                              width={30}
+                              height={30}
+                              className="hover:cursor-pointer"
+                              onClick={()=>setIsOpenCartMenu(true)}
+                              />
+                            <p className="absolute text-blue-600 top-0 right-0 text-xs bg-white w-fit">
+                              {totalPrice}
+                            </p>
+                          </div>
+                          <Image
+                          src="/profile.png"
+                          alt="Icon profile"
+                          width={30}
+                          height={30}
+                          className="hover:cursor-pointer"
+                          onClick={()=>setMenuVisible(true)}
+                          />
+                      </div>
+                      ):
+                      (
+                      <div className="flex gap-1">
+                          <Button className="bg-green-400" onClick={()=>setIsOpenSignUp(true)}>Sign up</Button>
+                          <Button className="bg-blue-400">Sign in</Button>
+                      </div>
+                      )
+                    }
+                </div>
+                </header>
+                <hr className="pl-8 pt-1 pb-1 pr-8 w-full"/>
+                {isMenuVisible && (
+                <div className="absolute top-[64px] right-8 w-fit bg-white shadow-lg z-50 rounded-md">
+                <div className="p-4"
+                >
+                    <ul>
+                    <li className="flex gap-2 hover:cursor-pointer"
+                      onClick={handleProfileClick}
+                    >
+                      <Image
+                        src='/profile.png'
+                        alt="Profile"
+                        width={24}
+                        height={24}
+                        className="border-2 border-blue-900 rounded-full bg-blue-200"
+                      />
+                      Jimmy Smith
+                    </li>
+                    <li className="hover:cursor-pointer">Orders</li>
+                    <li className="hover:cursor-pointer">Wish List</li>
+                    <li className="hover:cursor-pointer">Payments</li>
+                    <li className="hover:cursor-pointer">Log out</li>
+                    </ul>
+                </div>
+              </div>
+            )}
             {isMenuVisible && (
-            <div className="absolute top-[64px] right-8 w-fit bg-white shadow-lg z-50">
-            <hr />
-            <div className="p-4">
-                <ul>
-                <li>Jimmy Smith</li>
-                <li>Orders</li>
-                <li>Wish List</li>
-                <li>Payments</li>
-                <li>Log out</li>
-                </ul>
+                <div
+                className="fixed inset-0 bg-black opacity-50 z-40"
+                onClick={() => setMenuVisible(false)} // Tắt menu khi click vào nền
+                ></div>
+            )}
+            {isOpenCartMenu && (
+                <div
+                className="fixed inset-0 bg-black opacity-50 z-40"
+                onClick={() => setIsOpenCartMenu(false)} // Tắt menu khi click vào nền
+                ></div>
+            )}
+            <div>
+                {isOpenSearch &&
+                <SearchBarComponent products={data} onClose={()=>setIsOpenSearch(false)}/>
+                }
+                {isOpenSignUp&&<SignUpComponent onClose={()=>setIsOpenSignUp(false)}/>}
+                <div className="category items-center justify-between">
+                </div>
             </div>
-            </div>
-        )}
-        {isMenuVisible && (
-            <div
-            className="fixed inset-0 bg-black opacity-50 z-40"
-            onClick={() => setMenuVisible(false)} // Tắt menu khi click vào nền
-            ></div>
-        )}
-        <div>
-            {isOpenSearch &&
-            <SearchBarComponent products={data} onClose={()=>setIsOpenSearch(false)}/>
-            }
-            {isOpenSignUp&&<SignUpComponent onClose={()=>setIsOpenSignUp(false)}/>}
-            <div className="category items-center justify-between">
-            </div>
-        </div>
+            <>
+                {isOpenCartMenu && <CartMenu onClose={()=>setIsOpenCartMenu(false)}/>}
+            </>
+            {/* </CartProvider> */}
         </div>
     )
 }
@@ -337,4 +372,73 @@ const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perP
       </div>
     </Fragment>
   );
+}
+const CartMenu = ({onClose}:{onClose:()=>void})=>{
+  const { cart, removeFromCart, totalPrice, totalPriceProducts, increaseQuantity, decreaseQuantity } = useCart();
+  return(
+    <div 
+      className="absolute top-[64px] right-8 w-fit bg-white shadow-lg z-50 rounded-md"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white p-6 rounded-lg shadow-lg w-fit relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-xl\">{totalPrice} items</h2>
+        {cart.length === 0 ? (
+          <p className="text-gray-500">No products in cart</p>
+        ) : (
+        <>
+          <ul className="max-h-96 overflow-y-auto scroll-bar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+            {cart.map((item:CartItem) => (
+              <li 
+                key={item.id} 
+                className="flex justify-between items-center py-2
+                hover:text-blue-500 hover:bg-gray-100
+                p-2 rounded shadow-xl mt-2 mx-2"
+              >
+                <div className="flex items-center">
+                  <Image
+                    src={item.images[0].image}
+                    width={100}
+                    height={100}
+                    alt={item.name}/>
+                  <div>
+                    <p className="text-sm">{item.name}</p>
+                    <div className="flex justify-between mt-4">
+                      <p className="text-sm">${item.price}</p>
+                      <div className="flex gap-2 ml-10">
+                        <Trash2
+                          className="text-red-500 ml-4 size-5 hover:cursor-pointer"
+                          onClick={() => removeFromCart(item.id)}
+                        />
+                        <div className="flex gap-1 items-center">
+                          <Minus 
+                            className="rounded-2xl text-black hover:bg-red-400"
+                            onClick={()=>decreaseQuantity(item.id)}
+                          >-</Minus>
+                          <span>{item.quantity}</span>
+                          <Plus 
+                            className="rounded-2xl text-black hover:bg-blue-400"
+                            onClick={()=>increaseQuantity(item.id)}
+                          >+</Plus>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <Button
+            className="bg-blue-600 px-4 py-2 mt-4 w-full flex"
+          >
+            Proceed to Cart
+            <ShoppingCart className="ml-2" />
+          </Button>
+        </>
+        )}
+      </div>
+    </div>
+  )
 }

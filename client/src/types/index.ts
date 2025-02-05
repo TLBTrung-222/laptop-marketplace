@@ -112,3 +112,11 @@ export type Order = {
     shipping: Shipping;
     buyer: Account;
 };
+
+export type CartItem = {
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    images: Image[];
+}
