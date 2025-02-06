@@ -38,7 +38,11 @@ export const productListExample: Product[] = [
     ],
     images: [
       { id: 0, image: "/product.png" },
-      { id: 1, image: "/product.png" },
+      { id: 1, image: "/profile.png" },
+      { id: 2, image: "/product.png" },
+      { id: 3, image: "/search.png" },
+      { id: 4, image: "/profile.png" },
+      { id: 5, image: "/Star.png" },
     ],
   },
   {

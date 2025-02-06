@@ -10,13 +10,12 @@ const Payment=()=>{
 
      const [mounted, setMounted] = useState(false);
 
-    // Đảm bảo chỉ render khi ở client
     useEffect(() => {
         setMounted(true);
     }, []);
 
     if (!mounted) {
-        return null; // Không render gì trong lúc server-side
+        return null;
     }
 
     const handleEditCard=()=>{

@@ -8,9 +8,10 @@ import Image from "next/image";
 import { useCart } from "./cart-context";
 import { Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useSignIn } from "@/features/auth/apis/use-sign-in";
 
 export default function Header({data}:{data:Product[]|undefined}){
-    const [isSignIn, setIsSignIn] = useState(true);
+    const [isSignIn, setIsSignIn] = useState(false);
     const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [isMenuVisible, setMenuVisible] = useState(false);
     const [isOpenSignIn, setIsOpenSignIn] = useState(false);
@@ -88,8 +89,8 @@ export default function Header({data}:{data:Product[]|undefined}){
                       ):
                       (
                       <div className="flex gap-1">
-                          <Button className="bg-green-400" onClick={()=>setIsOpenSignUp(true)}>Sign up</Button>
-                          <Button className="bg-blue-400">Sign in</Button>
+                          {/* <Button className="bg-green-400" onClick={()=>setIsOpenSignUp(true)}>Sign up</Button> */}
+                          <Button className="bg-blue-400" onClick={()=>setIsOpenSignIn(true)}>Sign in</Button>
                       </div>
                       )
                     }
@@ -137,7 +138,7 @@ export default function Header({data}:{data:Product[]|undefined}){
                 {isOpenSearch &&
                 <SearchBarComponent products={data} onClose={()=>setIsOpenSearch(false)}/>
                 }
-                {isOpenSignUp&&<SignUpComponent onClose={()=>setIsOpenSignUp(false)}/>}
+                {isOpenSignIn&&<SignInComponent onClose={()=>setIsOpenSignIn(false)} onOpenProfile={()=>setIsSignIn(true)}/>}
                 <div className="category items-center justify-between">
                 </div>
             </div>
@@ -149,10 +150,23 @@ export default function Header({data}:{data:Product[]|undefined}){
     )
 }
 
-const SignUpComponent =({onClose}:{onClose:()=>void})=>{
+const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfile:()=>void})=>{
   const [showSignUpForm, setShowSignUpForm] = useState(true);
   const handleToggleSignUpForm = () => setShowSignUpForm(!showSignUpForm);
   if (!showSignUpForm) return;
+  const[email, setEmail]= useState('')
+  const[password, setPassword]= useState('')
+
+  const { mutate: signIn, isSuccess } = useSignIn();
+  const handleSubmit = (e:any)=>{
+    e.preventDefault();
+    signIn({email, password});
+    if(!isSuccess){
+      alert(isSuccess);
+    } else {
+      onOpenProfile();
+    }
+  }
   return(
     <div 
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -173,6 +187,7 @@ const SignUpComponent =({onClose}:{onClose:()=>void})=>{
               type="text"
               placeholder="Email"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e)=>setEmail(e.target.value)}
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
               <Image
@@ -188,6 +203,7 @@ const SignUpComponent =({onClose}:{onClose:()=>void})=>{
               type="text"
               placeholder="Password"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(event)=>setPassword(event.target.value)}
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
               <Image
@@ -213,7 +229,9 @@ const SignUpComponent =({onClose}:{onClose:()=>void})=>{
             />
             <p className="ml-1">Keep me logged in</p>
           </div>
-          <Button className="bg-blue-600 w-full mt-2">Log In</Button>
+          <Button 
+            onClick={(e)=>handleSubmit(e)}
+            className="bg-blue-600 w-full mt-2">Log In</Button>
         </div>
       </div>
   )

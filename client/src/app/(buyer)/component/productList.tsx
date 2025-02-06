@@ -4,6 +4,7 @@ import { Product } from "@/types";
 import Image from "next/image";
 import { useCart } from "./cart-context";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type ProductCart ={
     id: string;
@@ -17,6 +18,11 @@ type ProductCart ={
 
 export default function ProductList({data}:{data:Product[]|undefined}){
     const {addToCart} = useCart();
+    const router = useRouter();
+
+    const handleClickProduct=(id:number)=>{
+        router.push(`/product/${id}`)
+    }
     return(
         <div>
         <div className="gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center justify-between">
@@ -29,6 +35,7 @@ export default function ProductList({data}:{data:Product[]|undefined}){
                     alt="Card Image" 
                     width={600} height={600}
                     className="w-full h-56 object-cover hover:cursor-pointer"
+                    onClick={()=>handleClickProduct(product.id)}
                 />
                 <Image
                     src='/basket.png'                
