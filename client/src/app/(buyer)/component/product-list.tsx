@@ -17,6 +17,7 @@ type ProductCart ={
 }
 
 export default function ProductList({data}:{data:Product[]|undefined}){
+    const isSignIn = localStorage.getItem('isSignIn');
     const {addToCart} = useCart();
     const router = useRouter();
 
@@ -25,10 +26,10 @@ export default function ProductList({data}:{data:Product[]|undefined}){
     }
     return(
         <div>
-        <div className="gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center justify-between">
+        <div className="items-center justify-between gap-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
             {
             data?.map((product:Product, index:number)=>(
-                <Card key={index} className="w-64 h-72 overflow-hidden mb-1 md:w-full"> 
+                <Card key={index} className="h-72 overflow-hidden mb-1 w-full"> 
                 <div className="relative">
                     <Image 
                     src={"https://laptop-marketplace-se347.s3.ap-southeast-2.amazonaws.com/"+product.images[0].image||"/product.png"}
@@ -37,14 +38,16 @@ export default function ProductList({data}:{data:Product[]|undefined}){
                     className="w-full h-56 object-cover hover:cursor-pointer"
                     onClick={()=>handleClickProduct(product.id)}
                 />
-                <Image
+                {isSignIn&&
+                    <Image
                     src='/basket.png'                
                     alt="Add to Cart"
                     width={30}
                     height={30}
                     onClick={()=>addToCart({...product, quantity:1})}
                     className="absolute top-1 right-1 hover:cursor-pointer"
-                />
+                    />
+                }
                 </div>
                 <hr className=""/>
                 <div className="flex justify-between relative">

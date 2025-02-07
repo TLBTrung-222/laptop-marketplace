@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SignInInput } from "../schemas/sign-in";
-import { cookies } from "next/headers";
 
 export const useSignIn = () => {
     const router = useRouter();
@@ -27,9 +26,6 @@ export const useSignIn = () => {
 
             if (data.role.roleName === "seller") {
                 router.push("/seller");
-            }
-            if (data.role.roleName === "buyer"){
-                router.push("/");
             }
         },
     });

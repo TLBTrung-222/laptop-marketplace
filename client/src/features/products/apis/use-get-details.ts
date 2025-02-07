@@ -14,3 +14,15 @@ export const useGetDetails = (id: number) => {
     });
     return query;
 };
+
+export const fetchProductDetails = async (id: number) => {
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER}/products/${id.toString()}/specifications`,
+    );
+    
+    if (!response.ok) {
+        throw new Error("Failed to fetch product details");
+    }
+    const data = await response.json();
+    return data.data as ProductDetail;
+};

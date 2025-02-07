@@ -3,7 +3,7 @@ import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Fragment, useEffect, useState } from "react";
 import { Product } from "@/types";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import ProductList from "./component/productList";
+import ProductList from "./component/product-list";
 import Header from "./component/header";
 import Footer from "./component/footer";
 import { productListExample } from "./component/product-ex";
@@ -11,7 +11,7 @@ import { productListExample } from "./component/product-ex";
 export default function Home() {
   var {data, isLoading, error}= useGetProducts();
   const [mounted, setMounted] = useState(false);
-  data=productListExample;
+  // data=productListExample;
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -22,11 +22,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">  
-      <Header data={data}/>
-      <main className="pl-8 pt-1 pb-1 pr-8">
-        {/* <PaginatedProducts products={data} perPage={1}/> */}
-        <PaginatedProducts products={productListExample} perPage={1}/>
-      </main>
+      <div className="flex-grow">
+        <Header data={data}/>
+        <main className="py-1 pl-8 pr-8 items-center justify-between">
+          <PaginatedProducts products={data} perPage={6}/>
+        </main>
+      </div>
       <Footer/>
     </div>
   );

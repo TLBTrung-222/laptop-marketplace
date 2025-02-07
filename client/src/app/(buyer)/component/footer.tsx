@@ -6,7 +6,7 @@ export default function Footer(){
   };
   
   return(
-    <footer className="row-start-3 gap-6 items-center justify-center bg-[#253B80] p-4 mt-4 ml-0 mr-0 w-full text-[#CBCBCB]">
+    <footer className="row-start-3 gap-6 items-center justify-center bg-[#253B80] p-4 mt-4 ml-0 mr-0 w-full text-[#CBCBCB] bottom-0">
       <div className="flex justify-between">
         <div>
           <h1 className="text-white">Company</h1>

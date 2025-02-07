@@ -1,11 +1,11 @@
 "use client";
 import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Home, Settings, Inbox } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import Header from "../component/header";
 import { usePathname } from "next/navigation";
 import { Product } from "@/types";
+import { toast } from "sonner";
 
 export default function ProductLayout({ children }: { children: React.ReactNode }) {
     const menuItems = [
@@ -17,28 +17,12 @@ export default function ProductLayout({ children }: { children: React.ReactNode 
     ];
     const pathname = usePathname();
     const [isHeader, setIsHeader] = useState(true);
-
-    const [data, setData] = useState<Product[] | undefined>(undefined);
-
     const [mounted, setMounted] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data } = useGetProducts();
+    const listPathHaveHeaders = ["/account"];
+    
     useEffect(() => {
         setMounted(true);
-
-        // Chỉ fetch API sau khi component đã mount
-        if (mounted) {
-            const { data, isLoading, error } = useGetProducts();
-            setData(data);
-            setIsLoading(isLoading);
-        }
-
-        // Cập nhật header dựa vào pathname
-        setIsHeader(listPathHaveHeaders.includes(pathname));
-    }, []);
-
-    
-    const listPathHaveHeaders = ["/account"];
-    useEffect(() => {
         setIsHeader(listPathHaveHeaders.includes(pathname));
     }, [pathname, mounted]);
 
