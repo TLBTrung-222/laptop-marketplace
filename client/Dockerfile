@@ -2,7 +2,7 @@
 FROM node:20.18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN yarn install
 COPY . .
 RUN yarn run build
 
@@ -13,6 +13,6 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/next.config.js ./
-RUN npm install --production
+RUN yarn install --production
 EXPOSE 3000
 CMD ["yarn", "start"]
