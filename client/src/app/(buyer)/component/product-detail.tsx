@@ -68,18 +68,9 @@ const TechnicalDetails = ({productDetail}:{productDetail:any})=>{
                     <td className="w-20 p-2 rounded-md">GPU</td>
                     <td className="p-2 rounded-md">{productDetail?.gpu}</td>
                 </tr>
-                {
-                    showLess &&
-                    <tr>
-                        <td colSpan={2} className="py-2">
-                            <div className="bg-white text-blue-600 text-xs flex items-center hover:cursor-pointer">Show Less
-                                <ChevronDown size={16} strokeWidth={1}/>
-                            </div>
-                        </td>
-                    </tr>
-                }
                 
             </table>
+            
             {
                 showLess &&
                 <table className="w-300px sm:w-[600px] md:w-[1000px]">
@@ -125,6 +116,16 @@ const TechnicalDetails = ({productDetail}:{productDetail:any})=>{
                     </tr>
                 </table>
             }
+
+            <div>
+                <div className="py-2">
+                    <div className="bg-white text-blue-600 text-xs flex items-center hover:cursor-pointer"
+                        onClick={()=>setShowLess((prev)=>!prev)}
+                    >Show Less
+                        <ChevronDown size={16} strokeWidth={1}/>
+                    </div>
+                </div>
+            </div>
         </>
     )
 }

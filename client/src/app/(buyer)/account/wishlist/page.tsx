@@ -4,9 +4,21 @@ import { useCart } from "../../component/cart-context"
 import { formatCurrency } from "../../component/format-currency";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function WishListPage(){
+    const router = useRouter();
     const {cart, addToCart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity} = useCart();
+    const id = cart.map((product)=>product.id);
+    const quantity = cart.map((product)=>product.quantity)
+    const queryString = new URLSearchParams({
+        id: id.join(","), 
+        quantity: quantity.join(","),
+    }).toString();
+    const handleBuyClick=()=>{
+        router.push(`/order?${queryString}`);
+    }
     return(
         <div>
             <h1 className="mb-2 font-bold">Wish List</h1>
@@ -49,7 +61,7 @@ export default function WishListPage(){
                             </div>
                         ))
                     }
-                    <Button className="mt-2 w-full">Buy</Button>
+                    <Button className="mt-2 w-full" onClick={()=>handleBuyClick()}>Buy</Button>
                 </div>
             </div>
         </div>

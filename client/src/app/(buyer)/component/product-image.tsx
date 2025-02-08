@@ -20,13 +20,11 @@ export default function ProductImages({ product }: { product: any }) {
 
     const handlePrev = () => {
       setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-      toast.info(product.name)
     };
 
     const handleNext = () => {
         const maxIndex = Math.max(product.images.length - 4, 0);
         setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, maxIndex));
-        toast.info(product.name)
     };
 
   const displayedImages = product.images.slice(currentIndex, currentIndex + 4);

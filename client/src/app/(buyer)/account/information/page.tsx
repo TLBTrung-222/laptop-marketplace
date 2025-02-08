@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useGetAccounts } from "@/features/home/api/get-profile";
+import { useEditProfile } from "@/features/admin/api/use-update-profile";
+import { useGetProfile } from "@/features/admin/api/use-get-profile";
+import { toast } from "sonner";
 
 
 const listIdentificationItems =[
@@ -69,7 +72,7 @@ export default function PersonalData(){
             <IdentificationItem list={updatedListIdentificationItems}/> 
         </div>
         {isEditFullname&&<EditNameMenu onClose={()=>setIsEditFullname(false)}/>}
-        {/* {isEditPhoneNumber&&<EditPhoneNumber onClose={()=>setIsEditPhoneNumber(false)}/>} */}
+        {isEditPhoneNumber&&<EditPhoneNumber onClose={()=>setIsEditPhoneNumber(false)}/>}
     </div>
     )
 }
@@ -125,8 +128,14 @@ const EditNameMenu=({onClose}:{onClose:()=>void})=>{
         },
     })
     
+    const {data} = useGetProfile();
+    const {mutate} = useEditProfile(data?.id)
+
     function onSubmit(values: z.infer<typeof nameSchema>) {
-        console.log(values)
+        
+        if (data){
+            mutate({name: values.name})
+        }
     }
     
     return(
@@ -150,18 +159,11 @@ const EditNameMenu=({onClose}:{onClose:()=>void})=>{
                         render={({ field }) => (
                             <div className="space-y-2 mx-2">
                                 <FormItem>
-                                    <FormLabel>First name</FormLabel>
+                                    <FormLabel>Full Name</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="First name" {...field} />
+                                        <Input placeholder="Full name" {...field} />
                                     </FormControl>
                                     <FormMessage/>
-                                </FormItem>
-                                <FormItem className="space-y-2">
-                                    <FormLabel>Last name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Last name" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             </div>     
                         )}
@@ -174,24 +176,25 @@ const EditNameMenu=({onClose}:{onClose:()=>void})=>{
     )
 }
 
-const addressSchema= z.object({
-    address: z.string().min(2,{
-        message:"Addressmust be at least 2 characters",
-    }).max(50,{
-        message:"Address must be at most 50 characters",
-    }),
+const phoneNumber= z.object({
+    phoneNumber: z.string().length(10,"Phone number must be exactly 10 characters longs"),
 })
 
-const EditAddress=({onClose}:{onClose:()=>void})=>{
-    const formFullName = useForm<z.infer<typeof addressSchema>>({
-        resolver: zodResolver(addressSchema),
+const EditPhoneNumber=({onClose}:{onClose:()=>void})=>{
+    const formAddress = useForm<z.infer<typeof phoneNumber>>({
+        resolver: zodResolver(phoneNumber),
         defaultValues: {
-            address:"",
+            phoneNumber:"",
         },
     })
     
-    function onSubmit(values: z.infer<typeof addressSchema>) {
-        console.log(values)
+    const {data} = useGetProfile();
+    const {mutate} = useEditProfile(data?.id)
+
+    function onSubmit(values: z.infer<typeof phoneNumber>) {     
+        if (data){
+            mutate({phoneNumber: values.phoneNumber})
+        }
     }
 
     return(
@@ -203,30 +206,23 @@ const EditAddress=({onClose}:{onClose:()=>void})=>{
             className="bg-white p-6 rounded-lg shadow-lg w-fit lg:w-1/4 relative"
             onClick={(e) => e.stopPropagation()}
             >
-                <h5 className="font-bold mb-4">First Name and Last Name</h5>
+                <h5 className="font-bold mb-4">Phone Number</h5>
                 <CircleX className="absolute top-6 right-6 hover:text-red-600 cursor-pointer" strokeWidth={1}
                     onClick={onClose}
                 />
-                <Form {...formFullName}>
-                    <form onSubmit={formFullName.handleSubmit(onSubmit)} className="space-y-8">
+                <Form {...formAddress}>
+                    <form onSubmit={formAddress.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
-                        control={formFullName.control}
-                        name="address"
+                        control={formAddress.control}
+                        name="phoneNumber"
                         render={({ field }) => (
                             <div className="space-y-2 mx-2">
                                 <FormItem>
-                                    <FormLabel>First name</FormLabel>
+                                    <FormLabel>Phone Number</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="First name" {...field} />
+                                        <Input placeholder="Phone number" {...field} />
                                     </FormControl>
                                     <FormMessage/>
-                                </FormItem>
-                                <FormItem className="space-y-2">
-                                    <FormLabel>Last name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Last name" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             </div>     
                         )}
@@ -238,61 +234,3 @@ const EditAddress=({onClose}:{onClose:()=>void})=>{
         </div>
     )
 }
-
-// const EditPhoneNumber=({onClose}:{onClose:()=>void})=>{
-//     const form = useForm<z.infer<typeof formSchema>>({
-//         resolver: zodResolver(formSchema),
-//         defaultValues: {
-//         firstname: "",
-//         lastname:"",
-//         },
-//     })
-    
-//     function onSubmit(values: z.infer<typeof formSchema>) {
-//         console.log(values)
-//     }
-    
-//     return(
-//         <div 
-//         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-//         onClick={onClose}
-//         >
-//             <div
-//             className="bg-white p-6 rounded-lg shadow-lg w-fit lg:w-1/4 relative"
-//             onClick={(e) => e.stopPropagation()}
-//             >
-//                 <h5 className="font-bold mb-4">First Name and Last Name</h5>
-//                 <CircleX className="absolute top-6 right-6 hover:text-red-600 cursor-pointer" strokeWidth={1}
-//                     onClick={onClose}
-//                 />
-//                 <Form {...form}>
-//                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-//                         <FormField
-//                         control={form.control}
-//                         name="firstname"
-//                         render={({ field }) => (
-//                             <div className="space-y-2 mx-2">
-//                                 <FormItem>
-//                                     <FormLabel>First name</FormLabel>
-//                                     <FormControl>
-//                                         <Input placeholder="First name" {...field} />
-//                                     </FormControl>
-//                                     <FormMessage/>
-//                                 </FormItem>
-//                                 <FormItem className="space-y-2">
-//                                     <FormLabel>Last name</FormLabel>
-//                                     <FormControl>
-//                                         <Input placeholder="Last name" {...field} />
-//                                     </FormControl>
-//                                     <FormMessage />
-//                                 </FormItem>
-//                             </div>     
-//                         )}
-//                         />
-//                         <Button type="submit">Submit</Button>
-//                     </form>
-//                 </Form>
-//             </div>
-//         </div>
-//     )
-// }

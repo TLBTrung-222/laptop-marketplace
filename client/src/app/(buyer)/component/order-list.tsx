@@ -96,21 +96,6 @@ const OrderItem=({ item, index, removeItem }: { item: any; index: number, remove
                         <p>Stock Quantity: {item.stockQuantity-1}</p>
                         <p className="text-blue-600">${formatCurrency(item.price * item.quantity)} VND</p>
                     </div>
-                    <div className="flex gap-2">
-                        <Trash2
-                            className="text-red-500 size-5 hover:cursor-pointer"
-                            onClick={()=>handleRemove(item.id)}
-                        />
-                        <div className="flex gap-1 items-center">
-                            <Minus 
-                                className="rounded-2xl text-black hover:bg-red-400 hover:cursor-pointer"
-                            >-</Minus>
-                            <span>{item.quantity}</span>
-                            <Plus 
-                                className="rounded-2xl text-black hover:bg-blue-400 hover:cursor-pointer"
-                            >+</Plus>
-                        </div>
-                    </div>
                 </div>
             </div>
         </>

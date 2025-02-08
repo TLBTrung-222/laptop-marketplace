@@ -1,34 +1,32 @@
 "use client";
 import { useGetProducts } from "@/features/products/apis/use-get-products";
-import { Home, Settings, Inbox } from "lucide-react";
+import { Home, Settings, Inbox, Truck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Header from "../component/header";
 import { usePathname } from "next/navigation";
 import { Product } from "@/types";
+import { useGetProfile } from "@/features/admin/api/use-get-profile";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     const menuItems = [
         { label: "Personal Data", path: "/account/information", icon: Home },
-        // { label: "Payment", path: "/account/payment", icon: Settings },
-        // { label: "Orders", path: "/profile/orders", icon: Inbox },
-        { label: "Wish list", path: "/profile/orders", icon: Inbox },
-        // { label: "Notification", path: "/profile/orders", icon: Inbox },
+        { label: "Wish list", path: "/account/wishlist", icon: Inbox },
+        { label: "Orders", path: "/account/order", icon: Truck },
     ];
+    const fullname = localStorage.getItem("fullname");
     const pathname = usePathname();
     const [isHeader, setIsHeader] = useState(true);
 
-    const [data, setData] = useState<Product[] | undefined>(undefined);
 
     const [mounted, setMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const { data, error } = useGetProducts();
     useEffect(() => {
         setMounted(true);
 
         // Chỉ fetch API sau khi component đã mount
         if (mounted) {
-            const { data, isLoading, error } = useGetProducts();
-            setData(data);
             setIsLoading(isLoading);
         }
 
@@ -54,7 +52,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 {/* Sidebar chỉ áp dụng cho Profile */}
                 <div className="w-[250px] h-fit bg-gray-50 mt-10 ml-10 rounded-md p-2">
                     <div>
-                        <h3>Jimmy smith</h3>
+                        <h3>{fullname||"username"}</h3>
                     </div>
                     <div>
                         {menuItems.map(item=>(

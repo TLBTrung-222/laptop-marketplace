@@ -7,6 +7,9 @@ export const useEditProfile = (id?: number) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async (data: ProfileInput) => {
+            const form = new FormData()
+            if (data.name) form.append("name", data.name)
+            if (data.phoneNumber) form.append("phoneNumber", data.phoneNumber)
             const response = await axiosClient.put(`/accounts/${id}`, data);
             return response.data;
         },

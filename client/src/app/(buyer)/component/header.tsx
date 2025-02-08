@@ -11,6 +11,7 @@ import { SignUpInput } from "@/features/auth/schemas/sign-up";
 import { toast } from "sonner";
 
 export default function Header({data}:{data:Product[]|undefined}){
+    const [avatar, setAvatar] = useState('')
     const [isSignIn, setIsSignIn] = useState(false);
     const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [isMenuVisible, setMenuVisible] = useState(false);
@@ -34,33 +35,43 @@ export default function Header({data}:{data:Product[]|undefined}){
     }, [isSignIn])
 
     const handleProfileClick = () => {
-      router.push("/account");
+      router.push("/account/information");
     }
 
     const handleLogout=()=>{
       setIsSignIn(false);
       localStorage.removeItem("isSignIn");
+      localStorage.removeItem("avatar");
+      localStorage.removeItem("name");
       router.push("/");
       window.location.reload();
     }
 
+    if (localStorage.getItem("avatar")){
+      const avatar = localStorage.getItem("avatar") || "";
+      setAvatar(avatar);
+    }
     return(
         <div>
-          <header className="flex gap-4 justify-between items-center pl-8 pt-1 pb-1 pr-8 sticky">
+          <header className="grid-cols-1 sm:flex gap-4 justify-between items-center pl-8 pt-1 pb-1 pr-8 sticky">
             <Image
-            className=""
-            src="/favicon.ico"
-            width={56}    
-            height={63}
-            alt="Ảnh trang web"
-            />
+              className=""
+              src="/favicon.ico"
+              width={56}    
+              height={63}
+              alt="Ảnh trang web"
+              />
             <div className="flex gap-2">
                 <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2"
                     onClick={handleHomeClick}
                 >Home</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Products</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">FAQ</h1>
-                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Contact Us</h1>
+                {/* <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2">Products</h1> */}
+                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2"
+                  onClick={()=>router.push('/more/faq')}
+                >FAQ</h1>
+                <h1 className="text-lg hover:text-blue-500 border-b-2 border-white hover:border-blue-500 cursor-pointer transition-all duration-300 p-2"
+                  onClick={()=>router.push('/more/contact')}
+                >Contact Us</h1>
             </div>
             <div className="flex flex-row gap-1 items-center">
               <Image
@@ -117,7 +128,7 @@ export default function Header({data}:{data:Product[]|undefined}){
                   onClick={handleProfileClick}
                 >
                   <Image
-                    src='/profile.png'
+                    src={`${avatar?`${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/${avatar}`:"/profile.png"}`}
                     alt="Profile"
                     width={24}
                     height={24}
@@ -125,9 +136,12 @@ export default function Header({data}:{data:Product[]|undefined}){
                   />
                   Jimmy Smith
                 </li>
-                <li className="hover:cursor-pointer">Orders</li>
-                <li className="hover:cursor-pointer">Wish List</li>
-                <li className="hover:cursor-pointer">Payments</li>
+                <li className="hover:cursor-pointer"
+                  onClick={()=>router.push("/account/order")}
+                >Orders</li>
+                <li className="hover:cursor-pointer"
+                  onClick={()=>router.push("/account/wishlist")}
+                >Wish List</li>
                 <li className="hover:cursor-pointer"
                   onClick={handleLogout}
                 >Log out</li>
@@ -178,7 +192,6 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
       await mutateAsync({ email, password }); // Không cần await nếu signIn là đồng bộ
       if (isSuccess) {
         onOpenProfile(true);
-        // localStorage.setItem("isSignIn", "true");
       }
     } catch(error){}
   }
@@ -270,14 +283,6 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                 </div>
               </div>
               <div className="text-xs text-blue-600 flex justify-end hover:cursor-pointer" >Forgot Password ?</div>
-              {/* <div className="flex mt-2">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={()=>setRememberMe(!rememberMe)}
-                />
-                <p className="ml-1">Keep me logged in</p>
-              </div> */}
               <Button 
                 onClick={(e)=>handleSubmit(e)}
                 className="bg-blue-600 w-full mt-6">Log In</Button>
@@ -361,14 +366,17 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
 
 const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; onClose:()=>void})=>{
   const [searchTerm, setSearchTerm] = useState('');
-
   const filteredProducts = products?.filter((product:any) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  useEffect(() => {
+    setSearchTerm('');
+  }, [products]);
+
   const router = useRouter();
   return(
           <div 
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 m-w-[300px]"
           onClick={onClose}
           >
             <div
@@ -414,16 +422,6 @@ const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; on
                     </div>
                   )
                 })}
-                {/* </div>
-                <div className="items-center justify-between flex flex-col">
-                  <Image 
-                  src={"/product.png"}
-                  width={200}
-                  height={10}
-                  alt="Product-Search"
-                  />
-                  <p>name</p>
-                </div> */}
               </div>
             </div>
           </div>
