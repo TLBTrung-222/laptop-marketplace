@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { inter } from "@/fonts";
 import { QueryProvider } from "@/providers/query-provider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { CartProvider } from "./(buyer)/component/cart-context";
 
 export const metadata: Metadata = {
     title: "Laptop marketplace",
@@ -17,11 +19,20 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={inter.className}>
+    <html lang="en" className={inter.className}>
+        <body>
+            <CartProvider>
+                <QueryProvider>{children}</QueryProvider>
+                <Toaster richColors theme="light" />
+            </CartProvider>
+        </body>
+    </html>
+    );
+}
+
+{/* <html lang="en" className={inter.className}>
             <body>
                 <QueryProvider>{children}</QueryProvider>
                 <Toaster richColors theme="light" />
             </body>
-        </html>
-    );
-}
+        </html> */}

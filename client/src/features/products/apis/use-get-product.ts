@@ -20,3 +20,18 @@ export const useGetProduct = (id?: number) => {
     });
     return query;
 };
+
+const fetchProducts = async () => {
+    const response = await fetch(
+        "https://laptop-marketplace.shop/api/products",
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch products");
+    }
+    const data = await response.json();
+    return data.data;
+};
+
+export const getProducts = async () => {
+    return fetchProducts();
+};
