@@ -1,11 +1,21 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "./format-currency";
 import { Product } from "@/types";
 import { Dot } from "lucide-react";
 import { fetchProductDetails, useGetDetails } from "@/features/products/apis/use-get-details";
+import { useRouter } from "next/navigation";
+import { number } from "zod";
 
 export default function ProductReview({product}:{product:Product}){
-    // const productDetail = fetchProductDetails(product.id);
+    const router = useRouter();
+    const queryString = new URLSearchParams({
+        id: [product.id].join(""), 
+        quantity: [1].join(""),
+        }).toString();
+        const handleBuyClick=(id:number)=>{
+            router.push(`/order?${queryString}`);
+    }
     return(
         <div className="md:flex ml-6 gap-10">
             <div className="mt-4 sm:max-w-100">
@@ -24,7 +34,9 @@ export default function ProductReview({product}:{product:Product}){
             </div>
             <div className="mt-12 w-full">
                 <p className="">${formatCurrency(product.price)}</p>
-                <Button className="w-40 bg-blue-600">Buy Now</Button>
+                <Button className="w-40 bg-blue-600"
+                    onClick={()=>handleBuyClick(product.id)}
+                >Buy Now</Button>
             </div>
         </div>
     )

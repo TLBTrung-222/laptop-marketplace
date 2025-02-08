@@ -27,13 +27,6 @@ const listIdentificationItems =[
         onClose:'',
         value:''
     },
-    // {
-    //     icon:<Mails className="absolute left-3 top-1/2 transform -translate-y-1/2 items-center" size={18} strokeWidth={1}/>,
-    //     label:"Email Address",
-    //     placeholder:"Your email address",
-    //     handleClick:'',
-    //     value:''
-    // },
     {
         icon:<Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 items-center" size={18} strokeWidth={1}/>,
         label:"Phone number",
@@ -41,21 +34,45 @@ const listIdentificationItems =[
         handleClick:'',
         value:''
     },
-    // {
-    //     icon:<KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 items-center" size={18} strokeWidth={1}/>,
-    //     label:"Password",
-    //     placeholder:"Your password",
-    //     handleClick:'',
-    //     value:''
-    // },
-    {
-        icon:<House className="absolute left-3 top-1/2 transform -translate-y-1/2 items-center" size={18} strokeWidth={1}/>,
-        label:"Address",
-        placeholder:"Your full name",
-        handleClick:'',
-        value:''
-    },
 ]
+
+export default function PersonalData(){
+    const [fullname, setFullname]=useState("")
+    const [isEditFullname, setIsEditFullname] = useState(false);
+    const [isEditMail, setIsEditMail] = useState(false);
+    const [isEditPhoneNumber, setIsEditPhoneNumber] = useState(false);
+    const [isEditAddress, setIsEditAddress] = useState(false);
+
+    const { data } = useGetAccounts();
+    if (data){
+        listIdentificationItems[0].value=data.name||'';
+        listIdentificationItems[1].value=data.phoneNumber||'';
+    }
+
+    const handleClick = (type: string)=>{
+        if (type === "fullname") setIsEditFullname(true);
+        if (type === "emailaddress") setIsEditMail(true);
+        if (type === "phonenumber") setIsEditPhoneNumber(true);
+        if (type === "address") setIsEditAddress(true);
+    }
+
+    const updatedListIdentificationItems = listIdentificationItems.map(item => ({
+        ...item,
+        handleClick: () => handleClick(item.label.toLowerCase().replace(" ", "")) // Cập nhật handleClick
+    }));
+
+    return(
+    <div>
+        <h1 className="mb-1 font-bold">Indentification</h1>
+        <p className="mb-1 text-xs text-gray-400">Verify your identify</p>
+        <div className="grid sm:grid-cols-2 gap-2"> 
+            <IdentificationItem list={updatedListIdentificationItems}/> 
+        </div>
+        {isEditFullname&&<EditNameMenu onClose={()=>setIsEditFullname(false)}/>}
+        {/* {isEditPhoneNumber&&<EditPhoneNumber onClose={()=>setIsEditPhoneNumber(false)}/>} */}
+    </div>
+    )
+}
 
 const IdentificationItem=({list}:{list:any[]})=>{
     return(
@@ -63,7 +80,7 @@ const IdentificationItem=({list}:{list:any[]})=>{
             {
                 list.map((item,key)=>{
                     return(
-                        <div className="relative mt-8 w-[220px] lg:w-[400px]">
+                        <div className="relative mt-8 w-[200px] lg:w-[400px]">
                             <label className="absolute top-0 left-3 transform -translate-y-5 text-gray-400 text-[14px]">{item.label}</label>
                             <div>
                                 <div className="relative">
@@ -84,7 +101,7 @@ const IdentificationItem=({list}:{list:any[]})=>{
                                     />
                                 </div>
                             </div>
-                    </div>
+                        </div>
                     )
                 })
             }
@@ -92,71 +109,23 @@ const IdentificationItem=({list}:{list:any[]})=>{
     )
 }
 
-export default function PersonalData(){
-    const [fullname, setFullname]=useState("")
-    const [isEditFullname, setIsEditFullname] = useState(false);
-    const [isEditMail, setIsEditMail] = useState(false);
-    const [isEditPhoneNumber, setIsEditPhoneNumber] = useState(false);
-    const [isEditAddress, setIsEditAddress] = useState(false);
-
-    const { data } = useGetAccounts();
-    if (data){
-        listIdentificationItems[0].value=data.name||'';
-        listIdentificationItems[1].value=data.phoneNumber||'';
-        // listIdentificationItems[4].value=data.||'';
-    }
-
-    const handleClick = (type: string)=>{
-        if (type === "fullname") setIsEditFullname(true);
-        if (type === "emailaddress") setIsEditMail(true);
-        if (type === "phonenumber") setIsEditPhoneNumber(true);
-        if (type === "address") setIsEditAddress(true);
-    }
-
-    const updatedListIdentificationItems = listIdentificationItems.map(item => ({
-        ...item,
-        handleClick: () => handleClick(item.label.toLowerCase().replace(" ", "")) // Cập nhật handleClick
-    }));
-
-    const { data: accounts, isLoading, error } = useGetAccounts();
-
-    return(
-    <div>
-        <h1 className="mb-1 font-bold">Indentification</h1>
-        <p className="mb-1 text-xs text-gray-400">Verify your identify</p>
-        <div className="grid sm:grid-cols-2 gap-2"> 
-            <IdentificationItem list={updatedListIdentificationItems}/> 
-        </div>
-        {isEditFullname&&<EditFullnameMenu onClose={()=>setIsEditFullname(false)}/>}
-        {/* {isEditPhoneNumber&&<EditPhoneNumber onClose={()=>setIsEditPhoneNumber(false)}/>} */}
-        {isEditAddress&&<EditAddress onClose={()=>setIsEditAddress(false)}/>}
-    </div>
-    )
-}
-
-const fullnameSchema= z.object({
-    firstname: z.string().min(2,{
+const nameSchema= z.object({
+    name: z.string().min(2,{
         message:"First name must be at least 2 characters",
     }).max(50,{
         message:"First name must be at most 50 characters",
-    }),
-    lastname: z.string().min(2,{
-        message:"Last name must be at least 2 characters",
-    }).max(50,{
-        message:"Last name must be at most 50 characters",
     })
 })
 
-const EditFullnameMenu=({onClose}:{onClose:()=>void})=>{
-    const formFullName = useForm<z.infer<typeof fullnameSchema>>({
-        resolver: zodResolver(fullnameSchema),
+const EditNameMenu=({onClose}:{onClose:()=>void})=>{
+    const formFullName = useForm<z.infer<typeof nameSchema>>({
+        resolver: zodResolver(nameSchema),
         defaultValues: {
-        firstname: "",
-        lastname:"",
+        name: "",
         },
     })
     
-    function onSubmit(values: z.infer<typeof fullnameSchema>) {
+    function onSubmit(values: z.infer<typeof nameSchema>) {
         console.log(values)
     }
     
@@ -177,7 +146,7 @@ const EditFullnameMenu=({onClose}:{onClose:()=>void})=>{
                     <form onSubmit={formFullName.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                         control={formFullName.control}
-                        name="firstname"
+                        name="name"
                         render={({ field }) => (
                             <div className="space-y-2 mx-2">
                                 <FormItem>

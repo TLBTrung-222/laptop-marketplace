@@ -27,6 +27,10 @@ export const useSignIn = () => {
             if (data.role.roleName === "seller") {
                 router.push("/seller");
             }
+
+            if (data.role.roleName === "buyer"){
+                localStorage.setItem("isSignIn", "true")
+            }
         },
     });
 

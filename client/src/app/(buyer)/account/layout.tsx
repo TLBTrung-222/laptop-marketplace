@@ -10,10 +10,10 @@ import { Product } from "@/types";
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     const menuItems = [
         { label: "Personal Data", path: "/account/information", icon: Home },
-        { label: "Payment", path: "/account/payment", icon: Settings },
-        { label: "Orders", path: "/profile/orders", icon: Inbox },
+        // { label: "Payment", path: "/account/payment", icon: Settings },
+        // { label: "Orders", path: "/profile/orders", icon: Inbox },
         { label: "Wish list", path: "/profile/orders", icon: Inbox },
-        { label: "Notification", path: "/profile/orders", icon: Inbox },
+        // { label: "Notification", path: "/profile/orders", icon: Inbox },
     ];
     const pathname = usePathname();
     const [isHeader, setIsHeader] = useState(true);
@@ -37,7 +37,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     }, []);
 
     
-    const listPathHaveHeaders = ["/account"];
+    const listPathHaveHeaders = ["/account/information","account/wishlist"];
     useEffect(() => {
         setIsHeader(listPathHaveHeaders.includes(pathname));
     }, [pathname, mounted]);

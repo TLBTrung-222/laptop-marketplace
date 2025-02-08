@@ -8,6 +8,7 @@ import { Eye, Key, Mail, Minus, Phone, Plus, ShoppingCart, Trash2, X } from "luc
 import { useSignIn } from "@/features/auth/apis/use-sign-in";
 import { useSignUp } from "@/features/auth/apis/use-sign-up";
 import { SignUpInput } from "@/features/auth/schemas/sign-up";
+import { toast } from "sonner";
 
 export default function Header({data}:{data:Product[]|undefined}){
     const [isSignIn, setIsSignIn] = useState(false);
@@ -28,7 +29,7 @@ export default function Header({data}:{data:Product[]|undefined}){
    
     useEffect(()=>{
       if (localStorage.getItem("isSignIn")==="true"){
-      setIsSignIn(true);
+        setIsSignIn(true);
       }
     }, [isSignIn])
 
@@ -161,33 +162,25 @@ export default function Header({data}:{data:Product[]|undefined}){
     )
 }
 
-const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfile:()=>void})=>{
-  const [showSignUpForm, setShowSignUpForm] = useState(true);
-  if (!showSignUpForm) return;
+const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfile:(state:Boolean)=>void})=>{
   const[email, setEmail]= useState('')
   const[password, setPassword]= useState('')
   const [name, setName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
 
-  const router = useRouter();
   const [active, setActive] = useState(1);
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [dataSignUp, setDataSignUp] = useState<SignUpInput>({
-    email: '',
-    password: '',
-    phoneNumber: '',
-    name: '',
-  });
-
   const { mutate: signIn, isSuccess, mutateAsync } = useSignIn();
   const handleSubmit = async (e:any)=>{
-    await mutateAsync({ email, password }); // Không cần await nếu signIn là đồng bộ
-    if (isSuccess) {
-      onOpenProfile();
-      router.push('/');
-    }
+    try{
+      await mutateAsync({ email, password }); // Không cần await nếu signIn là đồng bộ
+      if (isSuccess) {
+        onOpenProfile(true);
+        // localStorage.setItem("isSignIn", "true");
+      }
+    } catch(error){}
   }
 
   const {mutate:signUp} = useSignUp()
@@ -463,13 +456,13 @@ const CartMenu = ({onClose}:{onClose:()=>void})=>{
               >
                 <div className="flex items-center">
                   <Image
-                    src={item.images[0].image}
+                    src={`${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/${item.images[0].image}`}
                     width={100}
                     height={100}
                     alt={item.name}/>
                   <div>
                     <p className="text-sm">{item.name}</p>
-                    <div className="flex justify-between mt-4">
+                    <div className="mt-4">
                       <p className="text-sm">${formatCurrency(item.price)}</p>
                       <div className="flex gap-2 ml-10">
                         <Trash2
