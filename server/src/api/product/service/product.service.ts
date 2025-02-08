@@ -249,9 +249,13 @@ export class ProductService {
     }
 
     async uploadImages(productId: number, images: Array<Express.Multer.File>) {
+        const uploadedImages: string[] = []
+
         for (const image of images) {
-            await this.uploadImage(productId, image)
+            const uploadedImage = await this.uploadImage(productId, image)
+            uploadedImages.push(uploadedImage)
         }
+        return uploadedImages
     }
 
     async deleteImage(key: string) {

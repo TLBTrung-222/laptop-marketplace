@@ -17,16 +17,10 @@ import { join } from 'path'
         }),
         ApiModule,
         ConfigModule.forRoot({ envFilePath: '.env.dev', isGlobal: true }),
-        ServeStaticModule.forRoot(
-            {
-                rootPath: join(__dirname, 'assets', 'public'),
-                serveRoot: '/public'
-            },
-            {
-                rootPath: join(__dirname, 'assets', 'products'),
-                serveRoot: '/products/public'
-            }
-        )
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, 'assets', 'public'),
+            serveRoot: '/public'
+        })
     ],
     controllers: [AppController],
     providers: [
