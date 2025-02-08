@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
-import { useCart } from "../../component/cart-context"
-import { formatCurrency } from "../../component/format-currency";
+import { useCart } from "../../../../features/home/component/cart-context"
+import { formatCurrency } from "../../../../features/home/component/format-currency";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";

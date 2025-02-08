@@ -19,6 +19,8 @@ import { useGetAccounts } from "@/features/home/api/get-profile";
 import { useEditProfile } from "@/features/admin/api/use-update-profile";
 import { useGetProfile } from "@/features/admin/api/use-get-profile";
 import { toast } from "sonner";
+import { useUpdateAvatarImages } from "@/features/accounts/apis/update-avatar";
+import { useUploadAvatarImages } from "@/features/accounts/apis/use-create-avatar";
 
 
 const listIdentificationItems =[
@@ -73,7 +75,43 @@ export default function PersonalData(){
         </div>
         {isEditFullname&&<EditNameMenu onClose={()=>setIsEditFullname(false)}/>}
         {isEditPhoneNumber&&<EditPhoneNumber onClose={()=>setIsEditPhoneNumber(false)}/>}
+        {<EditImage/>}
     </div>
+    )
+}
+
+const EditImage=()=>{
+    const [file, setFile] = useState<File | null>(null);
+    const {mutate:updateAvatar} = useUpdateAvatarImages()
+    const {mutate:uploadAvatar} = useUploadAvatarImages()
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+        setFile(event.target.files[0]);
+        }
+    };
+    const handleSubmit = (event: React.FormEvent)=>{
+        event.preventDefault();
+        if (!file) {
+            toast.error("Please select file!");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("avatar", file);
+        const avatarPrev = localStorage.getItem("avatar");
+        if (avatarPrev) {
+            updateAvatar(formData)
+        } else{
+            uploadAvatar(formData)
+        }
+    }
+    return(
+        <div className="flex gap-2 mt-4">
+            <form action="/action_page.php">
+                <input type="file" id="myFile" name="filename" onChange={handleFileChange}/>
+                <Button type="submit" className="mt-2" onClick={handleSubmit}>Upload Avatar</Button>
+            </form>
+        </div>
     )
 }
 
@@ -229,7 +267,7 @@ const EditPhoneNumber=({onClose}:{onClose:()=>void})=>{
                         />
                         <Button type="submit">Submit</Button>
                     </form>
-                    </Form>
+                </Form>
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
 "use client"
-import { formatCurrency } from "../../component/format-currency";
+import { formatCurrency } from "../../../../features/home/component/format-currency";
 import Image from "next/image";
 import { useGetProduct } from "@/features/products/apis/use-get-product";
 import { useGetOrderItems } from "@/features/order/apis/use-get-items";

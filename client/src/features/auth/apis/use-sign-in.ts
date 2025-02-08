@@ -30,8 +30,7 @@ export const useSignIn = () => {
 
             if (data.role.roleName === "buyer"){
                 localStorage.setItem("isSignIn", "true")
-                if(data.name)localStorage.setItem("name", data.name)
-                if (data.avatar) localStorage.setAvatar("avatar", data.avatar)
+                if (data.name) localStorage.setItem("name", data.name)
             }
         },
     });

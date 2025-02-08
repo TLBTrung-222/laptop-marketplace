@@ -1,9 +1,9 @@
 "use client"
 import { ShoppingCart, Truck } from "lucide-react";
-import OrderList from "../component/order-list";
+import OrderList from "../../../features/home/component/order-list";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import AddressOrder from "../component/address-order";
+import AddressOrder from "../../../features/home/component/address-order";
 import { useCreateOrder } from "@/features/order/apis/use-create-order";
 import { toast } from "sonner";
 

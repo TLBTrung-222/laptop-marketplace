@@ -1,12 +1,13 @@
 "use client";
-import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Home, Settings, Inbox, Truck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Header from "../component/header";
+import Header from "../../../features/home/component/header";
 import { usePathname } from "next/navigation";
 import { Product } from "@/types";
 import { useGetProfile } from "@/features/admin/api/use-get-profile";
+import { useGetProducts } from "@/features/products/apis/use-get-products";
+import Image from "next/image";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     const menuItems = [
@@ -14,11 +15,9 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         { label: "Wish list", path: "/account/wishlist", icon: Inbox },
         { label: "Orders", path: "/account/order", icon: Truck },
     ];
-    const fullname = localStorage.getItem("fullname");
+    const [name, setName] = useState<any>('');
     const pathname = usePathname();
     const [isHeader, setIsHeader] = useState(true);
-
-
     const [mounted, setMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { data, error } = useGetProducts();
@@ -40,6 +39,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         setIsHeader(listPathHaveHeaders.includes(pathname));
     }, [pathname, mounted]);
 
+    useEffect(()=>{
+        if (localStorage.getItem("name")){
+            setName(localStorage.getItem("name"));
+        }
+    })
     if (!mounted) {
         return null;
     }
@@ -51,8 +55,14 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 {/* <SidebarTrigger/> */}
                 {/* Sidebar chỉ áp dụng cho Profile */}
                 <div className="w-[250px] h-fit bg-gray-50 mt-10 ml-10 rounded-md p-2">
-                    <div>
-                        <h3>{fullname||"username"}</h3>
+                    <div className="flex items-center">
+                        <Image
+                            src='/profile.png'
+                            alt="Profile"
+                            width={40}
+                            height={40}
+                        />
+                        <h3 className="font-semibold">{name||"username"}</h3>
                     </div>
                     <div>
                         {menuItems.map(item=>(

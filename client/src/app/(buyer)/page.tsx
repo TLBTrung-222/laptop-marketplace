@@ -3,10 +3,10 @@ import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Fragment, useEffect, useState } from "react";
 import { Product } from "@/types";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import ProductList from "./component/product-list";
-import Header from "./component/header";
-import Footer from "./component/footer";
-import { productListExample } from "./component/product-ex";
+import ProductList from "../../features/home/component/product-list";
+import Header from "../../features/home/component/header";
+import Footer from "../../features/home/component/footer";
+import { productListExample } from "../../features/home/component/product-ex";
 
 export default function Home() {
   var {data, isLoading, error}= useGetProducts();

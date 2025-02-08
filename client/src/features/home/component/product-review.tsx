@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "./format-currency";
 import { Product } from "@/types";
 import { Dot, Star } from "lucide-react";
-import { fetchProductDetails, useGetDetails } from "@/features/products/apis/use-get-details";
 import { useRouter } from "next/navigation";
 import { number } from "zod";
 import { getproductRatings } from "./get-rating-result";

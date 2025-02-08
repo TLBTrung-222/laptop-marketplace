@@ -9,9 +9,11 @@ import { useSignIn } from "@/features/auth/apis/use-sign-in";
 import { useSignUp } from "@/features/auth/apis/use-sign-up";
 import { SignUpInput } from "@/features/auth/schemas/sign-up";
 import { toast } from "sonner";
+import { useGetAvatar } from "@/features/accounts/apis/use-get-avatar";
 
 export default function Header({data}:{data:Product[]|undefined}){
     const [avatar, setAvatar] = useState('')
+    const [name, setName] = useState('')
     const [isSignIn, setIsSignIn] = useState(false);
     const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [isMenuVisible, setMenuVisible] = useState(false);
@@ -19,6 +21,8 @@ export default function Header({data}:{data:Product[]|undefined}){
     const [isOpenCartMenu, setIsOpenCartMenu] = useState(false);
     const {totalPrice} = useCart()
     const router = useRouter();
+    const {data:avatarRecieved} = useGetAvatar()
+    // console.log(avatarRecieved)
     const handleHomeClick = () => {
         if (window.location.pathname === "/") {
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -28,6 +32,13 @@ export default function Header({data}:{data:Product[]|undefined}){
         }
     };
    
+    useEffect(()=>{
+      if(avatarRecieved){
+        setAvatar(avatarRecieved.toString())
+      } else {
+      }
+    })
+
     useEffect(()=>{
       if (localStorage.getItem("isSignIn")==="true"){
         setIsSignIn(true);
@@ -45,11 +56,6 @@ export default function Header({data}:{data:Product[]|undefined}){
       localStorage.removeItem("name");
       router.push("/");
       window.location.reload();
-    }
-
-    if (localStorage.getItem("avatar")){
-      const avatar = localStorage.getItem("avatar") || "";
-      setAvatar(avatar);
     }
     return(
         <div>
@@ -100,11 +106,11 @@ export default function Header({data}:{data:Product[]|undefined}){
                         </p>
                       </div>
                       <Image
-                      src="/profile.png"
+                      src={`${avatar?`${avatar}`:"/profile.png"}`}
                       alt="Icon profile"
                       width={30}
                       height={30}
-                      className="hover:cursor-pointer"
+                      className="hover:cursor-pointer rounded-full"
                       onClick={()=>setMenuVisible(true)}
                       />
                   </div>
@@ -128,13 +134,13 @@ export default function Header({data}:{data:Product[]|undefined}){
                   onClick={handleProfileClick}
                 >
                   <Image
-                    src={`${avatar?`${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/${avatar}`:"/profile.png"}`}
+                    src={`${avatar?`${avatar}`:"/profile.png"}`}
                     alt="Profile"
                     width={24}
                     height={24}
                     className="border-2 border-blue-900 rounded-full bg-blue-200"
                   />
-                  Jimmy Smith
+                  {name||"username"}
                 </li>
                 <li className="hover:cursor-pointer"
                   onClick={()=>router.push("/account/order")}
