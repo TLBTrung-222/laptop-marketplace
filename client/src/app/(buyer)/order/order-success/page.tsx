@@ -16,8 +16,8 @@ export default function SuccessPage() {
     const isSuccess = transactionStatus === "00"; // 00 là giao dịch thành công
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-            <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+        <div className="flex flex-col items-center justify-center bg-gray-50 p-6 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-fit">
+            <div className="bg-white shadow-lg rounded-lg p-6 text-center absolute top">
                 {isSuccess ? (
                     <>
                         <CheckCircle className="text-green-500 w-16 h-16 mx-auto" />
