@@ -9,6 +9,8 @@ import { Eye, Key, Mail, Minus, Phone, Plus, ShoppingCart, Trash2, X } from "luc
 import { useSignIn } from "@/features/auth/apis/use-sign-in";
 import { useSignUp } from "@/features/auth/apis/use-sign-up";
 import { useGetAvatar } from "@/features/accounts/apis/use-get-avatar";
+import Link from "next/link";
+import { Icons } from "@/components/icons";
 
 export default function Header({data}:{data:Product[]|undefined}){
     const [avatar, setAvatar] = useState('')
@@ -290,6 +292,18 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
               <Button 
                 onClick={(e)=>handleSubmit(e)}
                 className="bg-blue-600 w-full mt-6">Log In</Button>
+              <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="w-full mt-2"
+                    asChild
+                >
+                  <Link href={process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN_URL!}>
+                      <Icons.google />
+                      Or sign in with Google
+                  </Link>
+              </Button>
             </>:
             <>
               <h3 className="mt-1 mb-4 text-center font-bold text-2xl">Create Account</h3>
