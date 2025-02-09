@@ -159,8 +159,13 @@ export class PaymentService {
                 await this.fundTransactionRepository.save(transaction)
             }
 
-            return { code: vnpParams['vnp_ResponseCode'] } // if order success, vnp_ResponseCode is '00'
-        } else return { code: '97' }
+            return {
+                vnp_TransactionStatus: vnpParams['vnp_ResponseCode'],
+                vnp_TxnRef: vnpParams['vnp_TxnRef'],
+                vnp_Amount: vnpParams['vnp_Amount'],
+                vnp_Paydate: vnpParams['vnp_PayDate']
+            } // if order success, vnp_ResponseCode is '00'
+        } else return { vnp_TransactionStatus: vnpParams['vnp_ResponseCode'] }
     }
 
     private dateToYYYYMMDDHHmmss(expireTime?: number): string {
