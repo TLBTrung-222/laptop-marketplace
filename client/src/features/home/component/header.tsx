@@ -43,7 +43,7 @@ export default function Header({data}:{data:Product[]|undefined}){
       if (localStorage.getItem("isSignIn")==="true"){
         setIsSignIn(true);
       }
-    }, [isSignIn])
+    }, [])
 
     const handleProfileClick = () => {
       router.push("/account/information");
