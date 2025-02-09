@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "./format-currency";
 import { Product } from "@/types";
 import { Dot, Star } from "lucide-react";
-import { fetchProductDetails, useGetDetails } from "@/features/products/apis/use-get-details";
 import { useRouter } from "next/navigation";
 import { number } from "zod";
 import { getproductRatings } from "./get-rating-result";
@@ -40,6 +39,10 @@ export default function ProductReview({product}:{product:Product}){
                     <tr className="flex flex-row">
                         <td className="flex w-40 text-gray-400"><Dot/> Model name</td>
                         <td>{product.category.type}</td>
+                    </tr>
+                    <tr className="flex flex-row">
+                        <td className="flex w-40 text-gray-400"><Dot/> Stock Quantity</td>
+                        <td>{product.stockQuantity}</td>
                     </tr>
                 </table>
             </div>

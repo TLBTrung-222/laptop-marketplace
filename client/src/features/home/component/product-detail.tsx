@@ -1,9 +1,12 @@
 "use client"
 import { Button } from "@/components/ui/button";
+import { useGetComments } from "@/features/products/apis/use-get-ratings";
 import { fetchProductDetails } from "@/features/products/apis/use-get-details";
 import { ProductDetail } from "@/types";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Star } from "lucide-react";
 import { useEffect, useState } from "react"
+import { useCreateRatings } from "@/features/products/apis/use-create-rating";
+import Image from "next/image";
 
 export default function ProductDetail({product}:{product:any}){
     const [active, setActive] = useState(1);
@@ -40,6 +43,10 @@ export default function ProductDetail({product}:{product:any}){
             <div>
                 {   active===1?
                     <TechnicalDetails productDetail={productDetail}/>:<></>
+                }
+                {
+                    active===2?
+                    <Comment productId={product.id}/>:<></>
                 }
             </div>      
         </div>
@@ -129,3 +136,98 @@ const TechnicalDetails = ({productDetail}:{productDetail:any})=>{
         </>
     )
 }
+
+const Comment = ({productId}:{productId:number})=>{
+    const [hover, setHover] = useState(0);
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const {data} = useGetComments(productId)
+    const {mutate} = useCreateRatings(productId)
+    if(!data) return null
+    
+
+    const handleClick = () => {
+        setRating(rating);
+        setComment(comment);
+        mutate({ratingStar: rating, comment:comment})
+    };
+
+    return(
+        <div>
+            <div>
+                <div className="flex space-x-1 mt-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                        key={star}
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHover(star)}
+                        onMouseLeave={() => setHover(0)}
+                        className={`cursor-pointer transition-all duration-200 ${
+                            (hover || rating) >= star ? "text-yellow-400" : "text-gray-300"
+                        }`}
+                        size={24}
+                        />
+                    ))}
+                </div>
+                <input type="text" placeholder="Comment" onChange={(e)=>setComment(e.target.value)}
+                    className="bg-gray-200 rounded-sm p-1 mt-1 mb-4 sm:w-[400px]"
+                />
+                <Button className="ml-2" onClick={()=>handleClick()}>Submit</Button>
+            </div>
+            <div>
+                {
+                    data.map((comment:any, index:number)=>
+                        <div key={index} className="flex gap-2">
+                            <div className="flex items-center">
+                                <Image
+                                    alt="Profile"
+                                    width={30}
+                                    height={30}
+                                    src='/profile.png'
+                                    className="rounded-full bg-blue-200 mr-2"
+                                />
+                                <div className="text-blue-400 sm:w-[400px]">{comment.comment}</div>
+                                <p>
+                                    {comment.ratingStar === 1? <Star className="cursor-pointer transition-all duration-200 text-yellow-400 "size={24}/>:<></>}
+                                    {comment.ratingStar === 2? 
+                                        <div className="flex">
+                                            <Star className="cursor-pointer transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="cursor-pointer transition-all duration-200 text-yellow-400 "size={24}/>
+                                        </div>
+                                        :<></>
+                                    }
+                                    {comment.ratingStar === 3? 
+                                        <div className="flex">
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                        </div>
+                                        :<></>
+                                    }
+                                    {comment.ratingStar === 4? 
+                                        <div className="flex">
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                        </div>
+                                        :<></>
+                                    }
+                                    {comment.ratingStar === 5? 
+                                        <>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                            <Star className="transition-all duration-200 text-yellow-400 "size={24}/>
+                                        </>:<></>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+    )
+} 

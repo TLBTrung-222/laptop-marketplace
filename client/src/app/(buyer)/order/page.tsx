@@ -1,9 +1,9 @@
 "use client"
 import { ShoppingCart, Truck } from "lucide-react";
-import OrderList from "../component/order-list";
-import { useEffect, useState } from "react";
+import OrderList from "../../../features/home/component/order-list";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import AddressOrder from "../component/address-order";
+import AddressOrder from "../../../features/home/component/address-order";
 import { useCreateOrder } from "@/features/order/apis/use-create-order";
 import { toast } from "sonner";
 
@@ -20,10 +20,17 @@ export default function OrderPage(){
     const [active, setActive] = useState("order");
     const [address, setAddress] = useState<any>({});
     const {mutateAsync, isError} = useCreateOrder()
+    const [pendingOrder, setPendingOrder] = useState(false);
     useEffect(() => {
         setMounted(true);
-        toast.info(`Updated order: ${address?.paymentMethod} items`);
-    }, [address]);
+    }, []);
+
+    useEffect(() => {
+        if (pendingOrder) {
+            mutateAsync({ orderItems: data, shippingInfors: address.shippingInfors, paymentMethod: address.paymentMethod });
+            setPendingOrder(false); // Xử lý xong thì tắt cờ
+        }
+    }, [pendingOrder]);
 
     if (!mounted) {
         return null;
@@ -34,12 +41,21 @@ export default function OrderPage(){
     }
 
     const changeToCheckout =()=>{
-        mutateAsync({orderItems:data, shippingInfors:address.shippingInfors, paymentMethod:address.paymentMethod})
+        setAddress((prev:any) => {
+            console.log("Final Address:", prev);   
+            setPendingOrder(true);
+            return prev;
+        });
+    }
+
+    const updateAddress = (newData:any)=>{
+        setAddress((prev:any)=>({...prev,...newData}))
     }
 
     const ids = searchParams.get("id")?.split(",").map(Number) || [];
     const quantities = searchParams.get("quantity")?.split(",").map(Number) || [];
     
+
     return(
         <div className="mt-10">
             <div className={`${active==='order'?"":"hidden"}`}>
@@ -76,7 +92,7 @@ export default function OrderPage(){
             </div>
             {
                 <div className={`${active === "address"?"":"hidden"}`}>
-                    <AddressOrder next={()=>changeToCheckout()} data={data} updateAddress={setAddress}/>
+                    <AddressOrder next={changeToCheckout} address={address} updateAddress={updateAddress}/>
                 </div>
             }
             

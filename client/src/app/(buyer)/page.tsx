@@ -3,15 +3,13 @@ import { useGetProducts } from "@/features/products/apis/use-get-products";
 import { Fragment, useEffect, useState } from "react";
 import { Product } from "@/types";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import ProductList from "./component/product-list";
-import Header from "./component/header";
-import Footer from "./component/footer";
-import { productListExample } from "./component/product-ex";
+import ProductList from "../../features/home/component/product-list";
+import Header from "../../features/home/component/header";
+import Footer from "../../features/home/component/footer";
 
 export default function Home() {
-  var {data, isLoading, error}= useGetProducts();
+  var {data}= useGetProducts();
   const [mounted, setMounted] = useState(false);
-  // data=productListExample;
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -39,7 +37,7 @@ const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perP
   const endIndex = startIndex + perPage;
   const currentProducts = products?.slice(startIndex, endIndex);
   const totalPages = products?Math.ceil(products.length/perPage):0;
-
+  if (totalPages ===0) return (<></>)
   return (
     <Fragment>
       <ProductList data={currentProducts}/>

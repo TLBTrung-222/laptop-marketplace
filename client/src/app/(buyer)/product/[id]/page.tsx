@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import ProductImages from "../../component/product-image";
-import ProductReview from "../../component/product-review";
-import ProductDetail from "../../component/product-detail";
+import ProductImages from "../../../../features/home/component/product-image";
+import ProductReview from "../../../../features/home/component/product-review";
+import ProductDetail from "../../../../features/home/component/product-detail";
 import { getProducts } from "@/features/products/apis/use-get-product";
 
 

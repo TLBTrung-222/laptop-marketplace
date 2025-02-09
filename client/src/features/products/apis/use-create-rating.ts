@@ -2,36 +2,32 @@ import { axiosClient } from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ProductDetailInput } from "../schemas/product-detail";
-import { Order } from "@/types";
 
-export const useCreateOrder = (id: number) => {
+export const useCreateRatings = (id: number) => {
     const queryClient = useQueryClient();
     const router = useRouter();
 
     const mutation = useMutation({
-        mutationFn: async (data:{}) => {
-            const returnUrl =
-                typeof window !== "undefined"
-                    ? `${window.location.origin}/account/order/order-success`
-                    : "";
+        mutationFn: async (data:any) => {
+            const form = new FormData()
+            if (data.comment){
+                form.append('comment', data.comment);
+            }
+            form.append('ratingStar', data.ratingStar)
             const response = await axiosClient.post(
-                `/orders`,
-                {
-                    ...data,
-                    returnUrl
-                }
+                `/products/${id}/ratings`,
+                data,
             );
             return response.data;
         },
         onError: (error) => {
             console.log("🚀 ~ error:", error);
-            toast.error("Failed to create order");
+            toast.error("Failed to create ratings");
         },
         onSuccess: () => {
-            toast.success("Order created successfully");
+            toast.success("Ratings created successfully");
             queryClient.invalidateQueries({
-                queryKey: ["order", id],
+                queryKey: ["ratings", id],
             });
             router.refresh();
         },

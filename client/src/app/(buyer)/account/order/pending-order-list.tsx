@@ -1,5 +1,5 @@
 "use client"
-import { formatCurrency } from "../../component/format-currency";
+import { formatCurrency } from "../../../../features/home/component/format-currency";
 import Image from "next/image";
 import { useGetProduct } from "@/features/products/apis/use-get-product";
 import { useGetOrderItems } from "@/features/order/apis/use-get-items";
@@ -48,7 +48,7 @@ export default function PendingOrderList({orders}:{orders: Order[]}){
             {
                 orders.map((order:any, index:number)=>{
                     return(
-                        <div key={order.id} className="mt-6 shadow-md shadow-blue-500 p-2 sm:w-[400px] md:w-[600px]">
+                        <div key={index} className="mt-6 shadow-md shadow-blue-500 p-2 sm:w-[400px] md:w-[600px]">
                             <div>
                                 <OrderHistoryItem order={order} index={index}/>
                             </div>
@@ -71,8 +71,10 @@ const OrderHistoryItem = ({order, index}:{order:any, index:number})=>{
             <p>Number: {index}</p>
             <p>Total Amount: ${formatCurrency(data[0].totalAmount)}</p>
             {
-                orderItems.map((product:any)=>(
-                    <ProductItem item={product} key={product.id}/>
+                orderItems.map((product:any, index:number)=>(
+                    <div key={index}>
+                        <ProductItem item={product} key={index}/>
+                    </div>
                 ))
             }
         </div>
@@ -81,11 +83,11 @@ const OrderHistoryItem = ({order, index}:{order:any, index:number})=>{
 
 const ProductItem = ({item}:{item: any})=>{
     const {data} = useGetProduct(item.productId)
-    if(!data) return null
     const router = useRouter()
+    if(!data) return null
     return(
         <>
-            <div className={`flex p-2 gap-2 hover:cursor-pointer shadow-md mt-2 sm:w-full`}
+            <div className="flex p-2 gap-2 hover:cursor-pointer shadow-md mt-2 sm:w-full"
                 onClick={()=>router.push(`/product/${data.id}`)}
             >
                 <Image

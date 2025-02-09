@@ -25,7 +25,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-export default function AddressOrder({data, next, updateAddress}:{data:any,next:()=>void, updateAddress:(data:any)=>void}){
+export default function AddressOrder({address, next, updateAddress}:{address:any,next:()=>void, updateAddress:(address:any)=>void}){
     const [cities, setCities] = useState<any[]>([]);
     const [districts, setDistricts] = useState<any[]>([]);
     const [streets, setStreets] = useState<any[]>([]);
@@ -47,19 +47,15 @@ export default function AddressOrder({data, next, updateAddress}:{data:any,next:
             district: data.district,
             street: `${data.detail} ${data.street}`
         };
-
-        updateAddress((prevAddress: any) => {
-            console.log("Previous Address:", prevAddress); // 🔍 Kiểm tra dữ liệu trước khi cập nhật
-            const updatedAddress = {
-                ...prevAddress,  
-                shippingInfors,  
-                paymentMethod: data.paymentMethod  
-            };
-            console.log("Updated Address:", updatedAddress); // 🔍 Kiểm tra dữ liệu sau khi cập nhật
-            return updatedAddress; // ✅ Trả về state mới
-        });
-
-        next();
+        const updatedAddress = {
+            ...address??{},  
+            shippingInfors,  
+            paymentMethod: data.paymentMethod  
+        };
+        if(updateAddress){
+            updateAddress(updatedAddress)
+            next();
+        }
     };
 
     useEffect(() => {

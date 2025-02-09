@@ -33,12 +33,13 @@ export default function ProductList({data}:{data:Product[]|undefined}){
                 <Card key={index} className="h-72 overflow-hidden mb-1 w-full"> 
                 <div className="relative">
                     <Image 
+                    key={index}
                     src={"https://laptop-marketplace-se347.s3.ap-southeast-2.amazonaws.com/"+product.images[0].image||"/product.png"}
                     alt="Card Image" 
                     width={600} height={600}
-                    className="w-full h-56 object-cover hover:cursor-pointer"
+                    className="w-full h-56 p-2 object-cover hover:cursor-pointer"
                     onClick={()=>handleClickProduct(product.id)}
-                />
+                    />
                 {isSignIn&&
                     <Image
                     src='/basket.png'                

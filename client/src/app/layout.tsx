@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { inter } from "@/fonts";
 import { QueryProvider } from "@/providers/query-provider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { CartProvider } from "./(buyer)/component/cart-context";
+import { CartProvider } from "../features/home/component/cart-context";
 
 export const metadata: Metadata = {
     title: "Laptop marketplace",
@@ -29,10 +29,3 @@ export default function RootLayout({
     </html>
     );
 }
-
-{/* <html lang="en" className={inter.className}>
-            <body>
-                <QueryProvider>{children}</QueryProvider>
-                <Toaster richColors theme="light" />
-            </body>
-        </html> */}

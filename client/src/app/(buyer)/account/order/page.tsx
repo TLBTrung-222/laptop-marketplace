@@ -27,12 +27,12 @@ export default function OrderStatusPage(){
             <div className={`${active==="pending"?"":"hidden"}`}>
                 <PendingOrderList orders={data.data ?? []}/>
             </div>
-            <div className={`${active==="delivering"?"":"hidden"}`}>
+            {/* <div className={`${active==="delivering"?"":"hidden"}`}>
                 <DeliveringOrder orders={data.data ?? []}/>
-            </div>
-            <div className={`${active==="completed"?"":"hidden"}`}>
+            </div> */}
+            {/* <div className={`${active==="completed"?"":"hidden"}`}>
                 <CompletedOrders orders={data.data ?? []}/>
-            </div>
+            </div> */}
         </div>
     )
 }

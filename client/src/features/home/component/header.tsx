@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { CartItem, Product } from "@/types";
 import { useRouter } from "next/navigation";
@@ -7,11 +8,13 @@ import { useCart } from "./cart-context";
 import { Eye, Key, Mail, Minus, Phone, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import { useSignIn } from "@/features/auth/apis/use-sign-in";
 import { useSignUp } from "@/features/auth/apis/use-sign-up";
-import { SignUpInput } from "@/features/auth/schemas/sign-up";
-import { toast } from "sonner";
+import { useGetAvatar } from "@/features/accounts/apis/use-get-avatar";
+import Link from "next/link";
+import { Icons } from "@/components/icons";
 
 export default function Header({data}:{data:Product[]|undefined}){
     const [avatar, setAvatar] = useState('')
+    const [name, setName] = useState('')
     const [isSignIn, setIsSignIn] = useState(false);
     const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [isMenuVisible, setMenuVisible] = useState(false);
@@ -19,6 +22,7 @@ export default function Header({data}:{data:Product[]|undefined}){
     const [isOpenCartMenu, setIsOpenCartMenu] = useState(false);
     const {totalPrice} = useCart()
     const router = useRouter();
+    const {data:avatarRecieved} = useGetAvatar()
     const handleHomeClick = () => {
         if (window.location.pathname === "/") {
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -28,6 +32,13 @@ export default function Header({data}:{data:Product[]|undefined}){
         }
     };
    
+    useEffect(()=>{
+      if(avatarRecieved){
+        setAvatar(avatarRecieved.toString())
+      } else {
+      }
+    })
+
     useEffect(()=>{
       if (localStorage.getItem("isSignIn")==="true"){
         setIsSignIn(true);
@@ -45,11 +56,6 @@ export default function Header({data}:{data:Product[]|undefined}){
       localStorage.removeItem("name");
       router.push("/");
       window.location.reload();
-    }
-
-    if (localStorage.getItem("avatar")){
-      const avatar = localStorage.getItem("avatar") || "";
-      setAvatar(avatar);
     }
     return(
         <div>
@@ -100,11 +106,11 @@ export default function Header({data}:{data:Product[]|undefined}){
                         </p>
                       </div>
                       <Image
-                      src="/profile.png"
+                      src={`${avatar?`${avatar}`:"/profile.png"}`}
                       alt="Icon profile"
                       width={30}
                       height={30}
-                      className="hover:cursor-pointer"
+                      className="hover:cursor-pointer rounded-full"
                       onClick={()=>setMenuVisible(true)}
                       />
                   </div>
@@ -128,13 +134,13 @@ export default function Header({data}:{data:Product[]|undefined}){
                   onClick={handleProfileClick}
                 >
                   <Image
-                    src={`${avatar?`${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}/${avatar}`:"/profile.png"}`}
+                    src={`${avatar?`${avatar}`:"/profile.png"}`}
                     alt="Profile"
                     width={24}
                     height={24}
                     className="border-2 border-blue-900 rounded-full bg-blue-200"
                   />
-                  Jimmy Smith
+                  {name||"username"}
                 </li>
                 <li className="hover:cursor-pointer"
                   onClick={()=>router.push("/account/order")}
@@ -286,6 +292,18 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
               <Button 
                 onClick={(e)=>handleSubmit(e)}
                 className="bg-blue-600 w-full mt-6">Log In</Button>
+              <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="w-full mt-2"
+                    asChild
+                >
+                  <Link href={process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN_URL!}>
+                      <Icons.google />
+                      Or sign in with Google
+                  </Link>
+              </Button>
             </>:
             <>
               <h3 className="mt-1 mb-4 text-center font-bold text-2xl">Create Account</h3>
@@ -430,6 +448,7 @@ const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; on
 
 const CartMenu = ({onClose}:{onClose:()=>void})=>{
   const { cart, removeFromCart, totalPrice, totalPriceProducts, increaseQuantity, decreaseQuantity } = useCart();
+  const router = useRouter();
   return(
     <div 
       className="absolute top-[64px] right-8 w-fit bg-white shadow-lg z-50 rounded-md"
@@ -487,6 +506,7 @@ const CartMenu = ({onClose}:{onClose:()=>void})=>{
           </ul>
           <Button
             className="bg-blue-600 px-4 py-2 mt-4 w-full flex"
+            onClick={()=>router.push('/account/wishlist')}
           >
             Proceed to Cart
             <ShoppingCart className="ml-2" />
