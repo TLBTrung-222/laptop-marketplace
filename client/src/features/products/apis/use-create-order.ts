@@ -13,7 +13,7 @@ export const useCreateOrder = (id: number) => {
         mutationFn: async (data:{}) => {
             const returnUrl =
                 typeof window !== "undefined"
-                    ? `${window.location.origin}/order-success`
+                    ? `${window.location.origin}/account/order/order-success`
                     : "";
             const response = await axiosClient.post(
                 `/orders`,

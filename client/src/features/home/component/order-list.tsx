@@ -1,18 +1,13 @@
 "use client"
-import { useGetProduct } from "@/features/products/apis/use-get-product";
+import { getProduct, useGetProduct } from "@/features/products/apis/use-get-product";
 import Image from "next/image";
 import { formatCurrency } from "./format-currency";
-import { Minus, Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 export default function OrderList({ id, quantities, setData, active }: { id: number[], quantities: number[], setData:React.Dispatch<React.SetStateAction<any>>, active: ()=>void }) {
-    const [productIds, setProductIds] = useState(id);
-    const products = productIds.map((productId) => useGetProduct(productId).data).filter(Boolean);
-    const mergeProducts = products?.map((product, index) => ({...product, quantity:quantities[index]||1}))
+    const mergeProducts = useFetchProducts(id, quantities)
     var productsBuy = mergeProducts
     const [mounted, setMounted] = useState(false)
-    const [updateProducts, settUpdateProducts] = useState<any[]>()
     const [total, setToatal] = useState<number>()
 
     const removeItem=(id:number)=>{
@@ -29,8 +24,8 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
 
     const handleNext = () => {
         const newOrderData = productsBuy.map((product) => ({
-            productId: product.id,
-            quantity: product.quantity,
+            productId: product?.id,
+            quantity: product?.quantity,
         }));
 
         setData((prevData:any) => {
@@ -63,10 +58,6 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
 
 const OrderItem=({ item, index, removeItem }: { item: any; index: number, removeItem:(id:number)=>void })=>{
     const [remove, setIsRemoved] = useState(false)
-    const handleRemove=(id:number)=>{
-        setIsRemoved(true)
-        removeItem(id)
-    }
 
     return(
         <>
@@ -92,3 +83,40 @@ const OrderItem=({ item, index, removeItem }: { item: any; index: number, remove
         </>
     )
 }
+
+const useFetchProducts = (productIds: number[], quantities: number[]) => {
+    const [products, setProducts] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const fetchedProducts = await Promise.all(
+                    productIds.map(async (productId) => {
+                        try {
+                            const response = await getProduct(productId);
+                            return response;
+                        } catch (error) {
+                            console.error(`Error fetching product ${productId}:`, error);
+                            return null;
+                        }
+                    })
+                );
+
+                setProducts(fetchedProducts.filter(Boolean)); // Loại bỏ giá trị null
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        if (productIds.length > 0) {
+            fetchProducts();
+        }
+    }, [productIds, quantities]);
+
+    return useMemo(() => 
+        products.map((product, index) => ({
+            ...product,
+            quantity: quantities[index] || 1
+        })), 
+    [products, quantities]);
+};
