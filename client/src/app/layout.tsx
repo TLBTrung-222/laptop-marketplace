@@ -29,10 +29,3 @@ export default function RootLayout({
     </html>
     );
 }
-
-{/* <html lang="en" className={inter.className}>
-            <body>
-                <QueryProvider>{children}</QueryProvider>
-                <Toaster richColors theme="light" />
-            </body>
-        </html> */}

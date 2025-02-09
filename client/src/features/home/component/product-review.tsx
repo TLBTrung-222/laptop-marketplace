@@ -40,6 +40,10 @@ export default function ProductReview({product}:{product:Product}){
                         <td className="flex w-40 text-gray-400"><Dot/> Model name</td>
                         <td>{product.category.type}</td>
                     </tr>
+                    <tr className="flex flex-row">
+                        <td className="flex w-40 text-gray-400"><Dot/> Stock Quantity</td>
+                        <td>{product.stockQuantity}</td>
+                    </tr>
                 </table>
             </div>
             <div className="mt-12 w-full">

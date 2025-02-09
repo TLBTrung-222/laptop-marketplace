@@ -74,7 +74,10 @@ const OrderHistoryItem = ({order, index}:{order:any, index:number})=>{
             <p>Total Amount: ${formatCurrency(data[0].totalAmount)}</p>
             {
                 orderItems.map((product:any)=>(
-                    <ProductItem item={product} key={product.id}/>
+                    <div key={product.id}>
+                        <ProductItem item={product} key={product.id}/>
+                    </div>
+
                 ))
             }
         </div>
@@ -83,8 +86,8 @@ const OrderHistoryItem = ({order, index}:{order:any, index:number})=>{
 
 const ProductItem = ({item}:{item: any})=>{
     const {data} = useGetProduct(item.productId)
-    if(!data) return null
     const router = useRouter()
+    if(!data) return null
     return(
         <>
             <div className={`flex p-2 gap-2 hover:cursor-pointer shadow-md mt-2 sm:w-full`}

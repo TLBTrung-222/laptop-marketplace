@@ -10,10 +10,17 @@ export const useCreateOrder = (id: number) => {
     const router = useRouter();
 
     const mutation = useMutation({
-        mutationFn: async (data) => {
+        mutationFn: async (data:{}) => {
+            const returnUrl =
+                typeof window !== "undefined"
+                    ? `${window.location.origin}/order-success`
+                    : "";
             const response = await axiosClient.post(
                 `/orders`,
-                data,
+                {
+                    ...data,
+                    returnUrl
+                }
             );
             return response.data;
         },

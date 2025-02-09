@@ -6,12 +6,10 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import ProductList from "../../features/home/component/product-list";
 import Header from "../../features/home/component/header";
 import Footer from "../../features/home/component/footer";
-import { productListExample } from "../../features/home/component/product-ex";
 
 export default function Home() {
-  var {data, isLoading, error}= useGetProducts();
+  var {data}= useGetProducts();
   const [mounted, setMounted] = useState(false);
-  // data=productListExample;
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -39,7 +37,7 @@ const PaginatedProducts=({products, perPage}:{products:Product[]|undefined; perP
   const endIndex = startIndex + perPage;
   const currentProducts = products?.slice(startIndex, endIndex);
   const totalPages = products?Math.ceil(products.length/perPage):0;
-
+  if (totalPages ===0) return (<></>)
   return (
     <Fragment>
       <ProductList data={currentProducts}/>

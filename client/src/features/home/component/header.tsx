@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { CartItem, Product } from "@/types";
 import { useRouter } from "next/navigation";
@@ -7,8 +8,6 @@ import { useCart } from "./cart-context";
 import { Eye, Key, Mail, Minus, Phone, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import { useSignIn } from "@/features/auth/apis/use-sign-in";
 import { useSignUp } from "@/features/auth/apis/use-sign-up";
-import { SignUpInput } from "@/features/auth/schemas/sign-up";
-import { toast } from "sonner";
 import { useGetAvatar } from "@/features/accounts/apis/use-get-avatar";
 
 export default function Header({data}:{data:Product[]|undefined}){
@@ -22,7 +21,6 @@ export default function Header({data}:{data:Product[]|undefined}){
     const {totalPrice} = useCart()
     const router = useRouter();
     const {data:avatarRecieved} = useGetAvatar()
-    // console.log(avatarRecieved)
     const handleHomeClick = () => {
         if (window.location.pathname === "/") {
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -436,6 +434,7 @@ const SearchBarComponent=({products, onClose}:{products: Product[]|undefined; on
 
 const CartMenu = ({onClose}:{onClose:()=>void})=>{
   const { cart, removeFromCart, totalPrice, totalPriceProducts, increaseQuantity, decreaseQuantity } = useCart();
+  const router = useRouter();
   return(
     <div 
       className="absolute top-[64px] right-8 w-fit bg-white shadow-lg z-50 rounded-md"
@@ -493,6 +492,7 @@ const CartMenu = ({onClose}:{onClose:()=>void})=>{
           </ul>
           <Button
             className="bg-blue-600 px-4 py-2 mt-4 w-full flex"
+            onClick={()=>router.push('/account/wishlist')}
           >
             Proceed to Cart
             <ShoppingCart className="ml-2" />

@@ -27,17 +27,6 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
         setToatal(productsBuy.reduce((sum:any, product:any)=>sum+(product.price?product.price:0)*product.quantity,0))
     }, [mounted])
 
-    const handleIncrementQuantity=(id:number)=>{
-        
-    }
-
-    const handleDecrementQuantity=(id:number)=>{
-        
-    }
-
-
-
-
     const handleNext = () => {
         const newOrderData = productsBuy.map((product) => ({
             productId: product.id,
@@ -57,7 +46,9 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
                 <h1 className="font-semibold">Your Order</h1>
                 {
                     mergeProducts?.map((item: any, index: number) => 
-                        <OrderItem item={item} index={index} removeItem={removeItem}/>
+                        <div key={index}>
+                            <OrderItem item={item} index={index} removeItem={removeItem}/>
+                        </div>
                     )
                 }
             </div>

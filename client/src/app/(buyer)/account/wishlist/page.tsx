@@ -25,8 +25,8 @@ export default function WishListPage(){
             <div>
                 <div className="p-2 bg-gray-50 shadow-md">
                     {
-                        cart.map((item, index) => (
-                            <div key={index}
+                        cart.map((item) => (
+                            <div key={item.id}
                                 className="sm:flex items-center bg-gray-100 mt-2 hover:bg-blue-200 p-2"
                             >
                                 <Image
@@ -37,7 +37,7 @@ export default function WishListPage(){
                                 />
                                 <div>
                                     <div>
-                                        <h2>{item.name}</h2>
+                                        <h2>{item.name}x{item.quantity}</h2>
                                         <p>Price: {formatCurrency(item.price)} VND</p>
                                     </div>
                                     <div className="flex gap-2 ml-10">

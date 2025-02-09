@@ -119,11 +119,11 @@ const IdentificationItem=({list}:{list:any[]})=>{
     return(
         <>
             {
-                list.map((item,key)=>{
+                list.map((item,index)=>{
                     return(
-                        <div className="relative mt-8 w-[200px] lg:w-[400px]">
+                        <div className="relative mt-8 w-[200px] lg:w-[400px]" key={index}>
                             <label className="absolute top-0 left-3 transform -translate-y-5 text-gray-400 text-[14px]">{item.label}</label>
-                            <div>
+                            <div key={index}>
                                 <div className="relative">
                                     {item.icon}
                                     <div

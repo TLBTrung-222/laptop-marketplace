@@ -16,32 +16,23 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         { label: "Orders", path: "/account/order", icon: Truck },
     ];
     const [name, setName] = useState<any>('');
-    const pathname = usePathname();
-    const [isHeader, setIsHeader] = useState(true);
     const [mounted, setMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const { data, error } = useGetProducts();
+    const { data } = useGetProducts();
     useEffect(() => {
         setMounted(true);
+    }); // Chạy một lần khi component mount
 
-        // Chỉ fetch API sau khi component đã mount
-        if (mounted) {
-            setIsLoading(isLoading);
-        }
-
-        // Cập nhật header dựa vào pathname
-        setIsHeader(listPathHaveHeaders.includes(pathname));
-    }, []);
-
-    
-    const listPathHaveHeaders = ["/account/information","account/wishlist"];
     useEffect(() => {
-        setIsHeader(listPathHaveHeaders.includes(pathname));
-    }, [pathname, mounted]);
+        if (mounted) {
+            setIsLoading(false);
+        }
+    }, [mounted]);
 
     useEffect(()=>{
-        if (localStorage.getItem("name")){
-            setName(localStorage.getItem("name"));
+        const storedName = localStorage.getItem("name")
+        if (storedName){
+            setName(storedName);
         }
     })
     if (!mounted) {
@@ -52,8 +43,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         <div>
             <Header data={data}/>
             <div className="flex">
-                {/* <SidebarTrigger/> */}
-                {/* Sidebar chỉ áp dụng cho Profile */}
                 <div className="w-[250px] h-fit bg-gray-50 mt-10 ml-10 rounded-md p-2">
                     <div className="flex items-center">
                         <Image
@@ -65,8 +54,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                         <h3 className="font-semibold">{name||"username"}</h3>
                     </div>
                     <div>
-                        {menuItems.map(item=>(
-                        <div className="flex gap-4 text-gray-800 mt-4">
+                        {menuItems.map((item,index)=>(
+                        <div className="flex gap-4 text-gray-800 mt-4" key={item.path}>
                             <item.icon className="w-5 h-5"/>
                             <Link href={item.path}>
                                 {item.label}
