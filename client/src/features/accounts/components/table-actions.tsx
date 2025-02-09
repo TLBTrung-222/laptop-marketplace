@@ -47,9 +47,9 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useUpdateShipping } from "../apis/use-update-shipping";
-import { SHIPPING_STATUS } from "../constants";
-import { ShippingInput, shippingSchema } from "../schemas/shipping";
+import { ShippingInput, shippingSchema } from "@/features/admin-orders/schemas/shipping";
+import { useUpdateShipping } from "@/features/admin-orders/apis/use-update-shipping";
+import { SHIPPING_STATUS } from "@/features/admin-orders/constants";
 
 interface Props {
     order: Order;

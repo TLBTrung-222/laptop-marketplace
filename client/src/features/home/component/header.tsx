@@ -110,7 +110,7 @@ export default function Header({data}:{data:Product[]|undefined}){
                       alt="Icon profile"
                       width={30}
                       height={30}
-                      className="hover:cursor-pointer rounded-full"
+                      className="hover:cursor-pointer rounded-full ml-2"
                       onClick={()=>setMenuVisible(true)}
                       />
                   </div>
@@ -189,7 +189,6 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
   const [phoneNumber, setPhoneNumber] = useState('')
 
   const [active, setActive] = useState(1);
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const { mutate: signIn, isSuccess, mutateAsync } = useSignIn();
@@ -214,7 +213,6 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
     const storedEmail = localStorage.getItem("email");
     if (storedEmail&&password) {
       setEmail(storedEmail);
-      setRememberMe(true);
     }
   }, []);
 
@@ -249,9 +247,9 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
           </div>
           
           {active===1?
-            <>
+            <div>
               <h3 className="mt-1 mb-4 text-center font-bold text-2xl">Log in to Tech Heim</h3>
-              <div className="relative w-full max-w-xs">
+              <div className="relative w-full">
                 <input
                   type="email"
                   placeholder="Email"
@@ -266,9 +264,9 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                   />
                 </div>
               </div>
-              <div className="mt-1 relative w-full max-w-xs">
+              <div className="mt-1 relative w-full">
                 <input
-                  type="password"
+                  type={`${showPassword?"text":"password"}`}
                   placeholder="Password"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" autoComplete="current-password"
                   onChange={(event)=>setPassword(event.target.value)}
@@ -284,7 +282,8 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                   <Eye
                     strokeWidth={2}
                     size={18}
-                    color="gray"
+                    color={`${showPassword?"gray":"blue"}`}
+                    onClick={()=>setShowPassword(!showPassword)}
                   />
                 </div>
               </div>
@@ -304,10 +303,10 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                       Or sign in with Google
                   </Link>
               </Button>
-            </>:
+            </div>:
             <>
               <h3 className="mt-1 mb-4 text-center font-bold text-2xl">Create Account</h3>
-              <div className="relative w-full max-w-xs">
+              <div className="relative w-full">
                 <input
                   type="email"
                   placeholder="Email"
@@ -322,7 +321,7 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                   />
                 </div>
               </div>
-              <div className="mt-1 relative w-full max-w-xs">
+              <div className="mt-1 relative w-full">
                 <input
                   type={`${showPassword?"text":"password"}`}
                   placeholder="Password"
@@ -344,7 +343,7 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                   />
                 </div>
               </div>
-              <div className="relative w-full max-w-xs mt-1">
+              <div className="relative w-full mt-1">
                 <input
                   type="text"
                   placeholder="Phone Number"
@@ -358,7 +357,7 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                   />
                 </div>
               </div>
-              <div className="relative w-full max-w-xs mt-1">
+              <div className="relative w-full mt-1">
                 <input
                   type="text"
                   placeholder="Name"

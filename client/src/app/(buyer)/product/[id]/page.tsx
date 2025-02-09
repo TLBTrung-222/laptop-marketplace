@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import ProductImages from "../../../../features/home/component/product-image";
 import ProductReview from "../../../../features/home/component/product-review";
-import ProductDetail from "../../../../features/home/component/product-detail";
 import { getProducts } from "@/features/products/apis/use-get-product";
+import ProductDetails from "../../../../features/home/component/product-detail";
 
 
 export async function generateStaticParams() {
@@ -29,7 +29,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <ProductImages product={product}/>
         <ProductReview product={product}/>
       </div>
-      <ProductDetail product={product}/>
+      <ProductDetails product={product}/>
     </div>
   );
 }

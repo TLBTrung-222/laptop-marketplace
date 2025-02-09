@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useGetComments } from "@/features/products/apis/use-get-ratings";
 import { fetchProductDetails } from "@/features/products/apis/use-get-details";
 import { ProductDetail } from "@/types";
-import { ChevronDown, ChevronUp, Star } from "lucide-react";
+import { ChevronDown, Star } from "lucide-react";
 import { useEffect, useState } from "react"
 import { useCreateRatings } from "@/features/products/apis/use-create-rating";
 import Image from "next/image";
 
-export default function ProductDetail({product}:{product:any}){
+export default function ProductDetails({product}:{product:any}){
     const [active, setActive] = useState(1);
     const [productDetail, setProductDetail] = useState<ProductDetail>();
     useEffect(() => {
