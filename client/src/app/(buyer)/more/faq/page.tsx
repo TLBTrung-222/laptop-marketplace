@@ -39,7 +39,7 @@ export default function FAQPage() {
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-2 mb-6">
         <HelpCircle className="h-6 w-6 text-blue-500" />
-        <h1 className="text-2xl font-bold">Câu hỏi thường gặp</h1>
+        <h1 className="text-2xl font-bold">Frequently asked questions</h1>
       </div>
       <Accordion type="single" collapsible>
         {faqs.map((faq, index) => (

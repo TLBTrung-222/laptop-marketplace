@@ -1,112 +1,66 @@
-"use client"
-import { formatCurrency } from "../../../../features/home/component/format-currency";
-import Image from "next/image";
-import { useGetProduct } from "@/features/products/apis/use-get-product";
-import { useGetOrderItems } from "@/features/order/apis/use-get-items";
-import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/features/home/component/format-currency"
+import { useGetOrderItems } from "@/features/order/apis/use-get-items"
+import { useGetProduct } from "@/features/products/apis/use-get-product"
+import { Order } from "@/types"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
 
-type PaymentMethod = "vnpay" | "cod";
+export default function DeliveringOrder({orders}:{orders: Order[]}) {
+    const deliveringOrders = orders.filter(order => order.orderStatus === 'completed')
+    if (!deliveringOrders || deliveringOrders.length <= 0) return (<p>No delivering orders</p>)
 
-interface Payment {
-    id: number;
-    paymentAmount: number;
-    paymentStatus: number; // 0: Chưa thanh toán, 1: Đã thanh toán
-    paymentMethod: PaymentMethod;
-    paymentDate: string | null;
-}
-
-interface Shipping {
-    id: number;
-    shippingStatus: string; // Ví dụ: "delivering", "waiting to be packed", "completed"
-    city: string;
-    district: string;
-    street: string;
-    shippingDate: string;
-    deliveryDate: string | null;
-}
-
-interface Order {
-    id: number;
-    totalAmount: number;
-    orderStatus: "pending" | "completed" |"delivering"; // Chỉ có thể là pending hoặc completed
-    orderDate: string;
-    completionDate: string | null;
-    payment: Payment;
-    shipping: Shipping;
-}
-
-interface OrderResponse {
-    isSuccess: boolean;
-    data: Order[];
-    errors: any; // Có thể thay `any` bằng `string | null` nếu chỉ chứa thông báo lỗi
-}
-
-export default function CompletedOrders({orders}:{orders: Order[]}){
-    const completedOrders = orders.filter(order => order.orderStatus=='delivering')
-    if(!completedOrders || completedOrders.length<=0) return (<p>No completed orders</p>)
-    return(
+    return (
         <div className="w-full">
-            <h2 className="font-bold mb-2 mt-4">Delivering Orders</h2>
-            {
-                completedOrders.map((order:any, index:number)=>{
-                    return(
-                        <div key={order.id} className="mt-6 shadow-md shadow-blue-500 p-2 sm:w-[400px] md:w-[600px]">
-                            <div>
-                                <OrderHistoryItem order={order} index={index}/>
-                            </div>
-                            <hr/>
-                        </div>
-                    )
-                })
-            }
+            <h2 className="font-bold text-xl mb-4 mt-6">Completed Orders</h2>
+            {deliveringOrders.map((order, index) => (
+                <div key={order.id} className="mt-6 p-4 bg-white rounded-lg shadow-lg">
+                    <OrderHistoryItem order={order} index={index} />
+                    <hr className="my-4 border-t-2 border-gray-200" />
+                </div>
+            ))}
         </div>
     )
 }
 
-const OrderHistoryItem = ({order, index}:{order:any, index:number})=>{
+const OrderHistoryItem = ({order, index}:{order:any, index:number}) => {
     const {data} = useGetOrderItems(order.id)
-    if(!data) return
-    const orderItems = data[0].orderToProducts??[]
-    if(!orderItems) return null
-    return(
-        <div>
-            <p>Number: {index}</p>
-            <p>Total Amount: ${formatCurrency(data[0].totalAmount)}</p>
-            {
-                orderItems.map((product:any)=>(
-                    <div key={product.id}>
-                        <ProductItem item={product} order={order} key={product.id}/>
-                    </div>
+    if (!data) return null
+    const orderItems = data[0].orderToProducts ?? []
+    if (!orderItems) return null
 
-                ))
-            }
+    return (
+        <div className="space-y-4">
+            <p className="text-lg font-semibold">Order Number: {index + 1}</p>
+            <p className="text-xl font-bold text-blue-600">Total Amount: {formatCurrency(data[0].totalAmount)}</p>
+            
+            {orderItems.map((product: any) => (
+                <ProductItem item={product} key={product.id} />
+            ))}
         </div>
     )
 }
 
-const ProductItem = ({item, order}:{item: any, order:{}})=>{
+const ProductItem = ({item}: {item: any}) => {
     const {data} = useGetProduct(item.productId)
     const router = useRouter()
-    if(!data) return null
-    return(
-        <>
-            <div className={`flex p-2 gap-2 hover:cursor-pointer shadow-md mt-2 sm:w-full`}
-                onClick={()=>router.push(`/product/${data.id}`)}
-            >
-                <Image
-                    alt='Product'
-                    height={50}
-                    width={50}
-                    src={`${data.images[0].image}`}
-                />
-                <div className="flex flex-col justify-between">
-                    <div>
-                        <p className="font-semibold">{data?.name}</p>
-                        <p className="text-blue-600">${formatCurrency(data.price * item.quantity)} VND</p>
-                    </div>
-                </div>
-            </div>
+    if (!data) return null
 
-        </>
+    return (
+        <div
+            className="flex p-4 gap-4 bg-gray-100 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer"
+            onClick={() => router.push(`/product/${data.id}`)}
+        >
+            <Image
+                alt="Product"
+                height={80}
+                width={80}
+                src={`${data.images[0].image}`}
+                className="rounded-md"
+            />
+            <div className="flex flex-col justify-between">
+                <p className="font-semibold text-lg">{data?.name}</p>
+                <p className="text-blue-600 text-sm">{formatCurrency(data.price * item.quantity)} VND</p>
+            </div>
+        </div>
     )
 }

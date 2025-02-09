@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   }
 
   return (
-    <div className="sm:ml-6 sm:mr-6">
+    <div className="sm:ml-6 sm:mr-6 flex items-center justify-center flex-col">
       <div className="sm:flex">
         <ProductImages product={product}/>
         <ProductReview product={product}/>
