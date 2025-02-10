@@ -5,6 +5,7 @@ import {
     Get,
     HttpCode,
     Post,
+    Redirect,
     Req,
     Session,
     UseGuards
@@ -51,13 +52,16 @@ export class AuthController {
 
     @Get('google/redirect')
     @UseGuards(AuthGuard('google'))
+    @Redirect()
     async handleRedirect(
         @Req() request: Request,
         @Session() session: ExpressSession
     ) {
         session.accountId = (request.account as AccountEntity).id // trigger set cookie to client
         // email will be sent in google strategy code
-        return request.account
+        return {
+            url: 'https://laptop-marketplace.shop/'
+        }
     }
 
     /* -------------------------------------------------------------------------- */

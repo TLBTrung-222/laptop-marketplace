@@ -8,7 +8,8 @@ import {
     Body,
     ParseIntPipe,
     Ip,
-    Query
+    Query,
+    Redirect
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { OrderService } from '../service/order.service'
@@ -54,8 +55,17 @@ export class OrderController {
 
     // called by vnpay
     @Get('vnpay_return')
+    @Redirect()
     async returnUrl(@Query() vnpParams: VnpParams) {
-        return this.paymentService.handleReturnUrl(vnpParams)
+        const txnResult = await this.paymentService.handleReturnUrl(vnpParams)
+        if (txnResult.vnp_TransactionStatus == '00') {
+            return {
+                url: `https://laptop-marketplace.shop/order/order-success/?vnp_TransactionStatus=${txnResult.vnp_TransactionStatus}&vnp_TxnRef=${txnResult.vnp_TxnRef}&vnp_Amount=${txnResult.vnp_Amount}&vnp_PayDate=${txnResult.vnp_Paydate}`
+            }
+        } else
+            return {
+                url: `https://laptop-marketplace.shop/order/order-success/?vnp_TransactionStatus=${txnResult.vnp_TransactionStatus}`
+            }
     }
 
     /* -------------------------------------------------------------------------- */

@@ -30,6 +30,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useUpdateShipping } from "@/features/admin-orders/apis/use-update-shipping";
+import { SHIPPING_STATUS } from "@/features/admin-orders/constants";
+import {
+    ShippingInput,
+    shippingSchema,
+} from "@/features/admin-orders/schemas/shipping";
 import { formatPrice } from "@/lib/utils";
 import { Order } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,9 +53,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ShippingInput, shippingSchema } from "@/features/admin-orders/schemas/shipping";
-import { useUpdateShipping } from "@/features/admin-orders/apis/use-update-shipping";
-import { SHIPPING_STATUS } from "@/features/admin-orders/constants";
 
 interface Props {
     order: Order;
