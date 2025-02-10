@@ -3,9 +3,6 @@ import { Home, Settings, Inbox, Truck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Header from "../../../features/home/component/header";
-import { usePathname } from "next/navigation";
-import { Product } from "@/types";
-import { useGetProfile } from "@/features/admin/api/use-get-profile";
 import { useGetProducts } from "@/features/products/apis/use-get-products";
 import Image from "next/image";
 

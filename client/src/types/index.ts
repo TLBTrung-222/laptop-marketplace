@@ -105,7 +105,7 @@ export type Shipping = {
 export type Order = {
     id: number;
     totalAmount: number;
-    orderStatus: "pending" | "completed";
+    orderStatus: "pending" | "completed" | "delivering";
     orderDate: string;
     completionDate: string | null;
     payment: Payment;

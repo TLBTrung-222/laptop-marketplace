@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { inter } from "@/fonts";
 import { QueryProvider } from "@/providers/query-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { CartProvider } from "../features/home/component/cart-context";
 
 export const metadata: Metadata = {

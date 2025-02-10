@@ -1,14 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react"
 import { useCreateRatings } from "@/features/products/apis/use-create-rating";
 import { fetchProductDetails } from "@/features/products/apis/use-get-details";
 import { useGetComments } from "@/features/products/apis/use-get-ratings";
 import { ProductDetail as TProductDetail } from "@/types";
 import { ChevronDown, Star } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
-export default function ProductDetail({ product }: { product: any }) {
+export default function ProductDetails({product}:{product:any}){
     const [active, setActive] = useState(1);
     const [productDetail, setProductDetail] = useState<TProductDetail>();
     useEffect(() => {
