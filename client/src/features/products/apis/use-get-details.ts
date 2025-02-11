@@ -17,7 +17,7 @@ export const useGetDetails = (id: number) => {
 
 export const fetchProductDetails = async (id: number) => {
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER}/products/${id.toString()}/specifications`,
+        `${process.env.NEXT_PUBLIC_SERVER}/products/${id.toString()}/specifications?${Date.now()}`,
     );
     
     if (!response.ok) {
