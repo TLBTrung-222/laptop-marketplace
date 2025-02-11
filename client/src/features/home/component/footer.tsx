@@ -7,7 +7,7 @@ export default function Footer(){
   
   return(
     <footer className="flex flex-row row-start-3 gap-6 items-center justify-center bg-[#253B80] p-4 mt-4 ml-0 mr-0 w-full text-[#CBCBCB] bottom-0">
-      <div className="flex-col sm:flex-row flex justify-between">
+      <div className="flex-col flex justify-between">
         <div>
           <h1 className="text-white mt-2">Company</h1>
           <p>about us</p>
