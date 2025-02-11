@@ -5,7 +5,7 @@ import { useCreateRatings } from "@/features/products/apis/use-create-rating";
 import { fetchProductDetails } from "@/features/products/apis/use-get-details";
 import { useGetComments } from "@/features/products/apis/use-get-ratings";
 import { ProductDetail as TProductDetail } from "@/types";
-import { ChevronDown, Star } from "lucide-react";
+import { ChevronDown, ChevronUp, Star } from "lucide-react";
 import Image from "next/image";
 
 export default function ProductDetails({product}:{product:any}){
@@ -62,49 +62,49 @@ const TechnicalDetails = ({ productDetail }: { productDetail: any }) => {
             <h3 className="my-2 font-semibold">Technical Details</h3>
             <table className="w-300px sm:w-[600px] md:w-[1000px]">
                 <tr className="bg-gray-100">
-                    <td className="min-w-20 rounded-md p-2">Display</td>
+                    <td className="w-100 rounded-md p-2">Display</td>
                     <td className="rounded-md p-2">{productDetail?.display}</td>
                 </tr>
                 <tr className="">
-                    <td className="w-20 rounded-md p-2">Ram</td>
+                    <td className="min-w-32 rounded-md p-2">Ram</td>
                     <td className="rounded-md p-2">{productDetail?.ram}</td>
                 </tr>
                 <tr className="bg-gray-100">
-                    <td className="w-20 rounded-md p-2">Storage</td>
+                    <td className="w-32 rounded-md p-2">Storage</td>
                     <td className="rounded-md p-2">{productDetail?.storage}</td>
                 </tr>
                 <tr className="">
-                    <td className="w-20 rounded-md p-2">GPU</td>
+                    <td className="w-32 rounded-md p-2">GPU</td>
                     <td className="rounded-md p-2">{productDetail?.gpu}</td>
                 </tr>
             </table>
 
-            {showLess && (
+            {!showLess && (
                 <table className="w-300px sm:w-[600px] md:w-[1000px]">
                     <tr className="bg-gray-100">
-                        <td className="w-20 rounded-md p-2">Keyboard</td>
+                        <td className="w-32 rounded-md p-2">Keyboard</td>
                         <td className="rounded-md p-2">
                             {productDetail?.keyboard}
                         </td>
                     </tr>
                     <tr className="">
-                        <td className="min-w-20 rounded-md p-2">Lan</td>
+                        <td className="w-32 rounded-md p-2">Lan</td>
                         <td className="rounded-md p-2">{productDetail?.lan}</td>
                     </tr>
                     <tr className="bg-gray-100">
-                        <td className="w-20 rounded-md p-2">Wifi</td>
+                        <td className="w-32 rounded-md p-2">Wifi</td>
                         <td className="rounded-md p-2">
                             {productDetail?.wifi}
                         </td>
                     </tr>
                     <tr className="">
-                        <td className="w-20 rounded-md p-2">Bluetooth</td>
+                        <td className="w-32 rounded-md p-2">Bluetooth</td>
                         <td className="rounded-md p-2">
                             {productDetail?.bluetooth}
                         </td>
                     </tr>
-                    <tr className="bg-gray-100">
-                        <td className="w-20 rounded-md p-2">Webcam</td>
+                    <tr className="bg-gray-100 rounded-md">
+                        <td className="w-32 p-2">Webcam</td>
                         <td className="rounded-md p-2">
                             {productDetail?.webcam}
                         </td>
@@ -114,25 +114,25 @@ const TechnicalDetails = ({ productDetail }: { productDetail: any }) => {
                         <td className="rounded-md p-2">{productDetail?.os}</td>
                     </tr>
                     <tr className="bg-gray-100">
-                        <td className="w-20 rounded-md p-2">Battery</td>
+                        <td className="w-32 rounded-md p-2">Battery</td>
                         <td className="rounded-md p-2">
                             {productDetail?.battery}
                         </td>
                     </tr>
                     <tr>
-                        <td className="w-20 rounded-md p-2">Weight</td>
+                        <td className="w-32 rounded-md p-2">Weight</td>
                         <td className="rounded-md p-2">
                             {productDetail?.weight}
                         </td>
                     </tr>
                     <tr className="">
-                        <td className="w-20 rounded-md p-2">Color</td>
+                        <td className="w-32 rounded-md p-2">Color</td>
                         <td className="rounded-md p-2">
                             {productDetail?.color}
                         </td>
                     </tr>
                     <tr className="bg-gray-100">
-                        <td className="w-20 rounded-md p-2">Dimensions</td>
+                        <td className="w-32 rounded-md p-2">Dimensions</td>
                         <td className="rounded-md p-2">
                             {productDetail?.dimensions}
                         </td>
@@ -142,13 +142,30 @@ const TechnicalDetails = ({ productDetail }: { productDetail: any }) => {
 
             <div>
                 <div className="py-2">
-                    <div
-                        className="flex items-center bg-white text-xs text-blue-600 hover:cursor-pointer"
-                        onClick={() => setShowLess((prev) => !prev)}
-                    >
-                        Show Less
-                        <ChevronDown size={16} strokeWidth={1} />
-                    </div>
+                    {
+                        showLess &&
+                        (
+                            <div
+                                className="flex items-center bg-white text-xs text-blue-600 hover:cursor-pointer"
+                                onClick={() => setShowLess((prev) => !prev)}
+                            >
+                                Show More
+                                <ChevronDown size={16} strokeWidth={1} />
+                            </div>
+                        )
+                    }
+                    {
+                        !showLess &&
+                        (
+                            <div
+                                className="flex items-center bg-white text-xs text-blue-600 hover:cursor-pointer"
+                                onClick={() => setShowLess((prev) => !prev)}
+                            >
+                                Show Less
+                                <ChevronUp size={16} strokeWidth={1} />
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </>
@@ -200,7 +217,7 @@ const Comment = ({ productId }: { productId: number }) => {
             </div>
             <div>
                 {data.map((comment: any, index: number) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="flex gap-2 mt-2">
                         <div className="flex items-center">
                             <Image
                                 alt="Profile"

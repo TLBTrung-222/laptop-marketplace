@@ -108,7 +108,13 @@ const EditImage=()=>{
     return(
         <div className="flex gap-2 mt-4">
             <form action="/action_page.php">
-                <input type="file" id="myFile" name="filename" onChange={handleFileChange}/>
+                <input type="file" id="myFile" name="filename" placeholder="none" onChange={handleFileChange} className="hidden"/>
+                <label
+                    htmlFor="myFile"
+                    className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer mr-2"
+                >
+                    Choose file
+                </label>
                 <Button type="submit" className="mt-2" onClick={handleSubmit}>Upload Avatar</Button>
             </form>
         </div>

@@ -4,23 +4,16 @@ import Image from "next/image";
 import { formatCurrency } from "./format-currency";
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 export default function OrderList({ id, quantities, setData, active }: { id: number[], quantities: number[], setData:React.Dispatch<React.SetStateAction<any>>, active: ()=>void }) {
     const mergeProducts = useFetchProducts(id, quantities)
     var productsBuy = mergeProducts
     const [mounted, setMounted] = useState(false)
     const [total, setToatal] = useState<number>()
 
-    const removeItem=(id:number)=>{
-        var removeList = productsBuy?.filter((product:any)=>(
-            product.id!==id
-        ))
-        productsBuy=removeList
-        setMounted((prev) => !prev)
-    }
-
     useEffect(()=>{
         setToatal(productsBuy.reduce((sum:any, product:any)=>sum+(product.price?product.price:0)*product.quantity,0))
-    }, [mounted])
+    }, [productsBuy])
 
     const handleNext = () => {
         const newOrderData = productsBuy.map((product) => ({
@@ -42,7 +35,7 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
                 {
                     mergeProducts?.map((item: any, index: number) => 
                         <div key={index}>
-                            <OrderItem item={item} index={index} removeItem={removeItem}/>
+                                    <OrderItem item={item} index={index} quantity={item.quantity}/>
                         </div>
                     )
                 }
@@ -56,9 +49,8 @@ export default function OrderList({ id, quantities, setData, active }: { id: num
     )
 }
 
-const OrderItem=({ item, index, removeItem }: { item: any; index: number, removeItem:(id:number)=>void })=>{
-    const [remove, setIsRemoved] = useState(false)
-
+const OrderItem=({ item, index, quantity }: { item: any; index: number, quantity: any })=>{
+    const [remove] = useState(false)
     return(
         <>
             <div key={index} className={
@@ -74,9 +66,9 @@ const OrderItem=({ item, index, removeItem }: { item: any; index: number, remove
                 />
                 <div className="flex flex-col justify-between">
                     <div>
-                        <p className="font-semibold">{item.name}</p>
+                        <p className="font-semibold">{item.name} x {quantity}</p>
                         <p>Stock Quantity: {item.stockQuantity-1}</p>
-                        <p className="text-blue-600">${formatCurrency(item.price * item.quantity)} VND</p>
+                        <p className="text-blue-600">${formatCurrency(item.price)} VND</p>
                     </div>
                 </div>
             </div>
