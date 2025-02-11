@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { CartItem, Product } from "@/types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {  useEffect, useState } from "react";
 import Image from "next/image";
 import { useCart } from "./cart-context";
@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Icons } from "@/components/icons";
 
 export default function Header({data}:{data:Product[]|undefined}){
+    const searchParams = useSearchParams();
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
     const [isSignIn, setIsSignIn] = useState(false);
@@ -31,6 +32,29 @@ export default function Header({data}:{data:Product[]|undefined}){
             router.push("/");
         }
     };
+
+    
+    const code = searchParams.get("code");
+
+    useEffect(() => {
+      if (code) {
+          fetch("/api/auth/google", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ code }),
+          })
+          .then((res) => res.json())
+          .then((data) => {
+              if (data.token) {
+                  localStorage.setItem("token", data.token);
+                  window.history.replaceState({}, document.title, "/"); // Xóa code khỏi URL
+              }
+          })
+          .catch(console.error);
+      }
+    }, [code]);
    
     useEffect(()=>{
       if(avatarRecieved){
@@ -298,7 +322,9 @@ const SignInComponent =({onClose, onOpenProfile}:{onClose:()=>void, onOpenProfil
                     className="w-full mt-2"
                     asChild
                 >
-                  <Link href={process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN_URL!}>
+                  <Link href={process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN_URL!}
+                    // onClick={()=>handleGoogleSignIn()}
+                  >
                       <Icons.google />
                       Or sign in with Google
                   </Link>
