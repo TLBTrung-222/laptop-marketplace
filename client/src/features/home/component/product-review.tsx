@@ -17,6 +17,7 @@ export default function ProductReview({product}:{product:any}){
             router.push(`/order?${queryString}`);
     }
     const { data } = useGetComments(product.id);
+    if (!data) return null
     return(
         <div className="md:flex ml-6 gap-10">
             <div className="mt-4 sm:max-w-100">

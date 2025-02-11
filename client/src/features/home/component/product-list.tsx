@@ -54,7 +54,7 @@ export default function ProductList({data}:{data:Product[]|undefined}){
                 <hr className=""/>
                 <div className="flex justify-between relative">
                     <div>
-                    <h1 className="p-1 text-gray-600">{product.name}</h1>
+                    <h1 className="p-1 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">{product.name}</h1>
                     <CardContent className="p-1 justify-center items-center">
                         <p className="text-sm text-gray-800 font-bold">
                         ${formatCurrency(product.price)}₫

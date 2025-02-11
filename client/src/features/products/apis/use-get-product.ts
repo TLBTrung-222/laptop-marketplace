@@ -23,7 +23,7 @@ export const useGetProduct = (id?: number) => {
 
 const fetchProducts = async () => {
     const response = await fetch(
-        "https://laptop-marketplace.shop/api/products",
+        `https://laptop-marketplace.shop/api/products?${Date.now()}`,
     );
     if (!response.ok) {
         throw new Error("Failed to fetch products");

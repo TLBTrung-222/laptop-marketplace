@@ -3,10 +3,12 @@ import ProductImages from "../../../../features/home/component/product-image";
 import ProductReview from "../../../../features/home/component/product-review";
 import { getProducts } from "@/features/products/apis/use-get-product";
 import ProductDetails from "../../../../features/home/component/product-detail";
+import { toast } from "sonner";
 
 
 export async function generateStaticParams() {
   const data = await getProducts()
+  if (!data) return []
   const paths = data?.map((product:any) => ({
     id: product.id.toString(),
   }));
@@ -16,11 +18,11 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
   const data = await getProducts();
+  // return(<p>{data.length}</p>)
   const id = Number(params.id); // Convert id to number
   const product = data?.find((p:any) => p.id === id);
-
   if (!product) {
-    return notFound(); // Return "Not Found" if the product doesn't exist
+    return notFound();
   }
 
   return (
